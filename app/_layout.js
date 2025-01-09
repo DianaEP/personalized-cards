@@ -2,9 +2,18 @@ import { Tabs } from "expo-router";
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { colors } from "../UI/theme";
-import { SafeAreaView, StyleSheet, View } from "react-native";
+import { StyleSheet } from "react-native";
+import { fonts, useCustomFonts } from "../UI/fonts";
+
 
 export default function Layout(){
+
+    const fontsLoaded = useCustomFonts();
+
+    if (!fontsLoaded) {
+        return null; 
+      }
+
     return(
             <Tabs screenOptions={{ 
                 tabBarActiveTintColor: colors.titleText,
@@ -12,10 +21,17 @@ export default function Layout(){
                 tabBarStyle: {
                     backgroundColor: colors.border
                 },
+                tabBarLabelStyle: {
+                    fontFamily: fonts.body,
+                },
                 headerStyle: {
                     backgroundColor: colors.background
                 },
                 headerTintColor: colors.titleText,
+                headerTitleStyle: {
+                    fontFamily: fonts.title,
+                    fontSize: 24,
+                }
             }}>
 
                 <Tabs.Screen name='index' options={{

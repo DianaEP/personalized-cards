@@ -1,5 +1,6 @@
 import { StyleSheet, Text, View } from "react-native";
 import { colors } from "../UI/theme";
+import { fonts } from "../UI/fonts";
 
 export default function Editor() {
   return (
@@ -18,5 +19,6 @@ const styles = StyleSheet.create({
   },
   text: {
       color: colors.bodyText,
+      fontFamily: fonts.body,
   }
 });
