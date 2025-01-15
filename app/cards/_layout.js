@@ -12,7 +12,7 @@ export default function Layout(){
             headerTitleStyle: {
                 fontFamily: fonts.title,
                 fontSize: 24,
-            }
+            },
         }}>
             <Stack.Screen name="index" options={{
                 title: 'Your Cards',

@@ -31,7 +31,8 @@ export default function Layout(){
                 headerTitleStyle: {
                     fontFamily: fonts.title,
                     fontSize: 24,
-                }
+                },
+                
             }}>
 
                 <Tabs.Screen name='index' options={{

@@ -1,88 +1,96 @@
-import { useEffect } from "react";
-import { Image, StyleSheet, View } from "react-native";
-import Animated, { Easing, useAnimatedStyle, useSharedValue, withDelay, withRepeat, withSequence, withTiming } from "react-native-reanimated";
-import { useIsFocused } from '@react-navigation/native';
+import { useEffect, useState } from "react";
+import { Image, StyleSheet, Text, View } from "react-native";
+import Animated, { Easing, useAnimatedStyle, useSharedValue, withDelay, withRepeat, withSequence, withSpring, withTiming } from "react-native-reanimated";
+import { colors } from "../UI/theme";
+import { fonts } from "../UI/fonts";
+
 
 export default function ImagesAnimation(){
-    const isFocused = useIsFocused();
-    console.log(isFocused);
-    
+    // Image animation state
     const translateX1 = useSharedValue(400);
-    const translateX2 = useSharedValue(400);
-    const translateX3 = useSharedValue(400);
-    const translateX4 = useSharedValue(400);
-    const translateX5 = useSharedValue(400);
-    const translateX6 = useSharedValue(400);
-    const translateX7 = useSharedValue(400);
 
+    // Pin animation state
+    const translateXPin = useSharedValue(400);
+    const translateYPin = useSharedValue(-200);
+
+    // Text animation state
+    const typingProgress = useSharedValue(0);
+    const [displayedText, setDisplayedText] = useState('');
+    const text = "Mark Memories Your Way";
+    
     const slideInEffect = () => {
         translateX1.value = withTiming(0, { duration: 1000, easing: Easing.out(Easing.cubic)});
-        translateX2.value = withDelay(200, withTiming(0, { duration: 1500, easing: Easing.out(Easing.cubic)}));
-        translateX3.value = withDelay(400, withTiming(0, { duration: 1500, easing: Easing.out(Easing.cubic)}));
-        translateX4.value = withDelay(300, withTiming(0, { duration: 1500, easing: Easing.out(Easing.cubic)}));
-        translateX5.value = withDelay(700, withTiming(0, { duration: 1500, easing: Easing.out(Easing.cubic)}));
-        translateX6.value = withDelay(500, withTiming(0, { duration: 1500, easing: Easing.out(Easing.cubic)}));
-        translateX7.value = withDelay(1000, withTiming(0, { duration: 1500, easing: Easing.out(Easing.cubic)}));
     }
 
-    const slideOutEffect = () => {
-        translateX1.value = withTiming(400, { duration: 1000, easing: Easing.out(Easing.cubic)});
-        translateX2.value = withDelay(200, withTiming(400, { duration: 1500, easing: Easing.out(Easing.cubic)}));
-        translateX3.value = withDelay(400, withTiming(400, { duration: 1500, easing: Easing.out(Easing.cubic)}));
-        translateX4.value = withDelay(300, withTiming(400, { duration: 1500, easing: Easing.out(Easing.cubic)}));
-        translateX5.value = withDelay(700, withTiming(400, { duration: 1500, easing: Easing.out(Easing.cubic)}));
-        translateX6.value = withDelay(500, withTiming(400, { duration: 1500, easing: Easing.out(Easing.cubic)}));
-        translateX7.value = withDelay(1000, withTiming(400, { duration: 1500, easing: Easing.out(Easing.cubic)})); 
+    const dropPinEffect = () => {
+        setTimeout(() => {
+            translateXPin.value = withTiming(0, { duration: 800, easing: Easing.out(Easing.cubic)});
+            translateYPin.value = withTiming(0, { duration: 800, easing: Easing.out(Easing.cubic)});
+        },2000)
+    }
+
+    const startTypingEffect = () => {
+        let index = 0;
+
+        setTimeout(() => {
+            const typingInterval = setInterval(() => {
+                if (index < text.length) {
+                    const currentChar = text[index];
+
+                    setDisplayedText((prevText) => prevText + currentChar);
+                    typingProgress.value = withTiming(index + 1, { duration: 150, easing: Easing.out(Easing.cubic) });
+                    
+                    index++;
+                } else {
+                    clearInterval(typingInterval); 
+                }
+            }, 100); 
+        },3200)
     }
 
     useEffect(() => {
-        console.log("Is Focused: ", isFocused);
-        if(isFocused){
-            slideInEffect();
-        }else{
-            slideOutEffect();
-        }
-    },[isFocused])
+        slideInEffect();
+        dropPinEffect();
+        startTypingEffect();
+        console.log("translateX value:", translateX1.value);
+    },[])
 
-    const animatedStyle1 = useAnimatedStyle(() => ({ transform: [{translateX: translateX1.value}] }));
-    const animatedStyle2 = useAnimatedStyle(() => ({ transform: [{translateX: translateX2.value}] }))
-    const animatedStyle3 = useAnimatedStyle(() => ({ transform: [{translateX: translateX2.value}] }))
-    const animatedStyle4 = useAnimatedStyle(() => ({ transform: [{translateX: translateX4.value}] }))
-    const animatedStyle5 = useAnimatedStyle(() => ({ transform: [{translateX: translateX5.value}] }))
-    const animatedStyle6 = useAnimatedStyle(() => ({ transform: [{translateX: translateX6.value}] }))
-    const animatedStyle7 = useAnimatedStyle(() => ({ transform: [{translateX: translateX7.value}] }))
-    return (
+    
+    const pictureStyle = useAnimatedStyle(() => ({ transform: [{translateX: translateX1.value}] }));
+    const pinStyle = useAnimatedStyle(() => ({transform: [{translateY : translateYPin.value}, { translateX: translateXPin.value }] }));
+    const typingStyle = useAnimatedStyle(() => ({
+        opacity: typingProgress.value === text.length ? 1 : 0.8,
+        transform: [{translateY: 0}],
+    })
+);
+
+return (
         <View style={styles.container}>
-            <Animated.Image 
-                source={require('../assets/images/pic3.jpg')} 
-                style={[styles.image, { width: 180, height: 110, top: 10, left: 170 }, animatedStyle3]}
-                    
-            />
-            <Animated.Image
-                source={require('../assets/images/pic4.jpg')} 
-                style={[styles.image, { width: 100, height: 150, top: 150, left: 250 }, animatedStyle4]}
-                
-            />
-            <Animated.Image 
-                source={require('../assets/images/pic5.jpg')} 
-                style={[styles.image, { width: 90, height: 120, top: 160, left: 170 }, animatedStyle5]}
-            />
-            <Animated.Image 
-                source={require('../assets/images/pic6.jpg')} 
-                style={[styles.image, { width: 90, height: 120, top: 80, left: 110 }, animatedStyle6]}
-            />
-            <Animated.Image 
-                source={require('../assets/images/pic1.jpg')} 
-                style={[styles.image,{ width: 120, height: 180, top: 0, left: 10 }, animatedStyle1]}
-            />
-            <Animated.Image 
-                source={require('../assets/images/pic2.jpg')} 
-                style={[styles.image, { width: 170, height: 120, top: 190, left: 10 }, animatedStyle2]}
-            />
-            <Animated.Image 
-                source={require('../assets/images/marketing.png')} 
-                style={[styles.image, { width: 170, height: 120, top: 90, left: 170 }, animatedStyle7]}
-            />
+            <Animated.View style={[styles.imageWrapper, pictureStyle]}>
+                <Image 
+                    source={require('../assets/images/umbrellaCropped.jpg')} 
+                    style={styles.image}
+                    resizeMode="cover" 
+                    />
+
+            </Animated.View>
+
+            <Animated.View style={[styles.pinWrapper, pinStyle]}>
+                <Image 
+                    source={require('../assets/images/pin.png')} 
+                    style={styles.pinImage}
+                    resizeMode="contain" 
+                    />
+
+            </Animated.View>
+
+            <Animated.View style={[styles.textWrapper, typingStyle]}>
+                <Text style={styles.text}>
+                    {displayedText}
+                </Text>
+
+            </Animated.View>
+
         </View>
     )
 }
@@ -94,10 +102,44 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center'
-
+        
     },
-    image:{
+    imageWrapper:{
         position: 'absolute',
+        width: '90%', 
+        height: '90%',
         borderRadius: 5,
+        overflow: 'hidden',
+    },
+    image: {
+        width: '100%',
+        height: '100%',
+        borderRadius: 5,
+    },
+    pinWrapper:{
+        position: 'absolute',
+        top: 15,
+        left: '50%',
+        width: 50,
+        height: 50,
+    },
+    pinImage:{
+        width: 40,
+        height: 50,
+    },
+    textWrapper:{
+        position: 'absolute',
+        top: 70,
+        left: '30%',
+        width: '50%',
+        height: 100,
+    },
+    text:{
+        fontSize: 24,
+        color: colors.bodyText,
+        fontWeight: 'bold',
+        textAlign: 'center',
+        fontFamily: fonts.body,
     }
 })
+

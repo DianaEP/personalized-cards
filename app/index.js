@@ -9,6 +9,7 @@ import ImagesAnimation from '../components/ImagesAnimation';
 export default function App() {
   const router = useRouter();
 
+
   function handleCreateCard(){
     router.push('/editor');
   }
