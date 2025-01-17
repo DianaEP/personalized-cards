@@ -17,8 +17,10 @@ export const useCustomFonts = () => {
 
     useEffect(() => {
         if(fontsLoaded){
+
             SplashScreen.hideAsync();
         }else{
+           
             SplashScreen.preventAutoHideAsync();
         }
     }, [fontsLoaded])

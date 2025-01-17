@@ -8,16 +8,16 @@ export default function Button({children, onPress}){
 
     const animatedStyle = useAnimatedStyle(() => {
         return {
-            transform: [{scale: withTiming(scale.value, {duration: 300, easing: Easing.out(Easing.exp)})}]
+            transform: [{scale: withTiming(scale.value, {duration: 300, easing: Easing.out(Easing.cubic)})}]
         }
     })
 
     const handlePressIn = () => {
-        scale.value = 0.9;   
+        scale.value = 0.95;   
     }
 
     const  handlePressOut = () => {
-        scale.value = 1.1;
+        scale.value = 1.03;
         // delay the onPress function to allow the button to animate back to its original size
         setTimeout(() => {
             scale.value = 1;
@@ -46,7 +46,8 @@ const styles = StyleSheet.create({
         padding: 10,
         width: '90%',
         margin: 15,
-
+        elevation: 2,
+       
     },
     // pressed: {
     //     opacity: 0.7,

@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
 import { Image, StyleSheet, Text, View } from "react-native";
-import Animated, { Easing, useAnimatedStyle, useSharedValue, withDelay, withRepeat, withSequence, withSpring, withTiming } from "react-native-reanimated";
+import Animated, { Easing, interpolate, interpolateColor, useAnimatedStyle, useSharedValue, withDelay, withRepeat, withSequence, withSpring, withTiming } from "react-native-reanimated";
 import { colors } from "../UI/theme";
-import { fonts } from "../UI/fonts";
+import { fonts, useCustomFonts } from "../UI/fonts";
+
 
 
 export default function ImagesAnimation(){
+     const fontsLoaded = useCustomFonts();
+
     // Image animation state
     const translateX1 = useSharedValue(400);
 
@@ -38,13 +41,13 @@ export default function ImagesAnimation(){
                     const currentChar = text[index];
 
                     setDisplayedText((prevText) => prevText + currentChar);
-                    typingProgress.value = withTiming(index + 1, { duration: 150, easing: Easing.out(Easing.cubic) });
+                    typingProgress.value = withTiming(index + 1, { duration: 100, easing: Easing.out(Easing.cubic) });
                     
                     index++;
                 } else {
                     clearInterval(typingInterval); 
                 }
-            }, 100); 
+            }, 150); 
         },3200)
     }
 
@@ -52,18 +55,28 @@ export default function ImagesAnimation(){
         slideInEffect();
         dropPinEffect();
         startTypingEffect();
-        console.log("translateX value:", translateX1.value);
     },[])
 
     
     const pictureStyle = useAnimatedStyle(() => ({ transform: [{translateX: translateX1.value}] }));
     const pinStyle = useAnimatedStyle(() => ({transform: [{translateY : translateYPin.value}, { translateX: translateXPin.value }] }));
     const typingStyle = useAnimatedStyle(() => ({
-        opacity: typingProgress.value === text.length ? 1 : 0.8,
-        transform: [{translateY: 0}],
-    })
-);
+        color: interpolateColor(
+            typingProgress.value,
+            [0, text.length],
+            [colors.primary, colors.bodyText]
+        ),
+        // opacity: interpolate(
+        //     typingProgress.value, // Typing progress (0 to text.length)
+        //     [0, text.length], // Interpolate from 0 to full text
+        //     [0, 1] // From 0 (invisible) to 1 (fully visible)
+        // )
+    }));
 
+    if (!fontsLoaded) {
+        return null; 
+    }
+    
 return (
         <View style={styles.container}>
             <Animated.View style={[styles.imageWrapper, pictureStyle]}>
@@ -84,10 +97,10 @@ return (
 
             </Animated.View>
 
-            <Animated.View style={[styles.textWrapper, typingStyle]}>
-                <Text style={styles.text}>
+            <Animated.View style={styles.textWrapper}>
+                <Animated.Text style={[styles.text, typingStyle]}>
                     {displayedText}
-                </Text>
+                </Animated.Text>
 
             </Animated.View>
 
@@ -136,7 +149,7 @@ const styles = StyleSheet.create({
     },
     text:{
         fontSize: 24,
-        color: colors.bodyText,
+        // color: colors.bodyText,
         fontWeight: 'bold',
         textAlign: 'center',
         fontFamily: fonts.body,

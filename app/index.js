@@ -3,15 +3,21 @@ import { StyleSheet, Text, View } from 'react-native';
 import { colors } from '../UI/theme';
 import Button from '../UI/buttons/Button';
 import { useRouter } from 'expo-router';
-import { fonts } from '../UI/fonts';
+import { fonts, useCustomFonts } from '../UI/fonts';
 import ImagesAnimation from '../components/ImagesAnimation';
 
 export default function App() {
+  const fontsLoaded = useCustomFonts();
+
   const router = useRouter();
-
-
+  
+  
   function handleCreateCard(){
     router.push('/editor');
+  }
+
+  if (!fontsLoaded) {
+      return null; 
   }
   return (
     <View style={styles.container}>

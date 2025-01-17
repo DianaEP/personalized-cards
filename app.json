@@ -27,7 +27,14 @@
     },
     "plugins": [
       "expo-router",
-      "expo-font"
+      "expo-font",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "The app needs access to your photos in order to select your favorite moment.",
+          "cameraPermission": "The app needs access to your camera in order to take photos of your favorite moments."
+        }
+      ]
     ]
   }
 }
