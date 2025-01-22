@@ -3,7 +3,7 @@ import { colors } from "../theme";
 import { fonts } from "../fonts";
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
 
-export default function Button({children, onPress}){
+export default function Button({children, onPress, textOnly}){
     const scale = useSharedValue(1);
 
     const animatedStyle = useAnimatedStyle(() => {
@@ -32,7 +32,7 @@ export default function Button({children, onPress}){
             onPressOut={handlePressOut}
             // style={({pressed}) => [pressed && styles.pressed]}
         >
-            <Animated.View style={[styles.button, animatedStyle]}>
+            <Animated.View style={[styles.button, animatedStyle, textOnly && styles.textOnlyButton]}>
                 <Text style={styles.text}>{children}</Text>
             </Animated.View>
         </Pressable>
@@ -48,6 +48,11 @@ const styles = StyleSheet.create({
         margin: 15,
         elevation: 2,
        
+    },
+    textOnlyButton: {
+        backgroundColor: 'transparent',
+        borderWidth: 0, 
+        marginBottom: 0,
     },
     // pressed: {
     //     opacity: 0.7,
