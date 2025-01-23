@@ -2,6 +2,7 @@ import { Pressable, StyleSheet, Platform } from "react-native";
 import { Ionicons } from '@expo/vector-icons'
 import { colors } from "../theme";
 import Animated, { interpolateColor, useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
+import { platformStyle } from "../shadowStyle";
 
 export default function IconButton({icon, size, color, onPress}){
     const buttonColor = useSharedValue(0);
@@ -55,17 +56,7 @@ const styles = StyleSheet.create({
         // borderColor: colors.border,
         borderWidth: 1,
         backgroundColor: colors.background,
-        ...Platform.select({
-            android: {
-              elevation: 4, 
-            },
-            ios: {
-              shadowColor: colors.border, 
-              shadowOffset: { width: 0, height: 2 },  
-              shadowOpacity: 0.25, 
-              shadowRadius: 3.84,  
-            },
-          }),   
+        ...platformStyle.shadow   
     },
     pressable: {
         justifyContent: 'center',

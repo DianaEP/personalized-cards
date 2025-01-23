@@ -35,6 +35,10 @@
           "cameraPermission": "The app needs access to your camera in order to take photos of your favorite moments."
         }
       ]
-    ]
+    ],
+    "packagerOpts": {
+      "sourceExts": ["js", "jsx", "svgx"],
+      "transformer": "node_modules/react-native-svg-transformer/index.js"
+    }
   }
 }

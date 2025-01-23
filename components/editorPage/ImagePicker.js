@@ -8,6 +8,7 @@ import IconButton from "../../UI/buttons/IconButton";
 import  ColorPicker, { HueSlider, OpacitySlider, Panel1, Preview, Swatches } from "reanimated-color-picker"
 import EditorText from "./EditorText";
 import { PanGestureHandler } from "react-native-gesture-handler";
+import SvgPicker from "./SvgPicker";
 
 export default function ImagePicker(){
     const [photoTaken, setPhotoTaken] = useState(null);
@@ -18,6 +19,23 @@ export default function ImagePicker(){
     const[overlayText, setOverlayText] = useState('');
     const[textOnImage, setTextOnImage] = useState(null);
     const[textPosition, setTextPosition] = useState({x: 0, y: 0})
+
+    // Svg
+    const[isModalVisible, setIsModalVisible] = useState(false);
+    const[selectedSvg, setSelectedSvg] = useState(null);
+
+    const toggleModal = () => {
+        console.log("Modal toggled" +  isModalVisible);
+        setIsModalVisible((prevStateModal) => !prevStateModal)
+    }
+    console.log(isModalVisible);
+    
+    const handleSvgSelect = (svg) => {
+        setSelectedSvg(svg);
+        console.log(selectedSvg);
+        
+        toggleModal();
+    }
 
 
 
@@ -132,13 +150,19 @@ export default function ImagePicker(){
                     icon="image" 
                     size={24} 
                     color={colors.bodyText} 
-                    onPress={() => pickImage(false)}
+                    onPress={() => pickImage(false)}facadd
                 />
                 <IconButton 
                     icon='color-palette' 
                     size={24} 
                     color={colors.bodyText} 
                     onPress={toggleColorPicker}
+                />
+                 <IconButton 
+                    icon='add-circle' 
+                    size={24} 
+                    color={colors.bodyText} 
+                    onPress={toggleModal}
                 />
             </View>
             {showColorPicker && (
@@ -161,6 +185,11 @@ export default function ImagePicker(){
                 overlayText={overlayText} 
                 setOverlayText={setOverlayText} 
                 onAdd={handleAddText}
+            />
+            <SvgPicker
+                visible={isModalVisible}
+                onClose={toggleModal}
+                onSelect={handleSvgSelect}
             />
         </View>
     )

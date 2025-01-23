@@ -1,7 +1,8 @@
-import { Pressable, StyleSheet, Text } from "react-native";
+import { Platform, Pressable, StyleSheet, Text } from "react-native";
 import { colors } from "../theme";
 import { fonts } from "../fonts";
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
+import { platformStyle } from "../shadowStyle";
 
 export default function Button({children, onPress, textOnly}){
     const scale = useSharedValue(1);
@@ -46,13 +47,14 @@ const styles = StyleSheet.create({
         padding: 10,
         width: '90%',
         margin: 15,
-        elevation: 2,
+        ...platformStyle.shadow,  
        
     },
     textOnlyButton: {
         backgroundColor: 'transparent',
         borderWidth: 0, 
         marginBottom: 0,
+        elevation: 0,
     },
     // pressed: {
     //     opacity: 0.7,
