@@ -1,27 +1,14 @@
 import {FlatList, Modal, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
-import Button from '../../UI/buttons/Button';
+import Button from '../../../UI/buttons/Button';
 import { SvgUri, SvgXml } from 'react-native-svg';
-import BalletSvg from '../../assets/svg/ballet.svg';
-import BirthdaySvg from '../../assets/svg/birthday.svg';
-import CoffeeSvg from '../../assets/svg/coffee.svg';
-import MeditatingSvg from '../../assets/svg/meditating.svg';
-import PlantSvg from '../../assets/svg/plant.svg';
-import WeddingSvg from '../../assets/svg/wedding.svg';
-import { colors } from '../../UI/theme';
-import { fonts } from '../../UI/fonts';
-import { platformStyle } from '../../UI/shadowStyle';
+import { colors } from '../../../UI/theme';
+import { fonts } from '../../../UI/fonts';
+import { platformStyle } from '../../../UI/shadowStyle';
 import Animated, { useAnimatedStyle, useSharedValue, withTiming, Easing } from 'react-native-reanimated';
+import { ASSETS_SVG } from '../../../util/dataSvg';
 
-const ASSETS_SVG = [
-    { id: '1', svg: BalletSvg },
-    { id: '2', svg: BirthdaySvg },
-    { id: '3', svg: CoffeeSvg }, 
-    { id: '4', svg: MeditatingSvg },
-    { id: '5', svg: PlantSvg },
-    { id: '6', svg: WeddingSvg },
-];
 
-export default function SvgPicker({visible, onClose, onSelect}){
+const SvgItem = ({item, onSelect}) => {
     const scale = useSharedValue(1);
 
     const animatedStyle = useAnimatedStyle(() => {
@@ -38,21 +25,32 @@ export default function SvgPicker({visible, onClose, onSelect}){
         scale.value = 1.02;
         setTimeout(() => {
             scale.value = 1;
-            onSelect(item);
+            onSelect(item.id);
         }, 100)
     }
 
-    const renderSvg = ({item}) => (
+    const SvgComponent = item.svg;
+    console.log(item);
+    
+    
+        return (
         <Pressable 
             onPressIn={pressIn}
-            onPressOut={() => pressOut(item.svg)} 
+            onPressOut={() => pressOut(item)} 
         >
             <Animated.View style={[styles.svgContainer, animatedStyle]}>
-                <item.svg width={50} height={50} />
+                <SvgComponent  width={50} height={50} />
             </Animated.View>
 
         </Pressable>
     )
+}
+
+export default function SvgPickerModal({visible, onClose, onSelect}){
+    
+    const renderSvg = ({item}) => {
+        return <SvgItem key={item.id} item={item} onSelect={onSelect} />
+    }
 
     
     return(

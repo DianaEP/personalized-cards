@@ -1,14 +1,15 @@
 import { Alert, Image, StyleSheet, Text, View } from "react-native";
 import { launchCameraAsync, PermissionStatus, useCameraPermissions } from 'expo-image-picker';
 import { launchImageLibraryAsync } from "expo-image-picker";
-import { fonts } from "../../UI/fonts";
 import { colors } from "../../UI/theme";
 import { useState } from "react";
-import IconButton from "../../UI/buttons/IconButton";
-import  ColorPicker, { HueSlider, OpacitySlider, Panel1, Preview, Swatches } from "reanimated-color-picker"
 import EditorText from "./EditorText";
-import { PanGestureHandler } from "react-native-gesture-handler";
-import SvgPicker from "./SvgPicker";
+import ImagePreview from "./imagePreview/ImagePreview";
+import TextOverlay from "./imagePreview/TextOverlay";
+import SvgOverlay from "./imagePreview/SvgOverlay";
+import ImageControl from "./imageControl/ImageControl";
+import ColorPickerModal from "./imageControl/ColorPickerModal";
+import SvgPickerModal from "./imageControl/SvgPickerModal";
 
 export default function ImagePicker(){
     const [photoTaken, setPhotoTaken] = useState(null);
@@ -22,7 +23,8 @@ export default function ImagePicker(){
 
     // Svg
     const[isModalVisible, setIsModalVisible] = useState(false);
-    const[selectedSvg, setSelectedSvg] = useState(null);
+    const[selectedSvgId, setSelectedSvgId] = useState(null);
+    const [svgPosition, setSvgPosition] = useState({ x: 0, y: 0 });
 
     const toggleModal = () => {
         console.log("Modal toggled" +  isModalVisible);
@@ -30,9 +32,9 @@ export default function ImagePicker(){
     }
     console.log(isModalVisible);
     
-    const handleSvgSelect = (svg) => {
-        setSelectedSvg(svg);
-        console.log(selectedSvg);
+    const handleSvgSelect = (id) => {
+        setSelectedSvgId(id);
+        console.log(selectedSvgId);
         
         toggleModal();
     }
@@ -99,36 +101,6 @@ export default function ImagePicker(){
         setOverlayText('');
     }
 
-    // Update text position
-    const onDrag = (event) => {
-        console.log('Drag Event:', event.nativeEvent);
-        const { translationX, translationY} = event.nativeEvent;
-        setTextPosition({x: translationX, y: translationY})
-    }
-
-    let imagePreview = <Text style={styles.text}>No image taken yet.</Text>;
-    if(photoTaken){
-        imagePreview = (
-            <>
-                <Image style={styles.image} source={{uri: photoTaken}}/>
-                {textOnImage && (
-                   <PanGestureHandler onGestureEvent={onDrag}>
-                        <Text 
-                            style={[
-                                styles.overlayText, 
-                                {color: chosenColor, 
-                                    transform: [
-                                        {translateX: textPosition.x}, 
-                                        {translateY: textPosition.y}
-                                    ]
-                                }]}>
-                            {textOnImage}
-                        </Text>
-                   </PanGestureHandler>
-                )}
-            </>
-        )
-    }
 
 
     console.log('textPosition:', textPosition);
@@ -137,48 +109,24 @@ export default function ImagePicker(){
     return(
         <View style={styles.container}>
             <View style={styles.imageContainer}>
-              {imagePreview}
+              <ImagePreview photoTaken={photoTaken}/>
+              <TextOverlay 
+                chosenColor={chosenColor} 
+                setTextPosition={setTextPosition} 
+                textPosition={textPosition} 
+                textOnImage={textOnImage}
+              />
+              <SvgOverlay  
+                svgPosition={svgPosition} 
+                selectedSvgId={selectedSvgId} 
+                setSvgPosition={setSvgPosition}
+            />
             </View>
-            <View style={styles.imageButtons}>
-                <IconButton 
-                    icon='camera' 
-                    size={24} 
-                    color={colors.bodyText} 
-                    onPress={() => pickImage(true)}
-                />
-                <IconButton 
-                    icon="image" 
-                    size={24} 
-                    color={colors.bodyText} 
-                    onPress={() => pickImage(false)}facadd
-                />
-                <IconButton 
-                    icon='color-palette' 
-                    size={24} 
-                    color={colors.bodyText} 
-                    onPress={toggleColorPicker}
-                />
-                 <IconButton 
-                    icon='add-circle' 
-                    size={24} 
-                    color={colors.bodyText} 
-                    onPress={toggleModal}
-                />
-            </View>
+
+            <ImageControl pickImage={pickImage} toggleColorPicker={toggleColorPicker} toggleModal={toggleModal}/>
+
             {showColorPicker && (
-                <View style={styles.colorPickerContainer}>
-                    <ColorPicker
-                        value={chosenColor}
-                        sliderThickness={20}
-                        thumbSize={25}
-                        onComplete={(color) => setChosenColor(color.hex)} 
-                    >
-                        <HueSlider />
-                        <Panel1 />
-                        <OpacitySlider />
-                    </ColorPicker>
-                    
-                </View>
+                <ColorPickerModal  chosenColor={chosenColor} setChosenColor={setChosenColor}/>
             )}
             <EditorText 
                 chosenColor={chosenColor} 
@@ -186,7 +134,7 @@ export default function ImagePicker(){
                 setOverlayText={setOverlayText} 
                 onAdd={handleAddText}
             />
-            <SvgPicker
+            <SvgPickerModal
                 visible={isModalVisible}
                 onClose={toggleModal}
                 onSelect={handleSvgSelect}
@@ -194,16 +142,14 @@ export default function ImagePicker(){
         </View>
     )
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background, 
     margin: 10,
   },
-  text: {
-      color: colors.bodyText,
-      fontFamily: fonts.body,
-  },
+ 
   imageContainer: {
     width: '100%',
     height: 300,
@@ -215,34 +161,5 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     marginVertical: 10,
   },
-  image: {
-    width: '100%',
-    height: '100%',
-  },
-  imageButtons: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    columnGap: 10,
-    marginVertical: 10,
-  },
-  colorPickerContainer: {
-    backgroundColor: colors.background,
-    borderColor: colors.border,
-    borderWidth: 1,
-    borderRadius: 5,
-    position: 'absolute',
-    top: 35,
-    left: 0,
-    width: '100%',
-    height: 'auto', 
-    padding: 20,
-},
-overlayText: {
-    position: 'absolute',
-    bottom: 20,
-    left: 20,
-    fontSize: 24,
-    fontWeight: 'bold',
-    padding: 10,
-},
+
 });
