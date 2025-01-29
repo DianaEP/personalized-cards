@@ -3,7 +3,7 @@ import { fonts } from "../../../UI/fonts";
 import { colors } from "../../../UI/theme";
 
 export default function ImagePreview({photoTaken}){
-    console.log(photoTaken);
+    // console.log(photoTaken);
     
     if(!photoTaken){
         return <Text style={styles.text}>No image taken yet.</Text>

@@ -1,8 +1,8 @@
-import { Alert, Image, StyleSheet, Text, View } from "react-native";
+import { Alert, StyleSheet, Text, View } from "react-native";
 import { launchCameraAsync, PermissionStatus, useCameraPermissions } from 'expo-image-picker';
 import { launchImageLibraryAsync } from "expo-image-picker";
 import { colors } from "../../UI/theme";
-import { useState } from "react";
+import { useReducer, useState } from "react";
 import EditorText from "./EditorText";
 import ImagePreview from "./imagePreview/ImagePreview";
 import TextOverlay from "./imagePreview/TextOverlay";
@@ -10,40 +10,11 @@ import SvgOverlay from "./imagePreview/SvgOverlay";
 import ImageControl from "./imageControl/ImageControl";
 import ColorPickerModal from "./imageControl/ColorPickerModal";
 import SvgPickerModal from "./imageControl/SvgPickerModal";
+import { ACTIONS, initialState, reducer } from "../../util/reducerImagePicker";
 
 export default function ImagePicker(){
-    const [photoTaken, setPhotoTaken] = useState(null);
     const[cameraPermissionStatus, requestPermission] = useCameraPermissions();
-
-    const[showColorPicker, setShowColorPicker] = useState(false);
-    const[chosenColor, setChosenColor] = useState(colors.titleText);
-    const[overlayText, setOverlayText] = useState('');
-    const[textOnImage, setTextOnImage] = useState(null);
-    const[textPosition, setTextPosition] = useState({x: 0, y: 0})
-
-    // Svg
-    const[isModalVisible, setIsModalVisible] = useState(false);
-    const[selectedSvgId, setSelectedSvgId] = useState(null);
-    const [svgPosition, setSvgPosition] = useState({ x: 0, y: 0 });
-
-    const toggleModal = () => {
-        console.log("Modal toggled" +  isModalVisible);
-        setIsModalVisible((prevStateModal) => !prevStateModal)
-    }
-    console.log(isModalVisible);
-    
-    const handleSvgSelect = (id) => {
-        setSelectedSvgId(id);
-        console.log(selectedSvgId);
-        
-        toggleModal();
-    }
-
-
-
-    const toggleColorPicker= () => {
-        setShowColorPicker((prevStateColor) => !prevStateColor)
-    }
+    const [state, dispatch] = useReducer(reducer, initialState);
     
     async function verifyPermissions(){
         if(cameraPermissionStatus.status === PermissionStatus.UNDETERMINED){
@@ -56,23 +27,23 @@ export default function ImagePicker(){
         } 
         return true;  
     }
-
+    
     async function pickImage(fromCamera = true){
         const hasPermission = await verifyPermissions();
         if(!hasPermission){
             return;
         }
-
+        
         let photo;
-
+        
         if(fromCamera){
             // Open the camera
             photo = await launchCameraAsync({ 
-               allowsEditing: true,
-               aspect: [16, 9],
-               quality: 1,
-               mediaTypes: ['images'],
-           });    
+                allowsEditing: true,
+                aspect: [16, 9],
+                quality: 1,
+                mediaTypes: ['images'],
+            });    
         }else{
             // Open the gallery
             photo = await launchImageLibraryAsync({
@@ -86,57 +57,74 @@ export default function ImagePicker(){
             console.log("User canceled the image selection");
             return;
         }
-        setPhotoTaken(photo.assets[0].uri)
-        console.log(photo.assets[0].uri); 
+        dispatch({ type: ACTIONS.SET_PHOTO, payload: photo.assets[0].uri})
+    }
+    
+  
+    const toggleSvgModal = () => {
+        // if(!state.photoTaken){
+        //     Alert.alert("Sorry!", "You need to upload a photo first.");
+        //     return;
+        // }
+        dispatch({ type: ACTIONS.TOGGLE_SVG_MODAL})
+    }
+       
+    const handleSvgSelect = (id) => {
+        
+        dispatch({ type: ACTIONS.SELECT_SVG_ID, payload: id})
+    }
+    
+    const toggleColorPicker= () => {
+        dispatch({ type: ACTIONS.TOGGLE_COLOR_PICKER})
     }
 
-    console.log('Overlay Text:', overlayText);
     // Apply text to image
     const handleAddText = () => {
-        if(!overlayText){
-            Alert.alert("Error", "Please enter text to add to the image");
+        if(!state.photoTaken){
+            Alert.alert("Sorry!", "You need to upload a photo first.");
             return;
         }
-        setTextOnImage(overlayText);
-        setOverlayText('');
+        dispatch({ type: ACTIONS.ADD_TEXT_ON_IMAGE})
     }
+    
 
-
-
-    console.log('textPosition:', textPosition);
-    console.log('textOnImage:', textOnImage);
     
     return(
         <View style={styles.container}>
             <View style={styles.imageContainer}>
-              <ImagePreview photoTaken={photoTaken}/>
+              <ImagePreview photoTaken={state.photoTaken}/>
               <TextOverlay 
-                chosenColor={chosenColor} 
-                setTextPosition={setTextPosition} 
-                textPosition={textPosition} 
-                textOnImage={textOnImage}
+                chosenColor={state.chosenColor} 
+                setTextPosition={(position) => dispatch({ type: ACTIONS.SET_TEXT_POSITION, payload: position})} 
+                textPosition={state.textPosition} 
+                textOnImage={state.textOnImage}
               />
               <SvgOverlay  
-                svgPosition={svgPosition} 
-                selectedSvgId={selectedSvgId} 
-                setSvgPosition={setSvgPosition}
+                svgPosition={state.svgPosition} 
+                selectedSvgId={state.selectedSvgId} 
+                svgScale={state.svgScale}
+                setSvgPosition={(position) => dispatch({ type: ACTIONS.SET_SVG_POSITION, payload: position})}
+                setSvgScale={(scale) => dispatch({type: ACTIONS.SET_SVG_SCALE, scale})}
             />
             </View>
 
-            <ImageControl pickImage={pickImage} toggleColorPicker={toggleColorPicker} toggleModal={toggleModal}/>
+            <ImageControl pickImage={pickImage} toggleColorPicker={toggleColorPicker} toggleModal={toggleSvgModal}/>
 
-            {showColorPicker && (
-                <ColorPickerModal  chosenColor={chosenColor} setChosenColor={setChosenColor}/>
+            {state.showColorPicker && (
+                <ColorPickerModal  
+                    chosenColor={state.chosenColor} 
+                    setChosenColor={(color) => dispatch({ type: ACTIONS.SET_CHOSEN_COLOR, payload: color})}
+                />
             )}
             <EditorText 
-                chosenColor={chosenColor} 
-                overlayText={overlayText} 
-                setOverlayText={setOverlayText} 
+                chosenColor={state.chosenColor} 
+                overlayText={state.overlayText} 
+                setOverlayText={(text) => dispatch({ type: ACTIONS.SET_OVERLAY_TEXT, payload: text})} 
                 onAdd={handleAddText}
             />
             <SvgPickerModal
-                visible={isModalVisible}
-                onClose={toggleModal}
+                visible={state.showSvgModal}
+                onClose={toggleSvgModal}
                 onSelect={handleSvgSelect}
             />
         </View>

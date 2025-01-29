@@ -30,7 +30,7 @@ const SvgItem = ({item, onSelect}) => {
     }
 
     const SvgComponent = item.svg;
-    console.log(item);
+    // console.log(item);
     
     
         return (
@@ -119,80 +119,3 @@ const styles = StyleSheet.create({
     
 })
 
-//  code for individual animation- not working as intended
-
-// export default function SvgPicker({visible, onClose, onSelect}){
-//     const scaleValues = useRef({});
-
-//     const getAnimatedStyle = (id) => {
-//         if(!scaleValues.current[id]){
-//             scaleValues.current[id] = useSharedValue(1);
-//         }
-
-//         const scale = scaleValues.current[id];
-//         return useAnimatedStyle(() => {
-//             return{
-//                 transform: [{ scale: withTiming(scale.value, { duration: 300, easing: Easing.out(Easing.cubic)})}]
-//             }
-//         })
-//     }
-    
-
-//     const pressIn = (id) => {
-//         scaleValues.current[id].value = 0.90;
-//     }
-
-//     const pressOut = (id, item) => {
-//         scaleValues.current[id].value = 1.02;
-//         setTimeout(() => {
-//             scaleValues.current[id].value = 1;
-//             onSelect(item);
-//         }, 100)
-//     }
-
-//     const renderSvg = ({item}) => {
-//         const animatedStyle = getAnimatedStyle(item.id);
-//         return (
-//         <Pressable 
-//             onPressIn={() => pressIn(item.id)}
-//             onPressOut={() => pressOut(item.id, item.svg)} 
-//         >
-//             <Animated.View style={[styles.svgContainer, animatedStyle]}>
-//                 <item.svg width={50} height={50} />
-//             </Animated.View>
-
-//         </Pressable>
-//     )}
-
-    
-//     return(
-//         <Modal
-//             animationType='slide'
-//             // transparent={true}
-//             visible={visible}
-//             onRequestClose={onClose}
-//         >
-           
-//                 <View style={styles.modalContainer}>
-//                     <View style={styles.modalContent}>
-//                         <Text style={styles.modalTitle}>Select an illustration</Text>
-                    
-//                         <FlatList
-//                             data={ASSETS_SVG}
-//                             keyExtractor={(item) => item.id}
-//                             renderItem={renderSvg}
-//                             contentContainerStyle={{gap: 10}}
-//                             columnWrapperStyle={{gap: 10}}
-//                             numColumns={3}
-                                
-//                         />
-                    
-//                         <Button textOnly onPress={onClose}>Close</Button>
-//                     </View>
-//                 </View>
-
-        
-
-//         </Modal>
-//     )
-// }
