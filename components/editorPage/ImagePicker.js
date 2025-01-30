@@ -15,6 +15,11 @@ import { ACTIONS, initialState, reducer } from "../../util/reducerImagePicker";
 export default function ImagePicker(){
     const[cameraPermissionStatus, requestPermission] = useCameraPermissions();
     const [state, dispatch] = useReducer(reducer, initialState);
+
+    const [containerWidth, setContainerWidth] = useState(null);
+    const [containerHeight, setContainerHeight] = useState(null);
+
+
     
     async function verifyPermissions(){
         if(cameraPermissionStatus.status === PermissionStatus.UNDETERMINED){
@@ -91,7 +96,14 @@ export default function ImagePicker(){
     
     return(
         <View style={styles.container}>
-            <View style={styles.imageContainer}>
+            <View 
+                style={styles.imageContainer}
+                onLayout={(event) => {
+                    const { width, height } = event.nativeEvent.layout;
+                    setContainerWidth(width);
+                    setContainerHeight(height);
+                  }}
+            >
               <ImagePreview photoTaken={state.photoTaken}/>
               <TextOverlay 
                 chosenColor={state.chosenColor} 
@@ -99,13 +111,17 @@ export default function ImagePicker(){
                 textPosition={state.textPosition} 
                 textOnImage={state.textOnImage}
               />
-              <SvgOverlay  
-                svgPosition={state.svgPosition} 
-                selectedSvgId={state.selectedSvgId} 
-                svgScale={state.svgScale}
-                setSvgPosition={(position) => dispatch({ type: ACTIONS.SET_SVG_POSITION, payload: position})}
-                setSvgScale={(scale) => dispatch({type: ACTIONS.SET_SVG_SCALE, scale})}
-            />
+              {containerWidth > 0 && containerHeight > 0 && (
+                  <SvgOverlay  
+                    svgPosition={state.svgPosition} 
+                    selectedSvgId={state.selectedSvgId} 
+                    svgScale={state.svgScale}
+                    setSvgPosition={(position) => dispatch({ type: ACTIONS.SET_SVG_POSITION, payload: position})}
+                    setSvgScale={(scale) => dispatch({type: ACTIONS.SET_SVG_SCALE, scale})}
+                    containerWidth={containerWidth}  // NEW
+                    containerHeight={containerHeight}
+                />
+            )}
             </View>
 
             <ImageControl pickImage={pickImage} toggleColorPicker={toggleColorPicker} toggleModal={toggleSvgModal}/>
@@ -148,6 +164,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     overflow: 'hidden',
     marginVertical: 10,
+ 
   },
 
 });

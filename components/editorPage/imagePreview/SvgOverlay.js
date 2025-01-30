@@ -11,20 +11,56 @@ export default function SvgOverlay({
   setSvgPosition,
   svgScale,
   setSvgScale,
+  containerWidth,  // New prop for the image container width
+  containerHeight
 }) {
   
-
-  const translateX = useSharedValue(svgPosition.x);
-  const translateY = useSharedValue(svgPosition.y);
+  console.log(containerWidth, containerHeight);
+  
+  const translateX = useSharedValue(svgPosition.x ); 
+  const translateY = useSharedValue(svgPosition.y );
   const scaleValue = useSharedValue(svgScale);
+
   const startScale = useSharedValue(1);
+  const startTranslateX = useSharedValue(svgPosition.x);
+  const startTranslateY = useSharedValue(svgPosition.y);
+
+  const isPinching = useSharedValue(false);
+
+  const originalSize = 100;  
 
   const panGesture = Gesture.Pan()
+    .onStart(() => {
+      if (isPinching.value) return;
+      startTranslateX.value = translateX.value;
+      startTranslateY.value = translateY.value;
+    })
     .onUpdate((event) => {
       'worklet';
-      console.log('Pan Update - translationX:', event.translationX, 'translationY:', event.translationY);
-      translateX.value = event.translationX;
-      translateY.value = event.translationY;
+      if (isPinching.value) return;
+      // console.log('Pan Update - translationX:', event.translationX, 'translationY:', event.translationY);
+      console.log(containerWidth, containerHeight);
+      const scaledWidth = originalSize * scaleValue.value;
+      const scaledHeight = originalSize * scaleValue.value;
+
+      const boundaryFactor = 1 + (1 - scaleValue.value);
+
+      // console.log(scaledWidth, scaledHeight);
+      // const halfWidth = scaledWidth / 2;
+      // const halfHeight = scaledHeight / 2;
+
+      const minX = 0;
+      const maxX = containerWidth * boundaryFactor - scaledWidth;
+      const minY = 0;
+      const maxY = containerHeight * boundaryFactor - scaledHeight;
+
+     
+
+
+    
+      translateX.value = Math.min(maxX, Math.max(minX, startTranslateX.value + event.translationX));
+      translateY.value = Math.min(maxY, Math.max(minY, startTranslateY.value + event.translationY));
+      
     })
     .onEnd(() => {
       'worklet';
@@ -36,41 +72,55 @@ export default function SvgOverlay({
   const pinchGesture = Gesture.Pinch()
     .onStart(() => {
       'worklet';
-      console.log('Pinch Started');
-      startScale.value = scaleValue.value; // Store the current scale
+      isPinching.value = true;
+      startScale.value = scaleValue.value;
     })
     .onUpdate((event) => {
       'worklet';
-      scaleValue.value = Math.max(0.2, Math.min(startScale.value * event.scale, 2));
-      console.log('Pinch Update - scale:', event.scale, 'New scale:', scaleValue.value);
+      // const newScale = Math.max(0.1, Math.min(startScale.value * event.scale, 2));
+      // scaleValue.value = newScale;
+      // const maxScale = Math.min(containerWidth / originalSize, containerHeight / originalSize);
+      // scaleValue.value = Math.min(newScale, maxScale);
+
+      const newScale = Math.max(0.1, Math.min(startScale.value * event.scale, 1)); // Constrain scaling to 0.1 to 1
+      scaleValue.value = newScale;
+      console.log('svg' + scaleValue.value);
+      
+     
     })
     .onEnd(() => {
       'worklet';
+      isPinching.value = false;
       runOnJS(setSvgScale)(scaleValue.value);
-      console.log('Pinch End - final scale:', scaleValue.value);
+      console.log(svgScale);
+      
+     
     })
  
 
   const animatedStyle = useAnimatedStyle(() => {
-    console.log('Animated Style - scaleValue:', scaleValue.value);
+    // const scaledWidth = originalSize * scaleValue.value; // Calculate scaled width
+    // const scaledHeight = originalSize * scaleValue.value;
     return {
+      // width: scaledWidth,  // Keep SVG size proportional
+      // height: scaledHeight,
       transform: [
         { scale: withSpring(scaleValue.value) },
         { translateX: withSpring(translateX.value) },
         { translateY: withSpring(translateY.value) },
       ],
     };
-  },[scaleValue, translateX, translateY]);
+  });
 
-  // console.log("svgId " + selectedSvgId);
+
   const selectedSvgItem = ASSETS_SVG.find((item) => item.id === selectedSvgId);
   const SvgOnImage = selectedSvgItem ? selectedSvgItem.svg : null;
 
   const composedGesture = Gesture.Simultaneous(pinchGesture, panGesture );
-  const animatedProps = useAnimatedProps(() => ({
-    width: 10 * scaleValue.value, 
-    height: 10 * scaleValue.value, 
-  }));
+  // const animatedProps = useAnimatedProps(() => ({
+  //   width: 10 * scaleValue.value, 
+  //   height: 10 * scaleValue.value, 
+  // }));
 
   return (
     <>
@@ -78,15 +128,12 @@ export default function SvgOverlay({
         
           <GestureDetector gesture={composedGesture}>
               <Animated.View style={[styles.overlaySvg, animatedStyle]}>
-                <Animated.View animatedProps={animatedProps}>
                   <SvgOnImage  />
-
-                </Animated.View>
               
               </Animated.View>
 
           </GestureDetector>
-              
+         
       )}
     </>
   );
@@ -99,27 +146,12 @@ const styles = StyleSheet.create({
     left: 0,
     paddingBottom: 0,
     marginBottom: 0,
+    width: 340, 
+    height: 300,
+    zIndex: 10, 
   },
  
 });
 
 
  
-  // const onDrag = (event) => {
-  //   const { translationX, translationY } = event.nativeEvent;
-  //   translateX.value = translationX;
-  //   translateY.value = translationY;
-  // };
-
-// const onPinch = (event) => {
-//   const { scale } = event.nativeEvent;
-//   scaleValue.value = scale;
-// };
-
-// const onDragEnd = () => {
-//   setSvgPosition({ x: translateX.value, y: translateY.value })
-// }
-
-// const onPinchEnd = () => {
-//   setSvgScale(scaleValue.value);
-// };

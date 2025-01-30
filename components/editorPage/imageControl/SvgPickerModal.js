@@ -56,7 +56,7 @@ export default function SvgPickerModal({visible, onClose, onSelect}){
     return(
         <Modal
             animationType='slide'
-            // transparent={true}
+            transparent={true}
             visible={visible}
             onRequestClose={onClose}
         >
