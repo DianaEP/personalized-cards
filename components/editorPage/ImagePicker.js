@@ -18,6 +18,7 @@ export default function ImagePicker(){
 
     const [containerWidth, setContainerWidth] = useState(null);
     const [containerHeight, setContainerHeight] = useState(null);
+    const [rotation, setRotation ] = useState(0);
 
 
     
@@ -67,10 +68,10 @@ export default function ImagePicker(){
     
   
     const toggleSvgModal = () => {
-        // if(!state.photoTaken){
-        //     Alert.alert("Sorry!", "You need to upload a photo first.");
-        //     return;
-        // }
+        if(!state.photoTaken){
+            Alert.alert("Sorry!", "You need to upload a photo first.");
+            return;
+        }
         dispatch({ type: ACTIONS.TOGGLE_SVG_MODAL})
     }
        
@@ -114,7 +115,8 @@ export default function ImagePicker(){
                 containerHeight={containerHeight}
               />
               {containerWidth > 0 && containerHeight > 0 && (
-                  <SvgOverlay  
+                  <SvgOverlay 
+                    svgColor={state.svgColor} 
                     svgPosition={state.svgPosition} 
                     selectedSvgId={state.selectedSvgId} 
                     svgScale={state.svgScale}
@@ -122,6 +124,8 @@ export default function ImagePicker(){
                     setSvgScale={(scale) => dispatch({type: ACTIONS.SET_SVG_SCALE, scale})}
                     containerWidth={containerWidth} 
                     containerHeight={containerHeight}
+                    rotation={rotation}  
+                    setRotation={setRotation}
                 />
             )}
             </View>

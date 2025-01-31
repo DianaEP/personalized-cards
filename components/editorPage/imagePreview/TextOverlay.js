@@ -42,19 +42,12 @@ export default function TextOverlay({
       translateX.value = Math.min(maxX, Math.max(minX, startTranslateX.value + event.translationX));
       translateY.value = Math.min(maxY, Math.max(minY, startTranslateX.value + event.translationY));
 
-      // translateX.value = startTranslateX.value + event.translationX;
-      // translateY.value = startTranslateY.value + event.translationY;
     })
     .onEnd(() => {
       'worklet'
       runOnJS(setTextPosition)({ x: translateX.value, y: translateY.value})
     })
 
-
-  // const onDrag = (event) => {
-  //   const { translationX, translationY } = event.nativeEvent;
-  //   setTextPosition();
-  // };
 
   const animatedStyle = useAnimatedStyle(() => {
     return {
@@ -89,11 +82,11 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 0,
     left: 0,
+    zIndex: 10,
   },
   overlayText: {
     fontSize: 24,
     fontWeight: "bold",
     padding: 10,
-    zIndex: 10,
   },
 });

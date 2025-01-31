@@ -10,7 +10,8 @@ export const ACTIONS = {
     TOGGLE_SVG_MODAL: 'TOGGLE_SVG_MODAL',
     SELECT_SVG_ID: 'SELECT_SVG_ID',
     SET_SVG_POSITION: 'SET_SVG_POSITION',
-    SET_SVG_SCALE: 'SET_SVG_SCALE'
+    SET_SVG_SCALE: 'SET_SVG_SCALE',
+    SET_SVG_COLOR: 'SET_SVG_COLOR'
 }
 
 export const reducer =(state, action) => {
@@ -47,6 +48,10 @@ export const reducer =(state, action) => {
 
         case ACTIONS.SET_SVG_SCALE:
             return { ...state, svgScale: action.payload };
+
+        case ACTIONS.SET_SVG_COLOR:
+            return{ ...state, svgColor: action.payload}
+
         default:
             return state;
     }
@@ -63,6 +68,7 @@ export const initialState = {
     showSvgModal: false,
     selectedSvgId: null,
     svgPosition: { x: 0, y: 0 },
-    svgScale: 1
+    svgScale: 1,
+    svgColor: colors.line,
 
 }
