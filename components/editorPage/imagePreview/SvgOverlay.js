@@ -43,24 +43,28 @@ export default function SvgOverlay({
       const scaledWidth = originalSize * scaleValue.value;
       const scaledHeight = originalSize * scaleValue.value;
 
-      const boundaryFactor = 1 + (1 - scaleValue.value);
 
-      // console.log(scaledWidth, scaledHeight);
-      // const halfWidth = scaledWidth / 2;
-      // const halfHeight = scaledHeight / 2;
+    let minX = 0;
+    let maxX = containerWidth - scaledWidth;
+    let minY = 0;
+    let maxY = containerHeight - scaledHeight;
 
-      const minX = 0;
-      const maxX = containerWidth * boundaryFactor - scaledWidth;
-      const minY = 0;
-      const maxY = containerHeight * boundaryFactor - scaledHeight;
+    let newTranslateX = startTranslateX.value + event.translationX;
+    let newTranslateY = startTranslateY.value + event.translationY;
+    // When scale is less than 1, we want to allow movement beyond the edges
+    if(scaleValue.value >=1){
+      newTranslateX = Math.min(maxX, Math.max(minX, startTranslateX.value + event.translationX));
+      newTranslateY = Math.min(maxY, Math.max(minY, startTranslateY.value + event.translationY));
+    }
 
-     
+      console.log('Container Size:', containerWidth, containerHeight);
+      console.log('MaxX:', maxX, 'MaxY:', maxY);
 
-
+      translateX.value = newTranslateX;
+      translateY.value = newTranslateY;
     
-      translateX.value = Math.min(maxX, Math.max(minX, startTranslateX.value + event.translationX));
-      translateY.value = Math.min(maxY, Math.max(minY, startTranslateY.value + event.translationY));
-      
+
+      console.log('Updated TranslateX:', translateX.value, 'Updated TranslateY:', translateY.value);
     })
     .onEnd(() => {
       'worklet';
@@ -82,9 +86,9 @@ export default function SvgOverlay({
       // const maxScale = Math.min(containerWidth / originalSize, containerHeight / originalSize);
       // scaleValue.value = Math.min(newScale, maxScale);
 
-      const newScale = Math.max(0.1, Math.min(startScale.value * event.scale, 1)); // Constrain scaling to 0.1 to 1
+      const newScale = Math.max(0.5, Math.min(startScale.value * event.scale, 1)); // Constrain scaling to 0.1 to 1
       scaleValue.value = newScale;
-      console.log('svg' + scaleValue.value);
+       console.log('Scale Value:', scaleValue.value);
       
      
     })
@@ -127,10 +131,13 @@ export default function SvgOverlay({
       {selectedSvgItem && (
         
           <GestureDetector gesture={composedGesture}>
+            <View style={styles.wrapper}>
               <Animated.View style={[styles.overlaySvg, animatedStyle]}>
                   <SvgOnImage  />
               
               </Animated.View>
+
+            </View>
 
           </GestureDetector>
          
@@ -140,7 +147,7 @@ export default function SvgOverlay({
 }
 
 const styles = StyleSheet.create({
-  overlaySvg: {
+  wrapper: {
     position: "absolute",
     top: 0,
     left: 0,
@@ -148,7 +155,9 @@ const styles = StyleSheet.create({
     marginBottom: 0,
     width: 340, 
     height: 300,
-    zIndex: 10, 
+  },
+  overlaySvg: {
+    zIndex: 5, 
   },
  
 });

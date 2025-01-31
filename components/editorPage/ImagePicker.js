@@ -110,6 +110,8 @@ export default function ImagePicker(){
                 setTextPosition={(position) => dispatch({ type: ACTIONS.SET_TEXT_POSITION, payload: position})} 
                 textPosition={state.textPosition} 
                 textOnImage={state.textOnImage}
+                containerWidth={containerWidth}  
+                containerHeight={containerHeight}
               />
               {containerWidth > 0 && containerHeight > 0 && (
                   <SvgOverlay  
@@ -118,7 +120,7 @@ export default function ImagePicker(){
                     svgScale={state.svgScale}
                     setSvgPosition={(position) => dispatch({ type: ACTIONS.SET_SVG_POSITION, payload: position})}
                     setSvgScale={(scale) => dispatch({type: ACTIONS.SET_SVG_SCALE, scale})}
-                    containerWidth={containerWidth}  // NEW
+                    containerWidth={containerWidth} 
                     containerHeight={containerHeight}
                 />
             )}
