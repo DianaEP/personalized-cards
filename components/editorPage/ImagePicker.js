@@ -84,6 +84,19 @@ export default function ImagePicker(){
         dispatch({ type: ACTIONS.TOGGLE_COLOR_PICKER})
     }
 
+    const setTargetColor = () => {
+        dispatch({ type: ACTIONS.SET_TARGET_COLOR, payload: state.targetColor === 'text' ? 'svg' : 'text'})
+        
+    }
+
+    const handleColorChange = (color) => {
+        if(state.targetColor === 'text') {
+            dispatch({ type: ACTIONS.SET_CHOSEN_COLOR, payload: color})
+        }else if( state.targetColor === 'svg'){
+            dispatch({type: ACTIONS.SET_SVG_COLOR, payload: color})
+        }
+    }
+
     // Apply text to image
     const handleAddText = () => {
         if(!state.photoTaken){
@@ -130,12 +143,18 @@ export default function ImagePicker(){
             )}
             </View>
 
-            <ImageControl pickImage={pickImage} toggleColorPicker={toggleColorPicker} toggleModal={toggleSvgModal}/>
+            <ImageControl 
+                pickImage={pickImage} 
+                toggleColorPicker={toggleColorPicker} 
+                toggleModal={toggleSvgModal}
+                switchTarget={setTargetColor}
+            />
 
             {state.showColorPicker && (
                 <ColorPickerModal  
-                    chosenColor={state.chosenColor} 
-                    setChosenColor={(color) => dispatch({ type: ACTIONS.SET_CHOSEN_COLOR, payload: color})}
+                    chosenColor={state.targetColor === 'text' ? state.chosenColor : state.svgColor} 
+                    setChosenColor={handleColorChange}
+                    label={state.targetColor === 'text' ? 'Text Color' : 'SVG Color'}
                 />
             )}
             <EditorText 

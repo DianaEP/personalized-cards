@@ -11,13 +11,12 @@ export default function SvgOverlay({
   setSvgPosition,
   svgScale,
   setSvgScale,
+  svgColor,
   containerWidth,  
   containerHeight,
   rotation,
   setRotation
 }) {
-  
-  // console.log(containerWidth, containerHeight);
   
   const translateX = useSharedValue(svgPosition.x ); 
   const translateY = useSharedValue(svgPosition.y );
@@ -122,8 +121,7 @@ export default function SvgOverlay({
           <GestureDetector gesture={composedGesture}>
             <View style={styles.wrapper}>
               <Animated.View style={[styles.overlaySvg, animatedStyle]}>
-                  <SvgOnImage  />
-              
+                <SvgOnImage color={svgColor}/>
               </Animated.View>
 
             </View>

@@ -2,7 +2,7 @@ import { StyleSheet, View } from "react-native";
 import { colors } from "../../../UI/theme";
 import IconButton from "../../../UI/buttons/IconButton";
 
-export default function ImageControl({pickImage, toggleColorPicker, toggleModal}){
+export default function ImageControl({pickImage, toggleColorPicker, toggleModal, switchTarget}){
     return(
         <View style={styles.imageButtons}>
                 <IconButton 
@@ -22,6 +22,12 @@ export default function ImageControl({pickImage, toggleColorPicker, toggleModal}
                     size={24} 
                     color={colors.bodyText} 
                     onPress={toggleColorPicker}
+                />
+                <IconButton 
+                    icon='swap-horizontal' 
+                    size={24} 
+                    color={colors.bodyText} 
+                    onPress={switchTarget}
                 />
                  <IconButton 
                     icon='add-circle' 

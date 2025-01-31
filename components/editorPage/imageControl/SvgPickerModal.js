@@ -39,7 +39,7 @@ const SvgItem = ({item, onSelect}) => {
             onPressOut={() => pressOut(item)} 
         >
             <Animated.View style={[styles.svgContainer, animatedStyle]}>
-                <SvgComponent  width={50} height={50} />
+                <SvgComponent  width={50} height={50} color={colors.line}/>
             </Animated.View>
 
         </Pressable>

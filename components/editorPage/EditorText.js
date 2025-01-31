@@ -12,7 +12,7 @@ export default function EditorText({chosenColor, onAdd, overlayText, setOverlayT
     const appliedColor = chosenColor || colors.titleText;
 
     const handleTextChange = (text) => {
-        console.log("Text Changed:", text);
+        // console.log("Text Changed:", text);
         setOverlayText(text); 
     };
 

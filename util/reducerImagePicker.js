@@ -11,7 +11,8 @@ export const ACTIONS = {
     SELECT_SVG_ID: 'SELECT_SVG_ID',
     SET_SVG_POSITION: 'SET_SVG_POSITION',
     SET_SVG_SCALE: 'SET_SVG_SCALE',
-    SET_SVG_COLOR: 'SET_SVG_COLOR'
+    SET_SVG_COLOR: 'SET_SVG_COLOR',
+    SET_TARGET_COLOR: 'SET_TARGET_COLOR',
 }
 
 export const reducer =(state, action) => {
@@ -51,6 +52,9 @@ export const reducer =(state, action) => {
 
         case ACTIONS.SET_SVG_COLOR:
             return{ ...state, svgColor: action.payload}
+        
+        case ACTIONS.SET_TARGET_COLOR:
+            return { ...state, targetColor: action.payload };
 
         default:
             return state;
