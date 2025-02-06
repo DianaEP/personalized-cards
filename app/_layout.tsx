@@ -4,9 +4,10 @@ import AntDesign from '@expo/vector-icons/AntDesign';
 import { colors } from "../UI/theme";
 import { StyleSheet } from "react-native";
 import { fonts, useCustomFonts } from "../UI/fonts";
+import React from "react";
 
 
-export default function Layout(){
+const Layout: React.FC = () => {
 
     const fontsLoaded = useCustomFonts();
 
@@ -54,6 +55,7 @@ export default function Layout(){
         
     )
 }
+export default Layout;
 
 const styles = StyleSheet.create({
     container: {

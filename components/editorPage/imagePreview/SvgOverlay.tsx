@@ -1,11 +1,24 @@
 import { StyleSheet, View } from "react-native";
-import { Gesture, GestureDetector, GestureHandlerRootView, PanGestureHandler,PinchGestureHandler} from "react-native-gesture-handler";
+import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { ASSETS_SVG } from "../../../util/dataSvg";
-import Animated, {  runOnJS, useAnimatedProps, useAnimatedStyle, useDerivedValue, useSharedValue, withSpring, withTiming } from "react-native-reanimated";
-import { useEffect } from "react";
+import Animated, {  runOnJS, useAnimatedProps, useAnimatedStyle, useSharedValue, withSpring, withTiming } from "react-native-reanimated";
+import React from "react";
+import { Position } from "../../../util/interfaces";
 
+interface SvgOverlayProps {
+  svgPosition: Position;
+  selectedSvgId: string;
+  setSvgPosition: ({x,y}: Position) => void;
+  svgScale: number;
+  setSvgScale:(scale : number)=> void;
+  svgColor: string;
+  containerWidth: number | null;  
+  containerHeight: number | null;
+  rotation: number;
+  setRotation: (rotation: number) => void;
+}
 
-export default function SvgOverlay({
+const SvgOverlay: React.FC<SvgOverlayProps> = ({
   svgPosition,
   selectedSvgId,
   setSvgPosition,
@@ -16,7 +29,7 @@ export default function SvgOverlay({
   containerHeight,
   rotation,
   setRotation
-}) {
+}) => {
   
   const translateX = useSharedValue(svgPosition.x ); 
   const translateY = useSharedValue(svgPosition.y );
@@ -45,9 +58,9 @@ export default function SvgOverlay({
 
 
     let minX = 0;
-    let maxX = containerWidth - scaledWidth;
+    let maxX = containerWidth ? containerWidth - scaledWidth : 0;
     let minY = 0;
-    let maxY = containerHeight - scaledHeight;
+    let maxY = containerHeight ? containerHeight - scaledHeight: 0;
 
     let newTranslateX = startTranslateX.value + event.translationX;
     let newTranslateY = startTranslateY.value + event.translationY;
@@ -121,7 +134,9 @@ export default function SvgOverlay({
           <GestureDetector gesture={composedGesture}>
             <View style={styles.wrapper}>
               <Animated.View style={[styles.overlaySvg, animatedStyle]}>
-                <SvgOnImage color={svgColor}/>
+                {SvgOnImage && (
+                  <SvgOnImage color={svgColor}/>
+                )}
               </Animated.View>
 
             </View>
@@ -132,6 +147,7 @@ export default function SvgOverlay({
     </>
   );
 }
+export default SvgOverlay;
 
 const styles = StyleSheet.create({
   wrapper: {

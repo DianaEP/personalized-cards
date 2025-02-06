@@ -2,7 +2,14 @@ import { StyleSheet, Text, View } from "react-native";
 import  ColorPicker, { HueSlider, OpacitySlider, Panel1 } from "reanimated-color-picker"
 import { colors } from "../../../UI/theme";
 
-export default function ColorPickerModal({ chosenColor, setChosenColor, label}) {
+interface ColorPickerModalProps {
+  chosenColor: string;
+  setChosenColor: (color: string) => void;
+  label: string;
+}
+
+
+const ColorPickerModal: React.FC<ColorPickerModalProps> = ({ chosenColor, setChosenColor, label}) => {
   return (
     <View style={styles.colorPickerContainer}>
       <Text style={styles.colorPickerText}>{label}</Text>
@@ -19,6 +26,7 @@ export default function ColorPickerModal({ chosenColor, setChosenColor, label}) 
     </View>
   );
 }
+export default ColorPickerModal;
 
 const styles = StyleSheet.create({
   colorPickerContainer: {

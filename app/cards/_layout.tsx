@@ -1,8 +1,9 @@
 import { Stack } from "expo-router";
 import { colors } from "../../UI/theme";
 import { fonts } from "../../UI/fonts";
+import React from "react";
 
-export default function Layout(){
+const Layout: React.FC = () =>{
     return(
         <Stack screenOptions={{
             headerStyle: {
@@ -23,3 +24,5 @@ export default function Layout(){
         </Stack>
     )
 }
+
+export default Layout;

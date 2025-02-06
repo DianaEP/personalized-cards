@@ -1,18 +1,31 @@
 import { StyleSheet, Text } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
-import { fonts } from "../../../UI/fonts";
-import { colors } from "../../../UI/theme";
 import Animated, { runOnJS, useAnimatedStyle, useSharedValue, withSpring } from "react-native-reanimated";
 import { useState } from "react";
+import { Position } from "../../../util/interfaces";
 
-export default function TextOverlay({
+interface TextDimension {
+  width: number;
+  height: number;
+}
+
+interface TextOverlayProps {
+  chosenColor: string;
+  setTextPosition: ({x, y}: Position) => void;
+  textPosition: Position;
+  textOnImage: string | null;
+  containerWidth: number | null;
+  containerHeight: number | null;
+}
+
+const TextOverlay: React.FC<TextOverlayProps> = ({
   chosenColor,
   setTextPosition,
   textPosition,
   textOnImage,
   containerWidth,
   containerHeight
-}) {
+}) => {
 
   const translateX = useSharedValue(textPosition.x);
   const translateY = useSharedValue(textPosition.y);
@@ -20,8 +33,8 @@ export default function TextOverlay({
   const startTranslateX = useSharedValue(textPosition.x);
   const startTranslateY = useSharedValue(textPosition.y);
 
-  const [textDimension, setTextDimension] = useState({ width: 0, height: 0});
-  const onTextLayout = (event) => {
+  const [textDimension, setTextDimension] = useState<TextDimension>({ width: 0, height: 0});
+  const onTextLayout = (event: any) => {
     const { width, height } = event.nativeEvent.layout;
     setTextDimension({ width, height})
   }
@@ -36,9 +49,9 @@ export default function TextOverlay({
       'worklet'
       const { width, height } = textDimension;
       let minX = 0;
-      let maxX = containerWidth - width;
+      let maxX = containerWidth ? containerWidth - width : 0;
       let minY = 0;
-      let maxY = containerHeight - height;
+      let maxY = containerHeight ? containerHeight - height: 0;
       translateX.value = Math.min(maxX, Math.max(minX, startTranslateX.value + event.translationX));
       translateY.value = Math.min(maxY, Math.max(minY, startTranslateX.value + event.translationY));
 
@@ -76,6 +89,7 @@ export default function TextOverlay({
     </>
   );
 }
+export default TextOverlay;
 
 const styles = StyleSheet.create({
   wrapper: {

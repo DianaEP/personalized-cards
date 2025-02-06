@@ -3,8 +3,16 @@ import { Ionicons } from '@expo/vector-icons'
 import { colors } from "../theme";
 import Animated, { interpolateColor, useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
 import { platformStyle } from "../shadowStyle";
+import React from "react";
 
-export default function IconButton({icon, size, color, onPress}){
+interface IconButtonProps {
+    icon: keyof typeof Ionicons.glyphMap;
+    size: number;
+    color: string;
+    onPress: () => void;
+}
+
+const IconButton: React.FC<IconButtonProps> = ({icon, size, color, onPress}) => {
     const buttonColor = useSharedValue(0);
     const scale = useSharedValue(1);
 
@@ -46,6 +54,7 @@ export default function IconButton({icon, size, color, onPress}){
         </Pressable>
     )
 }
+export default IconButton;
 
 const styles = StyleSheet.create({
     button: {

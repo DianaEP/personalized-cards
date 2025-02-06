@@ -1,7 +1,7 @@
-import { Platform } from "react-native";
+import { Platform, ViewStyle } from "react-native";
 import { colors } from "./theme";
 
-export const platformStyle = {
+export const platformStyle: { shadow: ViewStyle} = { // This type comes from React Native's types and is used for view-related styles (like shadowColor, elevation, etc.).
     shadow: {
         ...Platform.select({
           android: {

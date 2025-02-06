@@ -1,10 +1,18 @@
-import { Platform, Pressable, StyleSheet, Text } from "react-native";
+import { Pressable, StyleSheet, Text } from "react-native";
 import { colors } from "../theme";
 import { fonts } from "../fonts";
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
 import { platformStyle } from "../shadowStyle";
+import React, { ReactNode } from "react";
 
-export default function Button({children, onPress, textOnly}){
+interface ButtonTypes {
+    children: ReactNode;
+    onPress: () => void;
+    textOnly?: boolean;
+}
+
+
+const Button: React.FC<ButtonTypes> = ({children, onPress, textOnly}) => {
     const scale = useSharedValue(1);
 
     const animatedStyle = useAnimatedStyle(() => {
@@ -39,6 +47,7 @@ export default function Button({children, onPress, textOnly}){
         </Pressable>
     )
 }
+export default Button;
 
 const styles = StyleSheet.create({
     button: {

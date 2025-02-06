@@ -1,17 +1,21 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { StyleSheet, TextInput, View } from "react-native";
 import { colors } from "../../UI/theme";
 import { fonts } from "../../UI/fonts";
-import IconButton from "../../UI/buttons/IconButton";
 import Button from "../../UI/buttons/Button";
 
+interface EditorTextProps {
+    chosenColor: string;  
+    onAdd: () => void;
+    overlayText: string; 
+    setOverlayText: (text: string) => void;
+}
 
-
-export default function EditorText({chosenColor, onAdd, overlayText, setOverlayText}){
+const EditorText: React.FC<EditorTextProps> = ({chosenColor, onAdd, overlayText, setOverlayText}) => {
     
     const appliedColor = chosenColor || colors.titleText;
 
-    const handleTextChange = (text) => {
+    const handleTextChange = (text: string) => {
         // console.log("Text Changed:", text);
         setOverlayText(text); 
     };
@@ -32,6 +36,7 @@ export default function EditorText({chosenColor, onAdd, overlayText, setOverlayT
         </View>
     )
 }
+export default EditorText;
 
 const styles = StyleSheet.create({
     container: {

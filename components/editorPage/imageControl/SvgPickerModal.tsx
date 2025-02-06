@@ -1,14 +1,19 @@
 import {FlatList, Modal, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 import Button from '../../../UI/buttons/Button';
-import { SvgUri, SvgXml } from 'react-native-svg';
 import { colors } from '../../../UI/theme';
 import { fonts } from '../../../UI/fonts';
 import { platformStyle } from '../../../UI/shadowStyle';
 import Animated, { useAnimatedStyle, useSharedValue, withTiming, Easing } from 'react-native-reanimated';
-import { ASSETS_SVG } from '../../../util/dataSvg';
+import { ASSETS_SVG, AssetSvg } from '../../../util/dataSvg';
+import React from 'react';
 
 
-const SvgItem = ({item, onSelect}) => {
+interface SvgItemProps {
+    item: AssetSvg;
+    onSelect: (id: string) => void;
+}
+
+const SvgItem: React.FC<SvgItemProps> = ({item, onSelect}) => {
     const scale = useSharedValue(1);
 
     const animatedStyle = useAnimatedStyle(() => {
@@ -21,7 +26,7 @@ const SvgItem = ({item, onSelect}) => {
         scale.value = 0.90;
     }
 
-    const pressOut = (item) => {
+    const pressOut = (item: AssetSvg) => {
         scale.value = 1.02;
         setTimeout(() => {
             scale.value = 1;
@@ -46,9 +51,15 @@ const SvgItem = ({item, onSelect}) => {
     )
 }
 
-export default function SvgPickerModal({visible, onClose, onSelect}){
+interface SvgPickerModalProps {
+    visible: boolean;
+    onClose : () => void;
+    onSelect: (id: string) => void;
+}
+
+const SvgPickerModal: React.FC<SvgPickerModalProps> = ({visible, onClose, onSelect}) => {
     
-    const renderSvg = ({item}) => {
+    const renderSvg = ({ item }: { item: AssetSvg }) => {
         return <SvgItem key={item.id} item={item} onSelect={onSelect} />
     }
 
@@ -84,6 +95,7 @@ export default function SvgPickerModal({visible, onClose, onSelect}){
         </Modal>
     )
 }
+export default SvgPickerModal;
 
 const styles = StyleSheet.create({
  

@@ -1,8 +1,16 @@
 import { StyleSheet, View } from "react-native";
 import { colors } from "../../../UI/theme";
 import IconButton from "../../../UI/buttons/IconButton";
+import React from "react";
 
-export default function ImageControl({pickImage, toggleColorPicker, toggleModal, switchTarget}){
+interface ImageControlProps {
+    pickImage: (fromCamera?: boolean) => Promise<void>; 
+    toggleColorPicker: () => void; 
+    toggleModal: () => void; 
+    switchTarget: () => void;
+}
+
+const ImageControl: React.FC<ImageControlProps> = ({pickImage, toggleColorPicker, toggleModal, switchTarget}) => {
     return(
         <View style={styles.imageButtons}>
                 <IconButton 
@@ -38,6 +46,7 @@ export default function ImageControl({pickImage, toggleColorPicker, toggleModal,
             </View>
     )
 }
+export default ImageControl;
 
 const styles = StyleSheet.create({
  

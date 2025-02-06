@@ -1,11 +1,12 @@
 import { StyleSheet, Text, View } from 'react-native';
 import { colors } from '../../../UI/theme';
-import { useLocalSearchParams, useRouter, useSearchParams } from 'expo-router/build/hooks';
+import { useLocalSearchParams } from 'expo-router/build/hooks';
 import { fonts } from '../../../UI/fonts';
+import React from 'react';
 
 
 
-export default function Card() {
+const Card: React.FC = () =>  {
   const { id } = useLocalSearchParams();
 
   console.log(id);
@@ -16,6 +17,7 @@ export default function Card() {
     </View>
   );
 }
+export default Card;
 
 const styles = StyleSheet.create({
   container: {

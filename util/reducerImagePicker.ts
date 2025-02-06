@@ -1,4 +1,45 @@
 import { colors } from "../UI/theme"
+import { Position } from "./interfaces";
+
+
+
+
+// Action interface for each possible action
+type ActionsType =  
+    'SET_PHOTO'| 
+    'TOGGLE_COLOR_PICKER' | 
+    'SET_CHOSEN_COLOR'|
+    'SET_OVERLAY_TEXT'| 
+    'ADD_TEXT_ON_IMAGE'| 
+    'SET_TEXT_POSITION'|
+    'TOGGLE_SVG_MODAL'|
+    'SELECT_SVG_ID'|
+    'SET_SVG_POSITION'|
+    'SET_SVG_SCALE'|
+    'SET_SVG_COLOR'|
+    'SET_TARGET_COLOR';
+
+interface Action {
+    type: ActionsType;
+    payload?: any;
+}
+
+
+interface State  {
+    photoTaken: string | null;
+    showColorPicker: boolean;
+    chosenColor: string;
+    overlayText: string;
+    textOnImage: string | null;
+    textPosition: Position;
+    showSvgModal: boolean;
+    selectedSvgId: string | null,
+    svgPosition: Position;
+    svgScale: number;
+    svgColor: string;
+    targetColor: string;
+
+}
 
 export const ACTIONS = {
     SET_PHOTO: 'SET_PHOTO',
@@ -13,9 +54,11 @@ export const ACTIONS = {
     SET_SVG_SCALE: 'SET_SVG_SCALE',
     SET_SVG_COLOR: 'SET_SVG_COLOR',
     SET_TARGET_COLOR: 'SET_TARGET_COLOR',
-}
+} as const; // `as const` ensures that the action types are literal values immutables instead of just strings
 
-export const reducer =(state, action) => {
+
+
+export const reducer =(state: State, action: Action) => {
     switch (action.type) {
         case ACTIONS.SET_PHOTO:
             return { ...state, photoTaken: action.payload}
@@ -74,5 +117,6 @@ export const initialState = {
     svgPosition: { x: 0, y: 0 },
     svgScale: 1,
     svgColor: colors.line,
+    targetColor: 'text',
 
 }

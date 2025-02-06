@@ -6,7 +6,7 @@ import { useRouter } from 'expo-router';
 import { fonts, useCustomFonts } from '../UI/fonts';
 import ImagesAnimation from '../components/ImagesAnimation';
 
-export default function App() {
+const App: React.FC = () => {
   const fontsLoaded = useCustomFonts();
 
   const router = useRouter();
@@ -28,6 +28,7 @@ export default function App() {
     </View>
   );
 }
+export default App;
 
 const styles = StyleSheet.create({
   container: {

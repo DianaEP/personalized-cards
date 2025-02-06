@@ -1,24 +1,24 @@
-import { useEffect, useState } from "react";
-import { Image, StyleSheet, Text, View } from "react-native";
-import Animated, { Easing, interpolate, interpolateColor, useAnimatedStyle, useSharedValue, withDelay, withRepeat, withSequence, withSpring, withTiming } from "react-native-reanimated";
+import React, { useEffect, useState } from "react";
+import { Image, StyleSheet, View } from "react-native";
+import Animated, { Easing, interpolateColor, useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
 import { colors } from "../UI/theme";
 import { fonts, useCustomFonts } from "../UI/fonts";
 
 
 
-export default function ImagesAnimation(){
-     const fontsLoaded = useCustomFonts();
+const ImagesAnimation: React.FC = () => {
+     const fontsLoaded: boolean = useCustomFonts();
 
     // Image animation state
-    const translateX1 = useSharedValue(400);
+    const translateX1 = useSharedValue<number>(400);
 
     // Pin animation state
-    const translateXPin = useSharedValue(400);
-    const translateYPin = useSharedValue(-200);
+    const translateXPin = useSharedValue<number>(400);
+    const translateYPin = useSharedValue<number>(-200);
 
     // Text animation state
-    const typingProgress = useSharedValue(0);
-    const [displayedText, setDisplayedText] = useState('');
+    const typingProgress = useSharedValue<number>(0);
+    const [displayedText, setDisplayedText] = useState<string>('');
     const text = "Mark Memories Your Way";
     
     const slideInEffect = () => {
@@ -66,11 +66,7 @@ export default function ImagesAnimation(){
             [0, text.length],
             [colors.primary, colors.bodyText]
         ),
-        // opacity: interpolate(
-        //     typingProgress.value, // Typing progress (0 to text.length)
-        //     [0, text.length], // Interpolate from 0 to full text
-        //     [0, 1] // From 0 (invisible) to 1 (fully visible)
-        // )
+      
     }));
 
     if (!fontsLoaded) {
@@ -107,6 +103,7 @@ return (
         </View>
     )
 }
+export default ImagesAnimation;
 
 const styles = StyleSheet.create({
     container:{
@@ -156,3 +153,8 @@ const styles = StyleSheet.create({
     }
 })
 
+  // opacity: interpolate(
+        //     typingProgress.value, // Typing progress (0 to text.length)
+        //     [0, text.length], // Interpolate from 0 to full text
+        //     [0, 1] // From 0 (invisible) to 1 (fully visible)
+        // )

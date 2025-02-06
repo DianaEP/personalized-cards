@@ -2,9 +2,10 @@ import {StyleSheet, Text, View } from 'react-native';
 import { colors } from '../../UI/theme';
 import { Link } from 'expo-router';
 import { fonts } from '../../UI/fonts';
+import React from 'react';
 
 
-export default function Cards() {
+const Cards: React.FC = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.text}>Cards</Text>
@@ -13,6 +14,7 @@ export default function Cards() {
     </View>
   );
 }
+export default Cards;
 
 const styles = StyleSheet.create({
   container: {

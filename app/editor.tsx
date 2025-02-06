@@ -1,16 +1,17 @@
 import { StyleSheet, Text, View } from "react-native";
 import { colors } from "../UI/theme";
-import { fonts } from "../UI/fonts";
 import ImagePicker from "../components/editorPage/ImagePicker";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import React from "react";
 
-export default function Editor() {
+const Editor: React.FC =() => {
   return (
     <GestureHandlerRootView style={styles.container}>
       <ImagePicker/>
     </GestureHandlerRootView>
   );
 }
+export default Editor;
 
 const styles = StyleSheet.create({
   container: {

@@ -1,8 +1,13 @@
 import { Image, StyleSheet, Text } from "react-native";
 import { fonts } from "../../../UI/fonts";
 import { colors } from "../../../UI/theme";
+import React from "react";
 
-export default function ImagePreview({photoTaken}){
+interface ImagePreviewProps {
+  photoTaken: string | null;
+}
+
+const ImagePreview: React.FC<ImagePreviewProps> = ({photoTaken}) => {
     // console.log(photoTaken);
     
     if(!photoTaken){
@@ -11,6 +16,8 @@ export default function ImagePreview({photoTaken}){
 
     return <Image style={styles.image} source={{uri: photoTaken}}/>
 }
+export default ImagePreview;
+
 const styles = StyleSheet.create({
   text: {
       color: colors.bodyText,

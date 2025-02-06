@@ -4,12 +4,17 @@ import { Roboto_400Regular } from '@expo-google-fonts/roboto';
 import { useEffect } from 'react';
 import * as SplashScreen from 'expo-splash-screen';
 
-export const fonts ={
+type FontsType = {
+    title: string;
+    body: string;
+}
+
+export const fonts: FontsType ={
     title: 'Lora_400Regular',
     body: 'Roboto_400Regular',
 }
 
-export const useCustomFonts = () => {
+export const useCustomFonts = (): boolean => { // (): boolean means it returns a boolean value
     const [fontsLoaded] = useFonts({
         Roboto_400Regular,
         Lora_400Regular,
