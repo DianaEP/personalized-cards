@@ -6,6 +6,8 @@ import { platformStyle } from '../../../UI/shadowStyle';
 import Animated, { useAnimatedStyle, useSharedValue, withTiming, Easing } from 'react-native-reanimated';
 import { ASSETS_SVG, AssetSvg } from '../../../util/dataSvg';
 import React from 'react';
+import { ACTIONS } from '../../../store/reducerImagePicker';
+import { useImageContext } from '../../../store/ImageContext';
 
 
 interface SvgItemProps {
@@ -13,7 +15,7 @@ interface SvgItemProps {
     onSelect: (id: string) => void;
 }
 
-const SvgItem: React.FC<SvgItemProps> = ({item, onSelect}) => {
+const SvgItem: React.FC<SvgItemProps> = ({item, onSelect}) => {  
     const scale = useSharedValue(1);
 
     const animatedStyle = useAnimatedStyle(() => {
@@ -35,7 +37,8 @@ const SvgItem: React.FC<SvgItemProps> = ({item, onSelect}) => {
     }
 
     const SvgComponent = item.svg;
-    // console.log(item);
+   
+    
     
     
         return (
@@ -52,15 +55,17 @@ const SvgItem: React.FC<SvgItemProps> = ({item, onSelect}) => {
 }
 
 interface SvgPickerModalProps {
-    visible: boolean;
     onClose : () => void;
-    onSelect: (id: string) => void;
 }
 
-const SvgPickerModal: React.FC<SvgPickerModalProps> = ({visible, onClose, onSelect}) => {
+const SvgPickerModal: React.FC<SvgPickerModalProps> = ({onClose}) => {
+    const { state, dispatch} = useImageContext();
     
+    const handleSvgSelect = (id: string): void => {
+        dispatch({ type: ACTIONS.SELECT_SVG_ID, payload: id})
+    }
     const renderSvg = ({ item }: { item: AssetSvg }) => {
-        return <SvgItem key={item.id} item={item} onSelect={onSelect} />
+        return <SvgItem key={item.id} item={item} onSelect={handleSvgSelect} />
     }
 
     
@@ -68,7 +73,7 @@ const SvgPickerModal: React.FC<SvgPickerModalProps> = ({visible, onClose, onSele
         <Modal
             animationType='slide'
             transparent={true}
-            visible={visible}
+            visible={state.showSvgModal}
             onRequestClose={onClose}
         >
            

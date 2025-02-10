@@ -1,36 +1,43 @@
 import React, { useState } from "react";
-import { StyleSheet, TextInput, View } from "react-native";
+import { Alert, StyleSheet, TextInput, View } from "react-native";
 import { colors } from "../../UI/theme";
 import { fonts } from "../../UI/fonts";
 import Button from "../../UI/buttons/Button";
+import { ACTIONS } from "../../store/reducerImagePicker";
+import { useImageContext } from "../../store/ImageContext";
 
-interface EditorTextProps {
-    chosenColor: string;  
-    onAdd: () => void;
-    overlayText: string; 
-    setOverlayText: (text: string) => void;
-}
 
-const EditorText: React.FC<EditorTextProps> = ({chosenColor, onAdd, overlayText, setOverlayText}) => {
-    
-    const appliedColor = chosenColor || colors.titleText;
+
+const EditorText: React.FC = () => {
+    const { state, dispatch } = useImageContext();
+    const appliedColor = state.chosenColor || colors.titleText;
 
     const handleTextChange = (text: string) => {
-        // console.log("Text Changed:", text);
-        setOverlayText(text); 
+        dispatch({ type: ACTIONS.SET_OVERLAY_TEXT, payload: text})
     };
+
+     // Apply text to image
+    const handleAddText = (): void => {
+        if(!state.photoTaken){
+            Alert.alert("Sorry!", "You need to upload a photo first.");
+            return;
+        }
+        dispatch({ type: ACTIONS.ADD_TEXT_ON_IMAGE})
+    }
+        
+
 
     return(
         <View style={styles.container}>
             <TextInput 
                 style={[styles.input, {color: appliedColor}]}
-                value={overlayText} 
+                value={state.overlayText} 
                 onChangeText={handleTextChange}
                 placeholder="Enter your text here"
                 placeholderTextColor={colors.bodyText}
                 selectionColor={colors.border}
             />
-            <Button textOnly onPress={onAdd}>Add</Button>
+            <Button textOnly onPress={handleAddText}>Add</Button>
             
             
         </View>

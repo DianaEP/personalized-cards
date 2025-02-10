@@ -3,6 +3,8 @@ import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, { runOnJS, useAnimatedStyle, useSharedValue, withSpring } from "react-native-reanimated";
 import { useState } from "react";
 import { Position } from "../../../util/interfaces";
+import { useImageContext } from "../../../store/ImageContext";
+import { ACTIONS } from "../../../store/reducerImagePicker";
 
 interface TextDimension {
   width: number;
@@ -10,30 +12,30 @@ interface TextDimension {
 }
 
 interface TextOverlayProps {
-  chosenColor: string;
-  setTextPosition: ({x, y}: Position) => void;
-  textPosition: Position;
-  textOnImage: string | null;
   containerWidth: number | null;
   containerHeight: number | null;
 }
 
+// setTextPosition={(position: Position) => dispatch({ type: ACTIONS.SET_TEXT_POSITION, payload: position})} 
+
 const TextOverlay: React.FC<TextOverlayProps> = ({
-  chosenColor,
-  setTextPosition,
-  textPosition,
-  textOnImage,
   containerWidth,
   containerHeight
 }) => {
 
-  const translateX = useSharedValue(textPosition.x);
-  const translateY = useSharedValue(textPosition.y);
-
-  const startTranslateX = useSharedValue(textPosition.x);
-  const startTranslateY = useSharedValue(textPosition.y);
-
+  const { state, dispatch } = useImageContext();
   const [textDimension, setTextDimension] = useState<TextDimension>({ width: 0, height: 0});
+  
+  const translateX = useSharedValue(state.textPosition.x);
+  const translateY = useSharedValue(state.textPosition.y);
+  
+  const startTranslateX = useSharedValue(state.textPosition.x);
+  const startTranslateY = useSharedValue(state.textPosition.y);
+   
+  const handleSetTextPosition = (position: Position) => {
+    dispatch({ type: ACTIONS.SET_TEXT_POSITION, payload: position})
+  }
+  
   const onTextLayout = (event: any) => {
     const { width, height } = event.nativeEvent.layout;
     setTextDimension({ width, height})
@@ -58,7 +60,7 @@ const TextOverlay: React.FC<TextOverlayProps> = ({
     })
     .onEnd(() => {
       'worklet'
-      runOnJS(setTextPosition)({ x: translateX.value, y: translateY.value})
+      runOnJS(handleSetTextPosition)({ x: translateX.value, y: translateY.value})
     })
 
 
@@ -72,16 +74,16 @@ const TextOverlay: React.FC<TextOverlayProps> = ({
   })
   return (
     <>
-      {textOnImage && (
+      {state.textOnImage && (
         <GestureDetector gesture={panGesture}>
           <Animated.View 
             style={[styles.wrapper, animatedStyle]}
             onLayout={onTextLayout}
           >
             <Text
-              style={[styles.overlayText, {color: chosenColor}]}
+              style={[styles.overlayText, {color: state.chosenColor}]}
             >
-              {textOnImage}
+              {state.textOnImage}
             </Text>
           </Animated.View>
         </GestureDetector>

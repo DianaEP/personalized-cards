@@ -1,5 +1,5 @@
 import { colors } from "../UI/theme"
-import { Position } from "./interfaces";
+import { Position } from "../util/interfaces";
 
 
 
@@ -17,15 +17,16 @@ type ActionsType =
     'SET_SVG_POSITION'|
     'SET_SVG_SCALE'|
     'SET_SVG_COLOR'|
-    'SET_TARGET_COLOR';
+    'SET_TARGET_COLOR'|
+    'SET_FINAL_IMAGE_URI';
 
-interface Action {
+export interface Action {
     type: ActionsType;
     payload?: any;
 }
 
 
-interface State  {
+export interface State  {
     photoTaken: string | null;
     showColorPicker: boolean;
     chosenColor: string;
@@ -38,7 +39,7 @@ interface State  {
     svgScale: number;
     svgColor: string;
     targetColor: string;
-
+    finalImageUri: string | null;
 }
 
 export const ACTIONS = {
@@ -54,6 +55,7 @@ export const ACTIONS = {
     SET_SVG_SCALE: 'SET_SVG_SCALE',
     SET_SVG_COLOR: 'SET_SVG_COLOR',
     SET_TARGET_COLOR: 'SET_TARGET_COLOR',
+     SET_FINAL_IMAGE_URI: 'SET_FINAL_IMAGE_URI'
 } as const; // `as const` ensures that the action types are literal values immutables instead of just strings
 
 
@@ -99,13 +101,16 @@ export const reducer =(state: State, action: Action) => {
         case ACTIONS.SET_TARGET_COLOR:
             return { ...state, targetColor: action.payload };
 
+        case ACTIONS.SET_FINAL_IMAGE_URI:
+            return { ...state, finalImageUri: action.payload };
+
         default:
             return state;
     }
 }
 
 
-export const initialState = {
+export const initialState: State = {
     photoTaken: null,
     showColorPicker: false,
     chosenColor: colors.titleText,
@@ -118,5 +123,6 @@ export const initialState = {
     svgScale: 1,
     svgColor: colors.line,
     targetColor: 'text',
+    finalImageUri: null
 
 }

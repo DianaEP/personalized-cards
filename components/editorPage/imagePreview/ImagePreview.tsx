@@ -2,19 +2,20 @@ import { Image, StyleSheet, Text } from "react-native";
 import { fonts } from "../../../UI/fonts";
 import { colors } from "../../../UI/theme";
 import React from "react";
+import { useImageContext } from "../../../store/ImageContext";
 
-interface ImagePreviewProps {
-  photoTaken: string | null;
-}
+// interface ImagePreviewProps {
+//   photoTaken: string | null;
+// }
 
-const ImagePreview: React.FC<ImagePreviewProps> = ({photoTaken}) => {
-    // console.log(photoTaken);
+const ImagePreview: React.FC = () => {
+    const { state } = useImageContext()
     
-    if(!photoTaken){
+    if(!state.photoTaken){
         return <Text style={styles.text}>No image taken yet.</Text>
     }
 
-    return <Image style={styles.image} source={{uri: photoTaken}}/>
+    return <Image style={styles.image} source={{uri: state.photoTaken}}/>
 }
 export default ImagePreview;
 

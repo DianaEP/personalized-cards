@@ -5,6 +5,7 @@ import { colors } from "../UI/theme";
 import { StyleSheet } from "react-native";
 import { fonts, useCustomFonts } from "../UI/fonts";
 import React from "react";
+import { ImageContextProvider } from "../store/ImageContext";
 
 
 const Layout: React.FC = () => {
@@ -16,6 +17,7 @@ const Layout: React.FC = () => {
       }
 
     return(
+        <ImageContextProvider>
             <Tabs screenOptions={{ 
                 tabBarActiveTintColor: colors.titleText,
                 tabBarInactiveTintColor: colors.bodyText,
@@ -50,7 +52,7 @@ const Layout: React.FC = () => {
                     tabBarIcon: ({color, size}) => <MaterialCommunityIcons name="cards-outline" size={size} color={color} />
                 }}/>
             </Tabs>
-
+        </ImageContextProvider>
 
         
     )

@@ -4,14 +4,10 @@ import { ASSETS_SVG } from "../../../util/dataSvg";
 import Animated, {  runOnJS, useAnimatedProps, useAnimatedStyle, useSharedValue, withSpring, withTiming } from "react-native-reanimated";
 import React from "react";
 import { Position } from "../../../util/interfaces";
+import { ACTIONS } from "../../../store/reducerImagePicker";
+import { useImageContext } from "../../../store/ImageContext";
 
 interface SvgOverlayProps {
-  svgPosition: Position;
-  selectedSvgId: string;
-  setSvgPosition: ({x,y}: Position) => void;
-  svgScale: number;
-  setSvgScale:(scale : number)=> void;
-  svgColor: string;
   containerWidth: number | null;  
   containerHeight: number | null;
   rotation: number;
@@ -19,30 +15,34 @@ interface SvgOverlayProps {
 }
 
 const SvgOverlay: React.FC<SvgOverlayProps> = ({
-  svgPosition,
-  selectedSvgId,
-  setSvgPosition,
-  svgScale,
-  setSvgScale,
-  svgColor,
   containerWidth,  
   containerHeight,
   rotation,
   setRotation
 }) => {
+
+  const { state, dispatch} = useImageContext();
   
-  const translateX = useSharedValue(svgPosition.x ); 
-  const translateY = useSharedValue(svgPosition.y );
-  const scaleValue = useSharedValue(svgScale);
+  
+  const translateX = useSharedValue(state.svgPosition.x ); 
+  const translateY = useSharedValue(state.svgPosition.y );
+  const scaleValue = useSharedValue(state.svgScale);
   const rotationValue = useSharedValue(rotation);
 
   const startScale = useSharedValue(1);
-  const startTranslateX = useSharedValue(svgPosition.x);
-  const startTranslateY = useSharedValue(svgPosition.y);
+  const startTranslateX = useSharedValue(state.svgPosition.x);
+  const startTranslateY = useSharedValue(state.svgPosition.y);
 
   const isPinching = useSharedValue(false);
 
   const originalSize = 100;  
+  
+  const handleSetSvgPosition = (position: Position): void => {
+    dispatch({ type: ACTIONS.SET_SVG_POSITION, payload: position})
+  }
+  const handleSetSvgScale = (scale: number): void => {
+    dispatch({type: ACTIONS.SET_SVG_SCALE, payload: scale})
+  }
 
   const panGesture = Gesture.Pan()
     .onStart(() => {
@@ -78,7 +78,7 @@ const SvgOverlay: React.FC<SvgOverlayProps> = ({
     })
     .onEnd(() => {
       'worklet';
-      runOnJS(setSvgPosition)({ x: translateX.value, y: translateY.value });
+      runOnJS(handleSetSvgPosition)({ x: translateX.value, y: translateY.value });
     })
  
 
@@ -98,7 +98,7 @@ const SvgOverlay: React.FC<SvgOverlayProps> = ({
     .onEnd(() => {
       'worklet';
       isPinching.value = false;
-      runOnJS(setSvgScale)(scaleValue.value);  
+      runOnJS(handleSetSvgScale)(scaleValue.value);  
     })
 
     const rotateGesture = Gesture.Rotation()
@@ -122,8 +122,8 @@ const SvgOverlay: React.FC<SvgOverlayProps> = ({
     };
   });
 
-
-  const selectedSvgItem = ASSETS_SVG.find((item) => item.id === selectedSvgId);
+  
+  const selectedSvgItem = ASSETS_SVG.find((item) => item.id === state.selectedSvgId);
   const SvgOnImage = selectedSvgItem ? selectedSvgItem.svg : null;
 
   const composedGesture = Gesture.Simultaneous(pinchGesture, panGesture, rotateGesture);
@@ -135,7 +135,7 @@ const SvgOverlay: React.FC<SvgOverlayProps> = ({
             <View style={styles.wrapper}>
               <Animated.View style={[styles.overlaySvg, animatedStyle]}>
                 {SvgOnImage && (
-                  <SvgOnImage color={svgColor}/>
+                  <SvgOnImage color={state.svgColor}/>
                 )}
               </Animated.View>
 
