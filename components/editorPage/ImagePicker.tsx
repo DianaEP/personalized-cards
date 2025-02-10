@@ -21,6 +21,10 @@ const ImagePicker: React.FC = () => {
 
     const [containerWidth, setContainerWidth] = useState< number | null >(null);
     const [containerHeight, setContainerHeight] = useState< number | null >(null);
+
+    // SET ROTATION LOCALLY AND NOT IN THE REDUCER BECAUSE THE INTERACTION IS SMOOTHER
+    const [rotation, setRotation ] = useState<number>(0);
+
     const [resetKey, setResetKey] = useState<number>(0);
 
     
@@ -40,16 +44,17 @@ const ImagePicker: React.FC = () => {
             dispatch({type: ACTIONS.SET_FINAL_IMAGE_URI, payload: uri});
             Alert.alert("Image Saved!", "Your final image has been saved.");
             dispatch({ type: ACTIONS.RESET_STATE })
-
             setContainerHeight(null)
             setContainerWidth(null);
+            setRotation(0);
             setResetKey(prevKey => prevKey + 1); 
         }catch(error){
             console.error("Error capturing image:", error);
             Alert.alert("Error", "Failed to save the image.");
         }
     }
-          
+
+           
     return(
         <ScrollView style={styles.container}>
             <ViewShot
@@ -70,8 +75,8 @@ const ImagePicker: React.FC = () => {
               />
               { containerWidth! > 0 && containerHeight! > 0 && (
                   <SvgOverlay 
-                    containerWidth={containerWidth} 
-                    containerHeight={containerHeight}
+                    rotation={rotation}  
+                    setRotation={setRotation}
                 />
             )}
             </ViewShot>

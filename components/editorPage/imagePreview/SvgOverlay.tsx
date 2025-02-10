@@ -8,22 +8,21 @@ import { ACTIONS } from "../../../store/reducerImagePicker";
 import { useImageContext } from "../../../store/ImageContext";
 
 interface SvgOverlayProps {
-  containerWidth: number | null;  
-  containerHeight: number | null;
+  rotation: number;
+  setRotation: (rotation: number) => void;
 }
 
 const SvgOverlay: React.FC<SvgOverlayProps> = ({
-  containerWidth,  
-  containerHeight,
+  rotation,
+  setRotation
 }) => {
 
   const { state, dispatch} = useImageContext();
   
-  
   const translateX = useSharedValue(state.svgPosition.x ); 
   const translateY = useSharedValue(state.svgPosition.y );
   const scaleValue = useSharedValue(state.svgScale);
-  const rotationValue = useSharedValue(state.svgRotation);
+  const rotationValue = useSharedValue(rotation);
 
   const startScale = useSharedValue(1);
   const startTranslateX = useSharedValue(state.svgPosition.x);
@@ -31,16 +30,13 @@ const SvgOverlay: React.FC<SvgOverlayProps> = ({
 
   const isPinching = useSharedValue(false);
 
-  const originalSize = 100;  
+
   
   const handleSetSvgPosition = (position: Position): void => {
     dispatch({ type: ACTIONS.SET_SVG_POSITION, payload: position})
   }
   const handleSetSvgScale = (scale: number): void => {
     dispatch({type: ACTIONS.SET_SVG_SCALE, payload: scale})
-  }
-  const handleSvgRotation = (svgRotation: number): void => {
-    dispatch({type: ACTIONS.SET_SVG_ROTATION, payload: svgRotation})
   }
 
   const panGesture = Gesture.Pan()
@@ -52,27 +48,9 @@ const SvgOverlay: React.FC<SvgOverlayProps> = ({
     .onUpdate((event) => {
       'worklet';
       if (isPinching.value) return;
-      const scaledWidth = originalSize * scaleValue.value;
-      const scaledHeight = originalSize * scaleValue.value;
-
-
-    let minX = 0;
-    let maxX = containerWidth ? containerWidth - scaledWidth : 0;
-    let minY = 0;
-    let maxY = containerHeight ? containerHeight - scaledHeight: 0;
-
-    let newTranslateX = startTranslateX.value + event.translationX;
-    let newTranslateY = startTranslateY.value + event.translationY;
     
-    if(scaleValue.value >=1){
-      newTranslateX = Math.min(maxX, Math.max(minX, startTranslateX.value + event.translationX));
-      newTranslateY = Math.min(maxY, Math.max(minY, startTranslateY.value + event.translationY));
-    }
-
-
-      translateX.value = newTranslateX;
-      translateY.value = newTranslateY;
-    
+      translateX.value = startTranslateX.value + event.translationX;
+      translateY.value = startTranslateY.value + event.translationY;
 
     })
     .onEnd(() => {
@@ -106,7 +84,7 @@ const SvgOverlay: React.FC<SvgOverlayProps> = ({
         rotationValue.value = event.rotation
       })
       .onEnd(() => {
-        runOnJS(handleSvgRotation)(rotationValue.value) 
+        runOnJS(setRotation)(rotationValue.value) 
       })
  
 
@@ -164,5 +142,25 @@ const styles = StyleSheet.create({
  
 });
 
+// CODE FOR SVG BORDER, AS IS WORKING PROPERLY FOR THE INITIAL POSITION ONCE YOU ROTATE THE IMAGE THE SVG DOES NOT RESPECT THE BORDER ANYMORE
+   // const originalSize = 100;  
+      // const scaledWidth = originalSize * scaleValue.value;
+      // const scaledHeight = originalSize * scaleValue.value;
 
+      // let minX = 0;
+      // let maxX = containerWidth ? containerWidth - scaledWidth : 0;
+      // let minY = 0;
+      // let maxY = containerHeight ? containerHeight - scaledHeight: 0;
+
+      // let newTranslateX = startTranslateX.value + event.translationX;
+      // let newTranslateY = startTranslateY.value + event.translationY;
+    
+      // if(scaleValue.value >=1){
+      //   newTranslateX = Math.min(maxX, Math.max(minX, startTranslateX.value + event.translationX));
+      //   newTranslateY = Math.min(maxY, Math.max(minY, startTranslateY.value + event.translationY));
+      // }
+
+
+      // translateX.value = newTranslateX;
+      // translateY.value = newTranslateY;
  
