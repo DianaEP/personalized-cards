@@ -10,15 +10,11 @@ import { useImageContext } from "../../../store/ImageContext";
 interface SvgOverlayProps {
   containerWidth: number | null;  
   containerHeight: number | null;
-  rotation: number;
-  setRotation: (rotation: number) => void;
 }
 
 const SvgOverlay: React.FC<SvgOverlayProps> = ({
   containerWidth,  
   containerHeight,
-  rotation,
-  setRotation
 }) => {
 
   const { state, dispatch} = useImageContext();
@@ -27,7 +23,7 @@ const SvgOverlay: React.FC<SvgOverlayProps> = ({
   const translateX = useSharedValue(state.svgPosition.x ); 
   const translateY = useSharedValue(state.svgPosition.y );
   const scaleValue = useSharedValue(state.svgScale);
-  const rotationValue = useSharedValue(rotation);
+  const rotationValue = useSharedValue(state.svgRotation);
 
   const startScale = useSharedValue(1);
   const startTranslateX = useSharedValue(state.svgPosition.x);
@@ -42,6 +38,9 @@ const SvgOverlay: React.FC<SvgOverlayProps> = ({
   }
   const handleSetSvgScale = (scale: number): void => {
     dispatch({type: ACTIONS.SET_SVG_SCALE, payload: scale})
+  }
+  const handleSvgRotation = (svgRotation: number): void => {
+    dispatch({type: ACTIONS.SET_SVG_ROTATION, payload: svgRotation})
   }
 
   const panGesture = Gesture.Pan()
@@ -107,7 +106,7 @@ const SvgOverlay: React.FC<SvgOverlayProps> = ({
         rotationValue.value = event.rotation
       })
       .onEnd(() => {
-        runOnJS(setRotation)(rotationValue.value) 
+        runOnJS(handleSvgRotation)(rotationValue.value) 
       })
  
 

@@ -1,8 +1,8 @@
-import { Alert, StyleSheet, Text, View } from "react-native";
+import { Alert, ScrollView, StyleSheet, Text, View } from "react-native";
 
 
 import { colors } from "../../UI/theme";
-import React, { useContext, useReducer, useState } from "react";
+import React, { useContext, useEffect, useReducer, useRef, useState } from "react";
 import EditorText from "./EditorText";
 import ImagePreview from "./imagePreview/ImagePreview";
 import TextOverlay from "./imagePreview/TextOverlay";
@@ -12,17 +12,18 @@ import ColorPickerModal from "./imageControl/ColorPickerModal";
 import SvgPickerModal from "./imageControl/SvgPickerModal";
 import { ACTIONS} from "../../store/reducerImagePicker";
 import { useImageContext } from "../../store/ImageContext";
+import ViewShot from "react-native-view-shot";
+import Button from "../../UI/buttons/Button";
 
 const ImagePicker: React.FC = () => {
-  
- 
-    // const [state, dispatch] = useReducer(reducer, initialState);
     const { state, dispatch } = useImageContext();
+    const viewShotRef = useRef<ViewShot | null>(null);
 
     const [containerWidth, setContainerWidth] = useState< number | null >(null);
     const [containerHeight, setContainerHeight] = useState< number | null >(null);
-    const [rotation, setRotation ] = useState<number>(0);
+    const [resetKey, setResetKey] = useState<number>(0);
 
+    
 
     const toggleSvgModal = (): void => {
         if(!state.photoTaken){
@@ -31,10 +32,30 @@ const ImagePicker: React.FC = () => {
         }
         dispatch({ type: ACTIONS.TOGGLE_SVG_MODAL})
     }
-           
+
+    const saveFinalImage = async(): Promise<void> => {
+        if(!viewShotRef.current || !viewShotRef.current.capture) return;
+        try{
+            const uri = await viewShotRef.current.capture();
+            dispatch({type: ACTIONS.SET_FINAL_IMAGE_URI, payload: uri});
+            Alert.alert("Image Saved!", "Your final image has been saved.");
+            dispatch({ type: ACTIONS.RESET_STATE })
+
+            setContainerHeight(null)
+            setContainerWidth(null);
+            setResetKey(prevKey => prevKey + 1); 
+        }catch(error){
+            console.error("Error capturing image:", error);
+            Alert.alert("Error", "Failed to save the image.");
+        }
+    }
+          
     return(
-        <View style={styles.container}>
-            <View 
+        <ScrollView style={styles.container}>
+            <ViewShot
+                ref={viewShotRef} 
+                key={resetKey}
+                options={{ format: "jpg", quality: 1 }}
                 style={styles.imageContainer}
                 onLayout={(event) => {
                     const { width, height } = event.nativeEvent.layout;
@@ -51,11 +72,9 @@ const ImagePicker: React.FC = () => {
                   <SvgOverlay 
                     containerWidth={containerWidth} 
                     containerHeight={containerHeight}
-                    rotation={rotation}  
-                    setRotation={setRotation}
                 />
             )}
-            </View>
+            </ViewShot>
             <ImageControl toggleModal={toggleSvgModal}/>
 
             {state.showColorPicker && (
@@ -63,7 +82,8 @@ const ImagePicker: React.FC = () => {
             )}
             <EditorText />
             <SvgPickerModal onClose={toggleSvgModal}/>
-        </View>
+            <Button onPress={saveFinalImage}>Save Image</Button>
+        </ScrollView>
     )
 }
 export default ImagePicker;

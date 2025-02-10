@@ -17,8 +17,10 @@ type ActionsType =
     'SET_SVG_POSITION'|
     'SET_SVG_SCALE'|
     'SET_SVG_COLOR'|
+    'SET_SVG_ROTATION'|
     'SET_TARGET_COLOR'|
-    'SET_FINAL_IMAGE_URI';
+    'SET_FINAL_IMAGE_URI'|
+    'RESET_STATE';
 
 export interface Action {
     type: ActionsType;
@@ -38,6 +40,7 @@ export interface State  {
     svgPosition: Position;
     svgScale: number;
     svgColor: string;
+    svgRotation: number;
     targetColor: string;
     finalImageUri: string | null;
 }
@@ -54,11 +57,29 @@ export const ACTIONS = {
     SET_SVG_POSITION: 'SET_SVG_POSITION',
     SET_SVG_SCALE: 'SET_SVG_SCALE',
     SET_SVG_COLOR: 'SET_SVG_COLOR',
+    SET_SVG_ROTATION: 'SET_SVG_ROTATION',
     SET_TARGET_COLOR: 'SET_TARGET_COLOR',
-     SET_FINAL_IMAGE_URI: 'SET_FINAL_IMAGE_URI'
+    SET_FINAL_IMAGE_URI: 'SET_FINAL_IMAGE_URI',
+    RESET_STATE: 'RESET_STATE'
 } as const; // `as const` ensures that the action types are literal values immutables instead of just strings
 
+export const initialState: State = {
+    photoTaken: null,
+    showColorPicker: false,
+    chosenColor: colors.titleText,
+    overlayText: '',
+    textOnImage: null,
+    textPosition: { x: 0, y: 0 },
+    showSvgModal: false,
+    selectedSvgId: null,
+    svgPosition: { x: 0, y: 0 },
+    svgScale: 1,
+    svgColor: colors.line,
+    svgRotation: 0,
+    targetColor: 'text',
+    finalImageUri: null
 
+}
 
 export const reducer =(state: State, action: Action) => {
     switch (action.type) {
@@ -97,6 +118,9 @@ export const reducer =(state: State, action: Action) => {
 
         case ACTIONS.SET_SVG_COLOR:
             return{ ...state, svgColor: action.payload}
+
+        case ACTIONS.SET_SVG_ROTATION:  
+            return { ...state, svgRotation: action.payload };
         
         case ACTIONS.SET_TARGET_COLOR:
             return { ...state, targetColor: action.payload };
@@ -104,25 +128,16 @@ export const reducer =(state: State, action: Action) => {
         case ACTIONS.SET_FINAL_IMAGE_URI:
             return { ...state, finalImageUri: action.payload };
 
+        case ACTIONS.RESET_STATE:
+            const newState = { 
+                ...initialState,
+                finalImageUri: state.finalImageUri 
+            };
+            return newState;
+
         default:
             return state;
     }
 }
 
 
-export const initialState: State = {
-    photoTaken: null,
-    showColorPicker: false,
-    chosenColor: colors.titleText,
-    overlayText: '',
-    textOnImage: null,
-    textPosition: { x: 0, y: 0 },
-    showSvgModal: false,
-    selectedSvgId: null,
-    svgPosition: { x: 0, y: 0 },
-    svgScale: 1,
-    svgColor: colors.line,
-    targetColor: 'text',
-    finalImageUri: null
-
-}
