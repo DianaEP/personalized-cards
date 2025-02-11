@@ -4,6 +4,7 @@ import IconButton from "../../../UI/buttons/IconButton";
 import { launchCameraAsync, launchImageLibraryAsync, PermissionStatus, useCameraPermissions } from 'expo-image-picker';
 import { ACTIONS } from "../../../store/reducerImagePicker";
 import { useImageContext } from "../../../store/ImageContext";
+import { fonts } from "../../../UI/fonts";
 
 interface ImageControlProps {
     toggleModal: () => void; 
@@ -63,8 +64,11 @@ const ImageControl: React.FC<ImageControlProps> = ({toggleModal}) => {
     }
 
     const setTargetColor = (): void => {
-        dispatch({ type: ACTIONS.SET_TARGET_COLOR, payload: state.targetColor === 'text' ? 'svg' : 'text'})
-        
+        dispatch({ type: ACTIONS.SET_TARGET_COLOR, payload: state.targetColor === 'text' ? 'svg' : 'text'})     
+    }
+
+    const toggleTextFont = (): void => {
+        dispatch({ type: ACTIONS.SET_TEXT_FONT, payload: state.textFont === fonts.body2 ? fonts.handwriting : fonts.body2})
     }
 
     return(
@@ -80,6 +84,12 @@ const ImageControl: React.FC<ImageControlProps> = ({toggleModal}) => {
                     size={24} 
                     color={colors.bodyText} 
                     onPress={() => pickImage(false)}
+                />
+                <IconButton 
+                    icon='text' 
+                    size={24} 
+                    color={colors.bodyText} 
+                    onPress={toggleTextFont}
                 />
                 <IconButton 
                     icon='color-palette' 

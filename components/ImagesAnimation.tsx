@@ -66,8 +66,9 @@ const ImagesAnimation: React.FC = () => {
             [0, text.length],
             [colors.primary, colors.bodyText]
         ),
-      
+        fontFamily: typingProgress.value === text.length ? 'Poppins_600SemiBold' : 'system-font',
     }));
+
 
     if (!fontsLoaded) {
         return null; 
@@ -149,7 +150,7 @@ const styles = StyleSheet.create({
         // color: colors.bodyText,
         fontWeight: 'bold',
         textAlign: 'center',
-        fontFamily: fonts.body,
+        fontFamily: fonts.title,
     }
 })
 

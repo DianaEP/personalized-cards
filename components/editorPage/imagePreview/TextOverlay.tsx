@@ -5,6 +5,7 @@ import { useState } from "react";
 import { Position } from "../../../util/interfaces";
 import { useImageContext } from "../../../store/ImageContext";
 import { ACTIONS } from "../../../store/reducerImagePicker";
+import { fonts, useCustomFonts } from "../../../UI/fonts";
 
 interface TextDimension {
   width: number;
@@ -16,12 +17,11 @@ interface TextOverlayProps {
   containerHeight: number | null;
 }
 
-// setTextPosition={(position: Position) => dispatch({ type: ACTIONS.SET_TEXT_POSITION, payload: position})} 
-
 const TextOverlay: React.FC<TextOverlayProps> = ({
   containerWidth,
   containerHeight
 }) => {
+  const fontsLoaded = useCustomFonts();
 
   const { state, dispatch } = useImageContext();
   const [textDimension, setTextDimension] = useState<TextDimension>({ width: 0, height: 0});
@@ -72,6 +72,15 @@ const TextOverlay: React.FC<TextOverlayProps> = ({
       ]
     }
   })
+
+  if (!fontsLoaded) {
+    return <Text>Loading fonts...</Text>;
+}
+
+
+
+  console.log(state.textFont);
+
   return (
     <>
       {state.textOnImage && (
@@ -81,7 +90,8 @@ const TextOverlay: React.FC<TextOverlayProps> = ({
             onLayout={onTextLayout}
           >
             <Text
-              style={[styles.overlayText, {color: state.chosenColor}]}
+              key={state.textFont}
+              style={[styles.overlayText, {color: state.chosenColor}, {fontFamily: state.textFont}]}
             >
               {state.textOnImage}
             </Text>
@@ -104,5 +114,5 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "bold",
     padding: 10,
-  },
+  }
 });

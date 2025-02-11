@@ -1,3 +1,4 @@
+import { fonts } from "../UI/fonts";
 import { colors } from "../UI/theme"
 import { Position } from "../util/interfaces";
 
@@ -12,6 +13,7 @@ type ActionsType =
     'SET_OVERLAY_TEXT'| 
     'ADD_TEXT_ON_IMAGE'| 
     'SET_TEXT_POSITION'|
+    'SET_TEXT_FONT'|
     'TOGGLE_SVG_MODAL'|
     'SELECT_SVG_ID'|
     'SET_SVG_POSITION'|
@@ -35,6 +37,7 @@ export interface State  {
     overlayText: string;
     textOnImage: string | null;
     textPosition: Position;
+    textFont: string;
     showSvgModal: boolean;
     selectedSvgId: string | null,
     svgPosition: Position;
@@ -52,6 +55,7 @@ export const ACTIONS = {
     SET_OVERLAY_TEXT: 'SET_OVERLAY_TEXT',
     ADD_TEXT_ON_IMAGE: 'ADD_TEXT_ON_IMAGE',
     SET_TEXT_POSITION: 'SET_TEXT_POSITION',
+    SET_TEXT_FONT: 'SET_TEXT_FONT',
     TOGGLE_SVG_MODAL: 'TOGGLE_SVG_MODAL',
     SELECT_SVG_ID: 'SELECT_SVG_ID',
     SET_SVG_POSITION: 'SET_SVG_POSITION',
@@ -70,6 +74,7 @@ export const initialState: State = {
     overlayText: '',
     textOnImage: null,
     textPosition: { x: 0, y: 0 },
+    textFont: fonts.body2,
     showSvgModal: false,
     selectedSvgId: null,
     svgPosition: { x: 0, y: 0 },
@@ -99,18 +104,18 @@ export const reducer =(state: State, action: Action) => {
             return{ ...state, textOnImage: state.overlayText, overlayText: ''}
             
         case ACTIONS.SET_TEXT_POSITION:
-            
             return { ...state, textPosition: action.payload};
-        case ACTIONS.TOGGLE_SVG_MODAL:
-            
+
+        case ACTIONS.SET_TEXT_FONT:
+            return { ...state, textFont: action.payload};
+
+        case ACTIONS.TOGGLE_SVG_MODAL: 
             return { ...state, showSvgModal: !state.showSvgModal};
         
         case ACTIONS.SELECT_SVG_ID:
-            
             return { ...state, selectedSvgId: action.payload, showSvgModal: !state.showSvgModal};
 
         case ACTIONS.SET_SVG_POSITION:
-            
             return { ...state, svgPosition: action.payload};
 
         case ACTIONS.SET_SVG_SCALE:

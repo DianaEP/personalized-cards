@@ -26,7 +26,7 @@ const EditorText: React.FC = () => {
     }
         
 
-
+    
     return(
         <View style={styles.container}>
             <TextInput 
@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
         borderBottomColor: colors.line,
         paddingLeft: 10,
         
-    },
+    }
     
     
 })
