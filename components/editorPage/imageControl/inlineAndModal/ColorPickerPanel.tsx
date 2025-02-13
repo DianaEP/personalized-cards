@@ -1,11 +1,11 @@
 import { StyleSheet, Text, View } from "react-native";
 import  ColorPicker, { HueSlider, OpacitySlider, Panel1 } from "reanimated-color-picker"
-import { colors } from "../../../UI/theme";
-import { useImageContext } from "../../../store/ImageContext";
-import { ACTIONS } from "../../../store/reducerImagePicker";
+import { colors } from "../../../../UI/theme";
+import { useImageContext } from "../../../../store/ImageContext";
+import { ACTIONS } from "../../../../store/reducerImagePicker";
 
 
-const ColorPickerModal: React.FC = () => {
+const ColorPickerPanel: React.FC = () => {
   const { state, dispatch} = useImageContext();
     
   const handleColorChange = (color: string): void => {
@@ -35,7 +35,7 @@ const ColorPickerModal: React.FC = () => {
     </View>
   );
 }
-export default ColorPickerModal;
+export default ColorPickerPanel;
 
 const styles = StyleSheet.create({
   colorPickerContainer: {

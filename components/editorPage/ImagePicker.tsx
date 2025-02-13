@@ -2,19 +2,20 @@ import { Alert, ScrollView, StyleSheet, Text, View } from "react-native";
 
 
 import { colors } from "../../UI/theme";
-import React, { useContext, useEffect, useReducer, useRef, useState } from "react";
-import EditorText from "./EditorText";
+import React, {  useRef, useState } from "react";
+import EditorText from "./imageControl/inlineAndModal/EditorText";
 import ImagePreview from "./imagePreview/ImagePreview";
 import TextOverlay from "./imagePreview/TextOverlay";
 import SvgOverlay from "./imagePreview/SvgOverlay";
 import ImageControl from "./imageControl/ImageControl";
-import ColorPickerModal from "./imageControl/ColorPickerModal";
-import SvgPickerModal from "./imageControl/SvgPickerModal";
+import SvgPickerModal from "./imageControl/inlineAndModal/SvgPickerModal";
 import { ACTIONS} from "../../store/reducerImagePicker";
 import { useImageContext } from "../../store/ImageContext";
 import ViewShot from "react-native-view-shot";
 import Button from "../../UI/buttons/Button";
-import FontSizeSliderModal from "./imageControl/FontSizeSliderModal";
+import ColorPickerPanel from "./imageControl/inlineAndModal/ColorPickerPanel";
+import FontSizeSlider from "./imageControl/inlineAndModal/FontSizeSlider";
+import IconButton from "../../UI/buttons/IconButton";
 
 const ImagePicker: React.FC = () => {
     const { state, dispatch } = useImageContext();
@@ -83,14 +84,29 @@ const ImagePicker: React.FC = () => {
             </ViewShot>
             <ImageControl toggleModal={toggleSvgModal}/>
             {state.showColorPicker && (
-                <ColorPickerModal />
+                <ColorPickerPanel />
             )}
             {state.showFontSizeSlider && (
-                <FontSizeSliderModal />
+                <FontSizeSlider />
             )}
-            <EditorText />
+            {state.showEditorText && (
+                <EditorText />
+            )}
             <SvgPickerModal onClose={toggleSvgModal}/>
-            <Button onPress={saveFinalImage}>Save Image</Button>
+
+            {state.photoTaken && (
+                <View style={styles.floatingButtonContainer}>
+                    <IconButton
+                        icon='save-alt' 
+                        size={24} 
+                        color={colors.primary} 
+                        onPress={saveFinalImage}
+                        save
+                    />
+                </View>
+            )
+            }
+
         </ScrollView>
     )
 }
@@ -113,7 +129,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     overflow: 'hidden',
     marginVertical: 10,
- 
   },
+
+  floatingButtonContainer: {
+    position: 'absolute',
+    top : 10,
+    right: 0,
+    zIndex: 100
+  }
+
 
 });

@@ -113,6 +113,5 @@ const styles = StyleSheet.create({
   overlayText: {
     fontWeight: Platform.OS === 'ios' ? 'bold' : undefined,
     padding: 3,
-    backgroundColor: 'blue'
   }
 });

@@ -1,18 +1,19 @@
 import { Pressable, StyleSheet, Platform } from "react-native";
-import { Ionicons } from '@expo/vector-icons'
+import { Ionicons, MaterialIcons } from '@expo/vector-icons'
 import { colors } from "../theme";
 import Animated, { interpolateColor, useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
 import { platformStyle } from "../shadowStyle";
-import React from "react";
+import React, { useState } from "react";
 
 interface IconButtonProps {
-    icon: keyof typeof Ionicons.glyphMap;
+    icon: keyof typeof Ionicons.glyphMap | keyof typeof MaterialIcons.glyphMap;
     size: number;
     color: string;
+    save?: boolean;
     onPress: () => void;
 }
 
-const IconButton: React.FC<IconButtonProps> = ({icon, size, color, onPress}) => {
+const IconButton: React.FC<IconButtonProps> = ({icon, size, color, save, onPress}) => {
     const buttonColor = useSharedValue(0);
     const scale = useSharedValue(1);
 
@@ -48,8 +49,13 @@ const IconButton: React.FC<IconButtonProps> = ({icon, size, color, onPress}) => 
             onPressIn={handlePressIn}
             onPressOut={handlePressOut}
         >
-            <Animated.View style={[styles.button, animatedStyle]}>
-                <Ionicons name={icon} size={size} color={color} />
+            <Animated.View style={[styles.button, animatedStyle , { borderWidth: save ? 0 : 1, backgroundColor: save ? 'transparent' : colors.background}]}>
+                {!save && (
+                    <Ionicons name={icon as keyof typeof Ionicons.glyphMap} size={size} color={color} />
+                )}
+                {save && (
+                    <MaterialIcons name={icon as keyof typeof MaterialIcons.glyphMap} size={size} color={color}/> 
+                )}
             </Animated.View>
         </Pressable>
     )
@@ -63,8 +69,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         borderRadius: 5,
         // borderColor: colors.border,
-        borderWidth: 1,
-        backgroundColor: colors.background,
+        // borderWidth: 1,
+        // backgroundColor: colors.background,
         ...platformStyle.shadow   
     },
     pressable: {

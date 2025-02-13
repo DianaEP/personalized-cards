@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { Alert, StyleSheet, TextInput, View } from "react-native";
-import { colors } from "../../UI/theme";
-import { fonts } from "../../UI/fonts";
-import Button from "../../UI/buttons/Button";
-import { ACTIONS } from "../../store/reducerImagePicker";
-import { useImageContext } from "../../store/ImageContext";
+import { colors } from "../../../../UI/theme";
+import { fonts } from "../../../../UI/fonts";
+import Button from "../../../../UI/buttons/Button";
+import { ACTIONS } from "../../../../store/reducerImagePicker";
+import { useImageContext } from "../../../../store/ImageContext";
 
 
 
@@ -23,6 +23,7 @@ const EditorText: React.FC = () => {
             return;
         }
         dispatch({ type: ACTIONS.ADD_TEXT_ON_IMAGE})
+        dispatch({ type: ACTIONS.TOGGLE_EDITOR_TEXT})
     }
         
 
@@ -47,10 +48,19 @@ export default EditorText;
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center', 
+        backgroundColor: colors.background,
+        borderColor: colors.border,
+        borderWidth: 1,
+        borderRadius: 5,
+        position: 'absolute',
+        top: 220,
+        left: 0,
+        width: '100%',
+        height: 'auto', 
+        padding: 20,
        
     },
     input: {

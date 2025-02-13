@@ -1,4 +1,4 @@
-import { Alert, StyleSheet, View } from "react-native";
+import { Alert, StyleSheet, Text, View } from "react-native";
 import { colors } from "../../../UI/theme";
 import IconButton from "../../../UI/buttons/IconButton";
 import { launchCameraAsync, launchImageLibraryAsync, PermissionStatus, useCameraPermissions } from 'expo-image-picker';
@@ -75,62 +75,102 @@ const ImageControl: React.FC<ImageControlProps> = ({toggleModal}) => {
         dispatch({ type: ACTIONS.TOGGLE_FONT_SIZE_SLIDER})
     }
 
+    const toggleEditorText = ():void => {
+        dispatch({ type: ACTIONS.TOGGLE_EDITOR_TEXT})
+    }
+
     return(
         <View style={styles.imageButtons}>
-                <IconButton 
-                    icon='camera' 
-                    size={24} 
-                    color={colors.bodyText} 
-                    onPress={() => pickImage(true)}
-                />
-                <IconButton 
-                    icon="image" 
-                    size={24} 
-                    color={colors.bodyText} 
-                    onPress={() => pickImage(false)}
-                />
-                <IconButton 
-                    icon='text' 
-                    size={24} 
-                    color={colors.bodyText} 
-                    onPress={toggleTextFont}
-                />
-                <IconButton 
-                    icon='resize' 
-                    size={24} 
-                    color={colors.bodyText} 
-                    onPress={toggleFontSizeSlider}
-                />
-                <IconButton 
-                    icon='color-palette' 
-                    size={24} 
-                    color={colors.bodyText} 
-                    onPress={toggleColorPicker}
-                />
-                <IconButton 
-                    icon='swap-horizontal' 
-                    size={24} 
-                    color={colors.bodyText} 
-                    onPress={setTargetColor}
-                />
-                 <IconButton 
-                    icon='add-circle' 
-                    size={24} 
-                    color={colors.bodyText} 
-                    onPress={toggleModal}
-                />
+            <View style={styles.wrapperIcons}>
+                <Text style={styles.text}>Image & Text</Text>
+                <View style={styles.icons}>
+                    
+                    <IconButton 
+                        icon='camera' 
+                        size={24} 
+                        color={colors.bodyText} 
+                        onPress={() => pickImage(true)}
+                    />
+                   
+                    <IconButton 
+                        icon="image" 
+                        size={24} 
+                        color={colors.bodyText} 
+                        onPress={() => pickImage(false)}
+                    />
+                    <IconButton 
+                        icon='grid' 
+                        size={24} 
+                        color={colors.bodyText} 
+                        onPress={toggleModal}
+                    />
+                </View>
+                <View style={styles.icons}>
+
+                    <IconButton 
+                        icon='add-outline' 
+                        size={24} 
+                        color={colors.bodyText} 
+                        onPress={toggleEditorText}
+                    />
+                    <IconButton 
+                        icon='text' 
+                        size={24} 
+                        color={colors.bodyText} 
+                        onPress={toggleTextFont}
+                    />
+                    <IconButton 
+                        icon='resize' 
+                        size={24} 
+                        color={colors.bodyText} 
+                        onPress={toggleFontSizeSlider}
+                    />
+                </View>
             </View>
+            <View style={styles.wrapperIcons}>
+                <Text style={styles.text}>Colors</Text>
+                <View style={styles.iconsColors}>
+                    <IconButton 
+                        icon='color-palette' 
+                        size={24} 
+                        color={colors.bodyText} 
+                        onPress={toggleColorPicker}
+                    />
+                    <IconButton 
+                        icon='swap-horizontal' 
+                        size={24} 
+                        color={colors.bodyText} 
+                        onPress={setTargetColor}
+                    />
+                </View>
+            </View>
+        </View>
     )
 }
 export default ImageControl;
 
 const styles = StyleSheet.create({
- 
   imageButtons: {
     flexDirection: 'row',
-    justifyContent: 'center',
+    justifyContent: 'space-evenly',
     columnGap: 10,
-    marginVertical: 10,
-    
+    marginVertical: 5,   
   },
+  wrapperIcons: {
+    flexDirection: 'column',
+    rowGap: 10
+  },
+  icons: {
+    flexDirection: 'row',
+    columnGap: 10
+  },
+  iconsColors: {
+    flexDirection: 'column',
+    rowGap: 10
+  },
+  text: {
+    textAlign: 'center',
+    color: colors.bodyText,
+    fontFamily: fonts.body,
+  }
 });

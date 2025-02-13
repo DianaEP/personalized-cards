@@ -1,13 +1,13 @@
 import {FlatList, Modal, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
-import Button from '../../../UI/buttons/Button';
-import { colors } from '../../../UI/theme';
-import { fonts } from '../../../UI/fonts';
-import { platformStyle } from '../../../UI/shadowStyle';
+import Button from '../../../../UI/buttons/Button';
+import { colors } from '../../../../UI/theme';
+import { fonts } from '../../../../UI/fonts';
+import { platformStyle } from '../../../../UI/shadowStyle';
 import Animated, { useAnimatedStyle, useSharedValue, withTiming, Easing } from 'react-native-reanimated';
-import { ASSETS_SVG, AssetSvg } from '../../../util/dataSvg';
+import { ASSETS_SVG, AssetSvg } from '../../../../util/dataSvg';
 import React from 'react';
-import { ACTIONS } from '../../../store/reducerImagePicker';
-import { useImageContext } from '../../../store/ImageContext';
+import { ACTIONS } from '../../../../store/reducerImagePicker';
+import { useImageContext } from '../../../../store/ImageContext';
 
 
 interface SvgItemProps {

@@ -10,6 +10,7 @@ type ActionsType =
     'SET_PHOTO'| 
     'TOGGLE_COLOR_PICKER' | 
     'SET_CHOSEN_COLOR'|
+    'TOGGLE_EDITOR_TEXT'|
     'TOGGLE_FONT_SIZE_SLIDER'|
     'SET_OVERLAY_TEXT'| 
     'ADD_TEXT_ON_IMAGE'| 
@@ -36,6 +37,7 @@ export interface State  {
     photoTaken: string | null;
     showColorPicker: boolean;
     chosenColor: string;
+    showEditorText: boolean;
     showFontSizeSlider: boolean;
     overlayText: string;
     textOnImage: string | null;
@@ -56,6 +58,7 @@ export const ACTIONS = {
     SET_PHOTO: 'SET_PHOTO',
     TOGGLE_COLOR_PICKER: 'TOGGLE_COLOR_PICKER',
     SET_CHOSEN_COLOR: 'SET_CHOSEN_COLOR',
+    TOGGLE_EDITOR_TEXT: 'TOGGLE_EDITOR_TEXT',
     TOGGLE_FONT_SIZE_SLIDER: 'TOGGLE_FONT_SIZE_SLIDER',
     SET_OVERLAY_TEXT: 'SET_OVERLAY_TEXT',
     ADD_TEXT_ON_IMAGE: 'ADD_TEXT_ON_IMAGE',
@@ -77,6 +80,7 @@ export const initialState: State = {
     photoTaken: null,
     showColorPicker: false,
     chosenColor: colors.titleText,
+    showEditorText: false,
     showFontSizeSlider: false,
     overlayText: '',
     textOnImage: null,
@@ -104,6 +108,9 @@ export const reducer =(state: State, action: Action) => {
             
         case ACTIONS.SET_CHOSEN_COLOR:
             return{ ...state, chosenColor: action.payload}
+
+        case ACTIONS.TOGGLE_EDITOR_TEXT:
+            return{ ...state, showEditorText: !state.showEditorText}
 
         case ACTIONS.TOGGLE_FONT_SIZE_SLIDER:
             return{ ...state, showFontSizeSlider: !state.showFontSizeSlider}

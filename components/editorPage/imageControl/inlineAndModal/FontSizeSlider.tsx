@@ -1,13 +1,13 @@
 import { View, Text, StyleSheet} from "react-native";
-import { useImageContext } from "../../../store/ImageContext"
-import { ACTIONS } from "../../../store/reducerImagePicker";
+import { useImageContext } from "../../../../store/ImageContext"
+import { ACTIONS } from "../../../../store/reducerImagePicker";
 import Slider from "@react-native-community/slider";
-import { colors } from "../../../UI/theme";
+import { colors } from "../../../../UI/theme";
 import { useState } from "react";
 import { useDerivedValue, useSharedValue } from "react-native-reanimated";
 
 
-const FontSizeSliderModal: React.FC = () => {
+const FontSizeSlider: React.FC = () => {
     const { state, dispatch } = useImageContext();
 
     const handleFontSizeState = (value: number) => {
@@ -61,4 +61,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default FontSizeSliderModal;
+export default FontSizeSlider;
