@@ -39,6 +39,7 @@ const SvgOverlay: React.FC<SvgOverlayProps> = ({
     dispatch({type: ACTIONS.SET_SVG_SCALE, payload: scale})
   }
 
+  // Moving SVG
   const panGesture = Gesture.Pan()
     .onStart(() => {
       if (isPinching.value) return;
@@ -59,6 +60,7 @@ const SvgOverlay: React.FC<SvgOverlayProps> = ({
     })
  
 
+  // Scale SVG
   const pinchGesture = Gesture.Pinch()
     .onStart(() => {
       'worklet';
@@ -78,14 +80,15 @@ const SvgOverlay: React.FC<SvgOverlayProps> = ({
       runOnJS(handleSetSvgScale)(scaleValue.value);  
     })
 
-    const rotateGesture = Gesture.Rotation()
-      .onUpdate((event) => {
-        'worklet'
-        rotationValue.value = event.rotation
-      })
-      .onEnd(() => {
-        runOnJS(setRotation)(rotationValue.value) 
-      })
+  // Rotate SVG
+  const rotateGesture = Gesture.Rotation()
+    .onUpdate((event) => {
+      'worklet'
+      rotationValue.value = event.rotation
+    })
+    .onEnd(() => {
+      runOnJS(setRotation)(rotationValue.value) 
+    })
  
 
   const animatedStyle = useAnimatedStyle(() => {

@@ -71,6 +71,10 @@ const ImageControl: React.FC<ImageControlProps> = ({toggleModal}) => {
         dispatch({ type: ACTIONS.SET_TEXT_FONT, payload: state.textFont === fonts.body2 ? fonts.handwriting : fonts.body2})
     }
 
+    const toggleFontSizeSlider = ():void => {
+        dispatch({ type: ACTIONS.TOGGLE_FONT_SIZE_SLIDER})
+    }
+
     return(
         <View style={styles.imageButtons}>
                 <IconButton 
@@ -90,6 +94,12 @@ const ImageControl: React.FC<ImageControlProps> = ({toggleModal}) => {
                     size={24} 
                     color={colors.bodyText} 
                     onPress={toggleTextFont}
+                />
+                <IconButton 
+                    icon='resize' 
+                    size={24} 
+                    color={colors.bodyText} 
+                    onPress={toggleFontSizeSlider}
                 />
                 <IconButton 
                     icon='color-palette' 
@@ -121,5 +131,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     columnGap: 10,
     marginVertical: 10,
+    
   },
 });

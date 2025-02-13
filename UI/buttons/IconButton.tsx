@@ -70,7 +70,6 @@ const styles = StyleSheet.create({
     pressable: {
         justifyContent: 'center',
         alignItems: 'center',
-        
     }
 })
 

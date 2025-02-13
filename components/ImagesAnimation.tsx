@@ -66,7 +66,7 @@ const ImagesAnimation: React.FC = () => {
             [0, text.length],
             [colors.primary, colors.bodyText]
         ),
-        fontFamily: typingProgress.value === text.length ? 'Poppins_600SemiBold' : 'system-font',
+        // fontFamily: typingProgress.value === text.length ? 'Pacifico_400Regular' : 'system-font',
     }));
 
 
@@ -148,9 +148,9 @@ const styles = StyleSheet.create({
     text:{
         fontSize: 24,
         // color: colors.bodyText,
-        fontWeight: 'bold',
+        // fontWeight: 'bold',
         textAlign: 'center',
-        fontFamily: fonts.title,
+        fontFamily: fonts.handwriting,
     }
 })
 

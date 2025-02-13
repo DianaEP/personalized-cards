@@ -14,6 +14,7 @@ import { ACTIONS} from "../../store/reducerImagePicker";
 import { useImageContext } from "../../store/ImageContext";
 import ViewShot from "react-native-view-shot";
 import Button from "../../UI/buttons/Button";
+import FontSizeSliderModal from "./imageControl/FontSizeSliderModal";
 
 const ImagePicker: React.FC = () => {
     const { state, dispatch } = useImageContext();
@@ -81,9 +82,11 @@ const ImagePicker: React.FC = () => {
             )}
             </ViewShot>
             <ImageControl toggleModal={toggleSvgModal}/>
-
             {state.showColorPicker && (
                 <ColorPickerModal />
+            )}
+            {state.showFontSizeSlider && (
+                <FontSizeSliderModal />
             )}
             <EditorText />
             <SvgPickerModal onClose={toggleSvgModal}/>

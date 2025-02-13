@@ -1,4 +1,4 @@
-import { StyleSheet, Text } from "react-native";
+import { Platform, StyleSheet, Text } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, { runOnJS, useAnimatedStyle, useSharedValue, withSpring } from "react-native-reanimated";
 import { useState } from "react";
@@ -55,7 +55,7 @@ const TextOverlay: React.FC<TextOverlayProps> = ({
       let minY = 0;
       let maxY = containerHeight ? containerHeight - height: 0;
       translateX.value = Math.min(maxX, Math.max(minX, startTranslateX.value + event.translationX));
-      translateY.value = Math.min(maxY, Math.max(minY, startTranslateX.value + event.translationY));
+      translateY.value = Math.min(maxY, Math.max(minY, startTranslateY.value + event.translationY));
 
     })
     .onEnd(() => {
@@ -79,7 +79,7 @@ const TextOverlay: React.FC<TextOverlayProps> = ({
 
 
 
-  console.log(state.textFont);
+  console.log(state.textFontSize);
 
   return (
     <>
@@ -90,8 +90,8 @@ const TextOverlay: React.FC<TextOverlayProps> = ({
             onLayout={onTextLayout}
           >
             <Text
-              key={state.textFont}
-              style={[styles.overlayText, {color: state.chosenColor}, {fontFamily: state.textFont}]}
+              // key={state.textFont}
+              style={[styles.overlayText, {color: state.chosenColor}, {fontFamily: state.textFont}, {fontSize: state.textFontSize}]}
             >
               {state.textOnImage}
             </Text>
@@ -111,8 +111,8 @@ const styles = StyleSheet.create({
     zIndex: 10,
   },
   overlayText: {
-    fontSize: 24,
-    fontWeight: "bold",
-    padding: 10,
+    fontWeight: Platform.OS === 'ios' ? 'bold' : undefined,
+    padding: 3,
+    backgroundColor: 'blue'
   }
 });
