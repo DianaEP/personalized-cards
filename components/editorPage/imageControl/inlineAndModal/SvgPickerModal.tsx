@@ -3,9 +3,9 @@ import Button from '../../../../UI/buttons/Button';
 import { colors } from '../../../../UI/theme';
 import { fonts } from '../../../../UI/fonts';
 import { platformStyle } from '../../../../UI/shadowStyle';
-import Animated, { useAnimatedStyle, useSharedValue, withTiming, Easing } from 'react-native-reanimated';
+import Animated, { useAnimatedStyle, useSharedValue, withTiming, Easing, FadeInDown, FadeOutDown } from 'react-native-reanimated';
 import { ASSETS_SVG, AssetSvg } from '../../../../util/dataSvg';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { ACTIONS } from '../../../../store/reducerImagePicker';
 import { useImageContext } from '../../../../store/ImageContext';
 
@@ -15,8 +15,9 @@ interface SvgItemProps {
     onSelect: (id: string) => void;
 }
 
-const SvgItem: React.FC<SvgItemProps> = ({item, onSelect}) => {  
+const SvgItem: React.FC<SvgItemProps> = ({item, onSelect}) => { 
     const scale = useSharedValue(1);
+    
 
     const animatedStyle = useAnimatedStyle(() => {
         return{
@@ -46,58 +47,54 @@ const SvgItem: React.FC<SvgItemProps> = ({item, onSelect}) => {
             onPressIn={pressIn}
             onPressOut={() => pressOut(item)} 
         >
-            <Animated.View style={[styles.svgContainer, animatedStyle]}>
-                <SvgComponent  width={50} height={50} color={colors.line}/>
+            <Animated.View style={[styles.svgContainer, animatedStyle] }>
+                <SvgComponent  width={50} height={50} color={colors.background}/>
             </Animated.View>
 
         </Pressable>
+
     )
 }
 
-interface SvgPickerModalProps {
-    onClose : () => void;
-}
 
-const SvgPickerModal: React.FC<SvgPickerModalProps> = ({onClose}) => {
+
+const SvgPickerModal: React.FC = () => {
     const { state, dispatch} = useImageContext();
     
     const handleSvgSelect = (id: string): void => {
         dispatch({ type: ACTIONS.SELECT_SVG_ID, payload: id})
     }
+
     const renderSvg = ({ item }: { item: AssetSvg }) => {
         return <SvgItem key={item.id} item={item} onSelect={handleSvgSelect} />
     }
 
     
     return(
-        <Modal
-            animationType='slide'
-            transparent={true}
-            visible={state.showSvgModal}
-            onRequestClose={onClose}
-        >
-           
-                <View style={styles.modalContainer}>
-                    <View style={styles.modalContent}>
+        
+                <Animated.View style={styles.modalContainer} entering={FadeInDown.delay(150)} exiting={FadeOutDown}>
+                    <View style={[styles.modalContent, ]} >
                         <Text style={styles.modalTitle}>Select an illustration</Text>
                     
-                        <FlatList
-                            data={ASSETS_SVG}
-                            keyExtractor={(item) => item.id}
-                            renderItem={renderSvg}
-                            contentContainerStyle={{gap: 10}}
-                            columnWrapperStyle={{gap: 10}}
-                            numColumns={3}
-                                
-                        />
+                        {state.showSvgModal && (
+                            <FlatList
+                                data={ASSETS_SVG}
+                                keyExtractor={(item) => item.id}
+                                renderItem={renderSvg}
+                                contentContainerStyle={{gap: 10}}
+                                columnWrapperStyle={{gap: 10}}
+                                numColumns={3}
+                                    
+                            />
+                        )}
                     
-                        <Button textOnly onPress={onClose}>Close</Button>
+                        {/* <Button textOnly onPress={onClose}>Close</Button> */}
                     </View>
-                </View>
+                </Animated.View>
 
         
 
-        </Modal>
+
     )
 }
 export default SvgPickerModal;
@@ -106,14 +103,16 @@ const styles = StyleSheet.create({
  
     modalContainer: {
         position: 'absolute', 
-        top: 100,
-        left: 30,
-        backgroundColor: colors.bodyText,
+        top: 60, 
+        left: 0, 
+        backgroundColor: colors.background,
+        borderColor: colors.border,
         borderRadius: 5,
-        width: 300,
-        height: 300,
-        padding: 15,
-        ...platformStyle.shadow,  
+        borderWidth: 1,
+        width: '100%',
+        height: 'auto', 
+        padding: 20,
+        ...platformStyle.shadow,    
     },
     modalContent: {
         alignItems: 'center',
@@ -125,11 +124,10 @@ const styles = StyleSheet.create({
         marginBottom: 15
     },
     svgContainer: {
-        borderRadius: '50%',
+        borderRadius: 50,
         backgroundColor: colors.bodyText,
         overflow: 'hidden', 
         padding: 10,   
-        ...platformStyle.shadow,
         margin: 5,
         
     },

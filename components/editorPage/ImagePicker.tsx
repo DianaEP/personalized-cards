@@ -58,7 +58,7 @@ const ImagePicker: React.FC = () => {
 
            
     return(
-        <ScrollView style={styles.container}>
+        <View style={styles.container}>
             <ViewShot
                 ref={viewShotRef} 
                 key={resetKey}
@@ -92,9 +92,11 @@ const ImagePicker: React.FC = () => {
             {state.showEditorText && (
                 <EditorText />
             )}
-            <SvgPickerModal onClose={toggleSvgModal}/>
+            {state.showSvgModal && (
+                <SvgPickerModal/>
+            )}
 
-            {state.photoTaken && (
+            {state.photoTaken &&  state.selectedSvgId && state.textOnImage &&(
                 <View style={styles.floatingButtonContainer}>
                     <IconButton
                         icon='save-alt' 
@@ -107,7 +109,7 @@ const ImagePicker: React.FC = () => {
             )
             }
 
-        </ScrollView>
+        </View>
     )
 }
 export default ImagePicker;

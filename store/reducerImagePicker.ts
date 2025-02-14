@@ -104,16 +104,16 @@ export const reducer =(state: State, action: Action) => {
             return { ...state, photoTaken: action.payload}
             
         case ACTIONS.TOGGLE_COLOR_PICKER:
-            return{ ...state, showColorPicker: !state.showColorPicker}
+            return{ ...state,  showSvgModal: false, showEditorText: false, showFontSizeSlider: false, showColorPicker: !state.showColorPicker}
             
         case ACTIONS.SET_CHOSEN_COLOR:
             return{ ...state, chosenColor: action.payload}
 
         case ACTIONS.TOGGLE_EDITOR_TEXT:
-            return{ ...state, showEditorText: !state.showEditorText}
+            return{ ...state, showSvgModal: false, showFontSizeSlider: false, showColorPicker: false, showEditorText: !state.showEditorText}
 
         case ACTIONS.TOGGLE_FONT_SIZE_SLIDER:
-            return{ ...state, showFontSizeSlider: !state.showFontSizeSlider}
+            return{ ...state, showSvgModal: false, showEditorText: false, showColorPicker: false, showFontSizeSlider: !state.showFontSizeSlider}
             
         case ACTIONS.SET_OVERLAY_TEXT:
             return{ ...state, overlayText: action.payload}
@@ -131,7 +131,7 @@ export const reducer =(state: State, action: Action) => {
             return { ...state, textFontSize: action.payload};
 
         case ACTIONS.TOGGLE_SVG_MODAL: 
-            return { ...state, showSvgModal: !state.showSvgModal};
+            return { ...state, showEditorText: false, showFontSizeSlider: false, showColorPicker: false, showSvgModal: !state.showSvgModal};
         
         case ACTIONS.SELECT_SVG_ID:
             return { ...state, selectedSvgId: action.payload, showSvgModal: !state.showSvgModal};

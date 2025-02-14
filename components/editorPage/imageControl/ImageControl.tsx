@@ -5,12 +5,17 @@ import { launchCameraAsync, launchImageLibraryAsync, PermissionStatus, useCamera
 import { ACTIONS } from "../../../store/reducerImagePicker";
 import { useImageContext } from "../../../store/ImageContext";
 import { fonts } from "../../../UI/fonts";
+import { useState } from "react";
+import { useSharedValue } from "react-native-reanimated";
+import React from "react";
 
 interface ImageControlProps {
     toggleModal: () => void; 
 }
 
 const ImageControl: React.FC<ImageControlProps> = ({toggleModal}) => {
+
+
     
     const { state, dispatch} = useImageContext(); 
     const[cameraPermissionStatus, requestPermission] = useCameraPermissions();
@@ -59,36 +64,57 @@ const ImageControl: React.FC<ImageControlProps> = ({toggleModal}) => {
         dispatch({ type: ACTIONS.SET_PHOTO, payload: photo.assets[0].uri})
     }
 
+    const checkPhotoValidation = () : boolean => {
+        if(!state.photoTaken){
+            Alert.alert("Sorry!", "You need to upload a photo first.");
+            return false;
+        }
+        return true;
+    }
+    const checkTextValidation = () : boolean => {
+        if(!state.textOnImage){
+            Alert.alert("Sorry!", "You need to add some text first.");
+            return false;
+        }
+        return true;
+    }
+
+
     const toggleColorPicker= (): void => {
+        if(!checkPhotoValidation()) return;
         dispatch({ type: ACTIONS.TOGGLE_COLOR_PICKER})
     }
 
     const setTargetColor = (): void => {
+        
         dispatch({ type: ACTIONS.SET_TARGET_COLOR, payload: state.targetColor === 'text' ? 'svg' : 'text'})     
     }
 
     const toggleTextFont = (): void => {
+        if(!checkPhotoValidation() || !checkTextValidation()) return;
         dispatch({ type: ACTIONS.SET_TEXT_FONT, payload: state.textFont === fonts.body2 ? fonts.handwriting : fonts.body2})
     }
 
     const toggleFontSizeSlider = ():void => {
+        if(!checkPhotoValidation() || !checkTextValidation()) return;
         dispatch({ type: ACTIONS.TOGGLE_FONT_SIZE_SLIDER})
     }
 
     const toggleEditorText = ():void => {
+        if(!checkPhotoValidation()) return;
         dispatch({ type: ACTIONS.TOGGLE_EDITOR_TEXT})
     }
 
     return(
         <View style={styles.imageButtons}>
             <View style={styles.wrapperIcons}>
-                <Text style={styles.text}>Image & Text</Text>
                 <View style={styles.icons}>
                     
                     <IconButton 
                         icon='camera' 
                         size={24} 
                         color={colors.bodyText} 
+                        label='Camera'
                         onPress={() => pickImage(true)}
                     />
                    
@@ -96,12 +122,14 @@ const ImageControl: React.FC<ImageControlProps> = ({toggleModal}) => {
                         icon="image" 
                         size={24} 
                         color={colors.bodyText} 
+                        label='Photos'
                         onPress={() => pickImage(false)}
                     />
                     <IconButton 
                         icon='grid' 
                         size={24} 
-                        color={colors.bodyText} 
+                        color={colors.bodyText}
+                        label='SVG' 
                         onPress={toggleModal}
                     />
                 </View>
@@ -111,35 +139,39 @@ const ImageControl: React.FC<ImageControlProps> = ({toggleModal}) => {
                         icon='add-outline' 
                         size={24} 
                         color={colors.bodyText} 
+                        label='Add Text'
                         onPress={toggleEditorText}
                     />
                     <IconButton 
                         icon='text' 
                         size={24} 
                         color={colors.bodyText} 
+                        label='Font'
                         onPress={toggleTextFont}
                     />
                     <IconButton 
                         icon='resize' 
                         size={24} 
                         color={colors.bodyText} 
+                        label='Font Size'
                         onPress={toggleFontSizeSlider}
                     />
                 </View>
             </View>
             <View style={styles.wrapperIcons}>
-                <Text style={styles.text}>Colors</Text>
                 <View style={styles.iconsColors}>
                     <IconButton 
                         icon='color-palette' 
                         size={24} 
                         color={colors.bodyText} 
+                        label='Color Picker'
                         onPress={toggleColorPicker}
                     />
                     <IconButton 
                         icon='swap-horizontal' 
                         size={24} 
-                        color={colors.bodyText} 
+                        color={colors.bodyText}
+                        label='Switch Color' 
                         onPress={setTargetColor}
                     />
                 </View>
@@ -162,15 +194,10 @@ const styles = StyleSheet.create({
   },
   icons: {
     flexDirection: 'row',
-    columnGap: 10
+    columnGap: 15
   },
   iconsColors: {
     flexDirection: 'column',
     rowGap: 10
   },
-  text: {
-    textAlign: 'center',
-    color: colors.bodyText,
-    fontFamily: fonts.body,
-  }
 });

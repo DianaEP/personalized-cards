@@ -5,6 +5,7 @@ import { fonts } from "../../../../UI/fonts";
 import Button from "../../../../UI/buttons/Button";
 import { ACTIONS } from "../../../../store/reducerImagePicker";
 import { useImageContext } from "../../../../store/ImageContext";
+import Animated, { FadeInDown, FadeOutDown } from "react-native-reanimated";
 
 
 
@@ -18,10 +19,6 @@ const EditorText: React.FC = () => {
 
      // Apply text to image
     const handleAddText = (): void => {
-        if(!state.photoTaken){
-            Alert.alert("Sorry!", "You need to upload a photo first.");
-            return;
-        }
         dispatch({ type: ACTIONS.ADD_TEXT_ON_IMAGE})
         dispatch({ type: ACTIONS.TOGGLE_EDITOR_TEXT})
     }
@@ -29,7 +26,7 @@ const EditorText: React.FC = () => {
 
     
     return(
-        <View style={styles.container}>
+        <Animated.View style={styles.container} entering={FadeInDown.delay(150)} exiting={FadeOutDown}>
             <TextInput 
                 style={[styles.input, {color: appliedColor}]}
                 value={state.overlayText} 
@@ -41,7 +38,7 @@ const EditorText: React.FC = () => {
             <Button textOnly onPress={handleAddText}>Add</Button>
             
             
-        </View>
+        </Animated.View>
     )
 }
 export default EditorText;

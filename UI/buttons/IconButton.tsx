@@ -4,16 +4,19 @@ import { colors } from "../theme";
 import Animated, { interpolateColor, useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
 import { platformStyle } from "../shadowStyle";
 import React, { useState } from "react";
+import { Text } from "react-native";
+import { fonts } from "../fonts";
 
 interface IconButtonProps {
     icon: keyof typeof Ionicons.glyphMap | keyof typeof MaterialIcons.glyphMap;
     size: number;
     color: string;
     save?: boolean;
+    label?: string;
     onPress: () => void;
 }
 
-const IconButton: React.FC<IconButtonProps> = ({icon, size, color, save, onPress}) => {
+const IconButton: React.FC<IconButtonProps> = ({icon, size, color,label, save, onPress}) => {
     const buttonColor = useSharedValue(0);
     const scale = useSharedValue(1);
 
@@ -49,14 +52,18 @@ const IconButton: React.FC<IconButtonProps> = ({icon, size, color, save, onPress
             onPressIn={handlePressIn}
             onPressOut={handlePressOut}
         >
-            <Animated.View style={[styles.button, animatedStyle , { borderWidth: save ? 0 : 1, backgroundColor: save ? 'transparent' : colors.background}]}>
+            <Animated.View style={[styles.button, animatedStyle , { backgroundColor: save ? 'transparent' : colors.border}]}>
                 {!save && (
                     <Ionicons name={icon as keyof typeof Ionicons.glyphMap} size={size} color={color} />
                 )}
                 {save && (
                     <MaterialIcons name={icon as keyof typeof MaterialIcons.glyphMap} size={size} color={color}/> 
                 )}
+
             </Animated.View>
+            {!save && (
+                <Text style={styles.labelText}>{label}</Text>
+            )}
         </Pressable>
     )
 }
@@ -67,7 +74,7 @@ const styles = StyleSheet.create({
         padding: 8,
         justifyContent: 'center',
         alignItems: 'center',
-        borderRadius: 5,
+        borderRadius: 25,
         // borderColor: colors.border,
         // borderWidth: 1,
         // backgroundColor: colors.background,
@@ -76,6 +83,12 @@ const styles = StyleSheet.create({
     pressable: {
         justifyContent: 'center',
         alignItems: 'center',
+    },
+    labelText: {
+        fontFamily: fonts.body,
+        color: colors.bodyText,
+        fontSize: 10,
+        marginTop: 5,
     }
 })
 

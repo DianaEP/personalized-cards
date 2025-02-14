@@ -3,11 +3,12 @@ import  ColorPicker, { HueSlider, OpacitySlider, Panel1 } from "reanimated-color
 import { colors } from "../../../../UI/theme";
 import { useImageContext } from "../../../../store/ImageContext";
 import { ACTIONS } from "../../../../store/reducerImagePicker";
+import Animated, { Easing, FadeIn, FadeInDown, FadeInUp, FadeOut, FadeOutDown, FadeOutUp} from "react-native-reanimated";
 
 
 const ColorPickerPanel: React.FC = () => {
   const { state, dispatch} = useImageContext();
-    
+
   const handleColorChange = (color: string): void => {
     if(state.targetColor === 'text') {
       dispatch({ type: ACTIONS.SET_CHOSEN_COLOR, payload: color})
@@ -20,7 +21,7 @@ const ColorPickerPanel: React.FC = () => {
   const label=state.targetColor === 'text' ? 'Text Color' : 'SVG Color';
 
   return (
-    <View style={styles.colorPickerContainer}>
+    <Animated.View style={styles.colorPickerContainer} entering={FadeInDown.delay(150)} exiting={FadeOutDown}>
       <Text style={styles.colorPickerText}>{label}</Text>
       <ColorPicker
         value={chosenColor}
@@ -32,7 +33,7 @@ const ColorPickerPanel: React.FC = () => {
         <Panel1 />
         <OpacitySlider />
       </ColorPicker>
-    </View>
+    </Animated.View>
   );
 }
 export default ColorPickerPanel;

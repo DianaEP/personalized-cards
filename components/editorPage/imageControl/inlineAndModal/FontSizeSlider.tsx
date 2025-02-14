@@ -4,7 +4,7 @@ import { ACTIONS } from "../../../../store/reducerImagePicker";
 import Slider from "@react-native-community/slider";
 import { colors } from "../../../../UI/theme";
 import { useState } from "react";
-import { useDerivedValue, useSharedValue } from "react-native-reanimated";
+import Animated, { FadeInDown, FadeOutDown, useDerivedValue, useSharedValue } from "react-native-reanimated";
 
 
 const FontSizeSlider: React.FC = () => {
@@ -18,7 +18,7 @@ const FontSizeSlider: React.FC = () => {
     
     
     return(
-        <View style={styles.sliderContainer}>
+        <Animated.View style={styles.sliderContainer} entering={FadeInDown.delay(150)} exiting={FadeOutDown}>
             <Text style={styles.sliderText}>Adjust Font Size</Text>
             <Slider
                 style={styles.slider}
@@ -31,7 +31,7 @@ const FontSizeSlider: React.FC = () => {
                 // onValueChange={handleThumbChange}
                 onSlidingComplete={handleFontSizeState}
             />
-        </View>
+        </Animated.View>
     )
 }
 
