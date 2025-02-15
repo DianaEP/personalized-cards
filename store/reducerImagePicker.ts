@@ -130,7 +130,7 @@ export const reducer =(state: State, action: Action) => {
         case ACTIONS.SET_TEXT_FONT_SIZE:
             return { ...state, textFontSize: action.payload};
 
-        case ACTIONS.TOGGLE_SVG_MODAL: 
+        case ACTIONS.TOGGLE_SVG_MODAL: // add all other states false so they would close automatically when this one will open
             return { ...state, showEditorText: false, showFontSizeSlider: false, showColorPicker: false, showSvgModal: !state.showSvgModal};
         
         case ACTIONS.SELECT_SVG_ID:

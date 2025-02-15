@@ -4,7 +4,8 @@ import { colors } from '../UI/theme';
 import Button from '../UI/buttons/Button';
 import { useRouter } from 'expo-router';
 import { fonts, useCustomFonts } from '../UI/fonts';
-import ImagesAnimation from '../components/ImagesAnimation';
+import TextAnimation from '../components/editorPage/animations/TextAnimation';
+import PostcardsAnimation from '../components/editorPage/animations/PostcardsAnimations';
 
 const App: React.FC = () => {
   const fontsLoaded = useCustomFonts();
@@ -22,9 +23,10 @@ const App: React.FC = () => {
   return (
     <View style={styles.container}>
       <StatusBar style="light" />
-      <ImagesAnimation/>
-      <Text style={styles.text}>Open up App.js to start working on your app!</Text>
-      <Button onPress={handleCreateCard}>Create your own card</Button>
+      <TextAnimation/>
+      <PostcardsAnimation/>
+      <Text style={styles.text}>Create personalized postcards with your photos, messages, and unique touches. Send your memories across the world—heartfelt and meaningful.</Text>
+      <Button onPress={handleCreateCard}>Get Started</Button>
     </View>
   );
 }
@@ -38,7 +40,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   text: {
+    textAlign: 'center',
     color: colors.bodyText,
     fontFamily: fonts.body,
+    fontSize: 14, 
+    lineHeight: 18,
+    marginHorizontal: 15,
   }
 });
