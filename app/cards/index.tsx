@@ -9,12 +9,16 @@ import { useImageContext } from '../../store/ImageContext';
 
 const Cards: React.FC = () => {
   const { state } = useImageContext();
+  const imageHistory = state.imageHistory;
   return (
     <View style={styles.container}>
       <Text style={styles.text}>Cards</Text>
-      {state.finalImageUri && (
-        <Image source={{uri: state.finalImageUri}} style={{ width: 200, height: 200 }}/>
-      )}
+      {imageHistory.map((item) => (
+        <View key={item.id} style={styles.imageContainer}>
+          <Image source={{uri: item.finalImageUri }} style={styles.image}/>
+        </View>
+      ))}
+    
       <Link href='cards/1' style={styles.text}>Card 1</Link>
       <Link href='cards/2' style={styles.text}>Card 2</Link>
     </View>
@@ -32,5 +36,14 @@ const styles = StyleSheet.create({
   text: {
     color: colors.bodyText,
      fontFamily: fonts.body,
+  },
+  imageContainer:{
+    width: '70%',
+    height: '80%'
+  },
+  image: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'contain'
   }
 });

@@ -1,169 +1,246 @@
 import { fonts } from "../UI/fonts";
 import { colors } from "../UI/theme"
 import { Position } from "../util/interfaces";
-
-
-
+import uuid from 'react-native-uuid';
 
 // Action interface for each possible action
 type ActionsType =  
     'SET_PHOTO'| 
-    'TOGGLE_COLOR_PICKER' | 
-    'SET_CHOSEN_COLOR'|
-    'TOGGLE_EDITOR_TEXT'|
-    'TOGGLE_FONT_SIZE_SLIDER'|
+    'SET_FINAL_IMAGE_URI'|
+
     'SET_OVERLAY_TEXT'| 
     'ADD_TEXT_ON_IMAGE'| 
     'SET_TEXT_POSITION'|
     'SET_TEXT_FONT'|
     'SET_TEXT_FONT_SIZE'|
-    'TOGGLE_SVG_MODAL'|
+
     'SELECT_SVG_ID'|
     'SET_SVG_POSITION'|
     'SET_SVG_SCALE'|
     'SET_SVG_COLOR'|
     'SET_SVG_ROTATION'|
+
+    'SET_CHOSEN_COLOR'|
     'SET_TARGET_COLOR'|
-    'SET_FINAL_IMAGE_URI'|
+    'TOGGLE_COLOR_PICKER' | 
+    'TOGGLE_EDITOR_TEXT'|
+    'TOGGLE_FONT_SIZE_SLIDER'|
+    'TOGGLE_SVG_MODAL'|
     'RESET_STATE';
+    
 
 export interface Action {
-    type: ActionsType;
+    type: ActionsType ;
     payload?: any;
 }
 
+interface ImageItem {
+    id: string;
+    finalImageUri: string;
+  }
 
 export interface State  {
+    // image state
     photoTaken: string | null;
-    showColorPicker: boolean;
-    chosenColor: string;
-    showEditorText: boolean;
-    showFontSizeSlider: boolean;
+    imageHistory: ImageItem[];
+
+    // text state
     overlayText: string;
     textOnImage: string | null;
     textPosition: Position;
     textFont: string;
     textFontSize: number;
-    showSvgModal: boolean;
+
+    // svg state
     selectedSvgId: string | null,
     svgPosition: Position;
     svgScale: number;
     svgColor: string;
     svgRotation: number;
+
+    // controllers state
+    chosenColor: string;
     targetColor: string;
-    finalImageUri: string | null;
+    showColorPicker: boolean;
+    showEditorText: boolean;
+    showFontSizeSlider: boolean;
+    showSvgModal: boolean;
+    
 }
 
+
+
 export const ACTIONS = {
+    // image actions
     SET_PHOTO: 'SET_PHOTO',
-    TOGGLE_COLOR_PICKER: 'TOGGLE_COLOR_PICKER',
-    SET_CHOSEN_COLOR: 'SET_CHOSEN_COLOR',
-    TOGGLE_EDITOR_TEXT: 'TOGGLE_EDITOR_TEXT',
-    TOGGLE_FONT_SIZE_SLIDER: 'TOGGLE_FONT_SIZE_SLIDER',
+    SET_FINAL_IMAGE_URI: 'SET_FINAL_IMAGE_URI',
+
+    // text actions
     SET_OVERLAY_TEXT: 'SET_OVERLAY_TEXT',
     ADD_TEXT_ON_IMAGE: 'ADD_TEXT_ON_IMAGE',
     SET_TEXT_POSITION: 'SET_TEXT_POSITION',
     SET_TEXT_FONT: 'SET_TEXT_FONT',
-    TOGGLE_SVG_MODAL: 'TOGGLE_SVG_MODAL',
     SET_TEXT_FONT_SIZE: 'SET_TEXT_FONT_SIZE',
+
+    // svg actions
     SELECT_SVG_ID: 'SELECT_SVG_ID',
     SET_SVG_POSITION: 'SET_SVG_POSITION',
     SET_SVG_SCALE: 'SET_SVG_SCALE',
     SET_SVG_COLOR: 'SET_SVG_COLOR',
     SET_SVG_ROTATION: 'SET_SVG_ROTATION',
+
+    // general controllers actions
+    SET_CHOSEN_COLOR: 'SET_CHOSEN_COLOR',
     SET_TARGET_COLOR: 'SET_TARGET_COLOR',
-    SET_FINAL_IMAGE_URI: 'SET_FINAL_IMAGE_URI',
+    TOGGLE_COLOR_PICKER: 'TOGGLE_COLOR_PICKER',
+    TOGGLE_EDITOR_TEXT: 'TOGGLE_EDITOR_TEXT',
+    TOGGLE_FONT_SIZE_SLIDER: 'TOGGLE_FONT_SIZE_SLIDER',
+    TOGGLE_SVG_MODAL: 'TOGGLE_SVG_MODAL',
     RESET_STATE: 'RESET_STATE'
 } as const; // `as const` ensures that the action types are literal values immutables instead of just strings
 
 export const initialState: State = {
     photoTaken: null,
-    showColorPicker: false,
-    chosenColor: colors.titleText,
-    showEditorText: false,
-    showFontSizeSlider: false,
+    imageHistory: [],
+
     overlayText: '',
     textOnImage: null,
     textPosition: { x: 0, y: 0 },
     textFontSize: 24,
     textFont: fonts.body2,
-    showSvgModal: false,
+
     selectedSvgId: null,
     svgPosition: { x: 0, y: 0 },
     svgScale: 1,
     svgColor: colors.background,
     svgRotation: 0,
+
+    chosenColor: colors.titleText,
     targetColor: 'text',
-    finalImageUri: null
+    showColorPicker: false,
+    showEditorText: false,
+    showFontSizeSlider: false,
+    showSvgModal: false,
 
 }
 
-export const reducer =(state: State, action: Action) => {
-    switch (action.type) {
-        case ACTIONS.SET_PHOTO:
-            return { ...state, photoTaken: action.payload}
-            
-        case ACTIONS.TOGGLE_COLOR_PICKER:
-            return{ ...state,  showSvgModal: false, showEditorText: false, showFontSizeSlider: false, showColorPicker: !state.showColorPicker}
-            
-        case ACTIONS.SET_CHOSEN_COLOR:
-            return{ ...state, chosenColor: action.payload}
 
-        case ACTIONS.TOGGLE_EDITOR_TEXT:
-            return{ ...state, showSvgModal: false, showFontSizeSlider: false, showColorPicker: false, showEditorText: !state.showEditorText}
 
-        case ACTIONS.TOGGLE_FONT_SIZE_SLIDER:
-            return{ ...state, showSvgModal: false, showEditorText: false, showColorPicker: false, showFontSizeSlider: !state.showFontSizeSlider}
+export const actionHandlers = {
+    [ACTIONS.SET_PHOTO]: (state: State, action: Action) => ({ ...state, photoTaken: action.payload}),
+    [ACTIONS.SET_FINAL_IMAGE_URI] : (state: State, action: Action) => {
+        const newId = uuid.v4();
+        const updatedHistory = [
+            {id: newId, finalImageUri: action.payload},
+            ...state.imageHistory
+        ];
+        return {
+            ...state,
+            imageHistory: updatedHistory
+        }
+    },
+
+    [ACTIONS.SET_OVERLAY_TEXT]: (state: State, action: Action) => ({ ...state, overlayText: action.payload}),
+    [ACTIONS.ADD_TEXT_ON_IMAGE]: (state: State) => ({ ...state, textOnImage: state.overlayText, overlayText: '' }),
+    [ACTIONS.SET_TEXT_POSITION]: (state: State, action: Action) => ({ ...state, textPosition: action.payload }),
+    [ACTIONS.SET_TEXT_FONT]: (state: State, action: Action) => ({ ...state, textFont: action.payload }),
+    [ACTIONS.SET_TEXT_FONT_SIZE]: (state: State, action: Action) => ({ ...state, textFontSize: action.payload }),
+
+    [ACTIONS.SELECT_SVG_ID]: (state: State, action: Action) => ({ ...state, selectedSvgId: action.payload, showSvgModal: !state.showSvgModal }),
+    [ACTIONS.SET_SVG_POSITION]: (state: State, action: Action) => ({ ...state, svgPosition: action.payload }),
+    [ACTIONS.SET_SVG_SCALE]: (state: State, action: Action) => ({ ...state, svgScale: action.payload }),
+    [ACTIONS.SET_SVG_COLOR]: (state: State, action: Action) => ({ ...state, svgColor: action.payload }),
+    [ACTIONS.SET_SVG_ROTATION]: (state: State, action: Action) => ({ ...state, svgRotation: action.payload }),
+
+    [ACTIONS.SET_CHOSEN_COLOR]: (state: State, action: Action) => ({ ...state, chosenColor: action.payload }),
+    [ACTIONS.SET_TARGET_COLOR]: (state: State, action: Action) => ({ ...state, targetColor: action.payload }),
+    [ACTIONS.TOGGLE_COLOR_PICKER]: (state: State) => ({ ...state, showSvgModal: false, showEditorText: false, showFontSizeSlider: false, showColorPicker: !state.showColorPicker }),
+    [ACTIONS.TOGGLE_EDITOR_TEXT]: (state: State) => ({ ...state, showSvgModal: false, showFontSizeSlider: false, showColorPicker: false, showEditorText: !state.showEditorText }),
+    [ACTIONS.TOGGLE_FONT_SIZE_SLIDER]: (state: State) => ({ ...state, showSvgModal: false, showEditorText: false, showColorPicker: false, showFontSizeSlider: !state.showFontSizeSlider }),
+    [ACTIONS.TOGGLE_SVG_MODAL]: (state: State) => ({ ...state, showEditorText: false, showFontSizeSlider: false, showColorPicker: false, showSvgModal: !state.showSvgModal }),
+
+    // Keep finalImageUri while resetting other state
+    [ACTIONS.RESET_STATE]: (state: State) => ({...initialState,imageHistory: state.imageHistory})
+}
+
+
+
+export const reducer = (state: State, action: Action)=> {
+    const handler = actionHandlers[action.type];
+    if (handler) {
+        return handler(state, action);
+      }
+    
+      return state;
+}
+
+
+// export const reducer =(state: State, action: Action) => {
+//     switch (action.type) {
+//         case ACTIONS.SET_PHOTO:
+//             return { ...state, photoTaken: action.payload}
             
-        case ACTIONS.SET_OVERLAY_TEXT:
-            return{ ...state, overlayText: action.payload}
+//         case ACTIONS.TOGGLE_COLOR_PICKER:
+//             return{ ...state,  showSvgModal: false, showEditorText: false, showFontSizeSlider: false, showColorPicker: !state.showColorPicker}
             
-        case ACTIONS.ADD_TEXT_ON_IMAGE:
-            return{ ...state, textOnImage: state.overlayText, overlayText: ''}
+//         case ACTIONS.SET_CHOSEN_COLOR:
+//             return{ ...state, chosenColor: action.payload}
+
+//         case ACTIONS.TOGGLE_EDITOR_TEXT:
+//             return{ ...state, showSvgModal: false, showFontSizeSlider: false, showColorPicker: false, showEditorText: !state.showEditorText}
+
+//         case ACTIONS.TOGGLE_FONT_SIZE_SLIDER:
+//             return{ ...state, showSvgModal: false, showEditorText: false, showColorPicker: false, showFontSizeSlider: !state.showFontSizeSlider}
             
-        case ACTIONS.SET_TEXT_POSITION:
-            return { ...state, textPosition: action.payload};
+//         case ACTIONS.SET_OVERLAY_TEXT:
+//             return{ ...state, overlayText: action.payload}
+            
+//         case ACTIONS.ADD_TEXT_ON_IMAGE:
+//             return{ ...state, textOnImage: state.overlayText, overlayText: ''}
+            
+//         case ACTIONS.SET_TEXT_POSITION:
+//             return { ...state, textPosition: action.payload};
      
-        case ACTIONS.SET_TEXT_FONT:
-            return { ...state, textFont: action.payload};
+//         case ACTIONS.SET_TEXT_FONT:
+//             return { ...state, textFont: action.payload};
                 
-        case ACTIONS.SET_TEXT_FONT_SIZE:
-            return { ...state, textFontSize: action.payload};
+//         case ACTIONS.SET_TEXT_FONT_SIZE:
+//             return { ...state, textFontSize: action.payload};
 
-        case ACTIONS.TOGGLE_SVG_MODAL: // add all other states false so they would close automatically when this one will open
-            return { ...state, showEditorText: false, showFontSizeSlider: false, showColorPicker: false, showSvgModal: !state.showSvgModal};
+//         case ACTIONS.TOGGLE_SVG_MODAL: // add all other states false so they would close automatically when this one will open
+//             return { ...state, showEditorText: false, showFontSizeSlider: false, showColorPicker: false, showSvgModal: !state.showSvgModal};
         
-        case ACTIONS.SELECT_SVG_ID:
-            return { ...state, selectedSvgId: action.payload, showSvgModal: !state.showSvgModal};
+//         case ACTIONS.SELECT_SVG_ID:
+//             return { ...state, selectedSvgId: action.payload, showSvgModal: !state.showSvgModal};
 
-        case ACTIONS.SET_SVG_POSITION:
-            return { ...state, svgPosition: action.payload};
+//         case ACTIONS.SET_SVG_POSITION:
+//             return { ...state, svgPosition: action.payload};
 
-        case ACTIONS.SET_SVG_SCALE:
-            return { ...state, svgScale: action.payload };
+//         case ACTIONS.SET_SVG_SCALE:
+//             return { ...state, svgScale: action.payload };
 
-        case ACTIONS.SET_SVG_COLOR:
-            return{ ...state, svgColor: action.payload}
+//         case ACTIONS.SET_SVG_COLOR:
+//             return{ ...state, svgColor: action.payload}
 
-        case ACTIONS.SET_SVG_ROTATION:  
-            return { ...state, svgRotation: action.payload };
+//         case ACTIONS.SET_SVG_ROTATION:  
+//             return { ...state, svgRotation: action.payload };
         
-        case ACTIONS.SET_TARGET_COLOR:
-            return { ...state, targetColor: action.payload };
+//         case ACTIONS.SET_TARGET_COLOR:
+//             return { ...state, targetColor: action.payload };
 
-        case ACTIONS.SET_FINAL_IMAGE_URI:
-            return { ...state, finalImageUri: action.payload };
+//         case ACTIONS.SET_FINAL_IMAGE_URI:
+//             return { ...state, finalImageUri: action.payload };
 
-        case ACTIONS.RESET_STATE:
-            const newState = { 
-                ...initialState,
-                finalImageUri: state.finalImageUri 
-            };
-            return newState;
+//         case ACTIONS.RESET_STATE:
+//             const newState = { 
+//                 ...initialState,
+//                 finalImageUri: state.finalImageUri 
+//             };
+//             return newState;
 
-        default:
-            return state;
-    }
-}
+//         default:
+//             return state;
+//     }
+// }
 
 
