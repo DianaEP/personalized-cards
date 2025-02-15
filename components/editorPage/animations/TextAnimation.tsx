@@ -36,6 +36,7 @@ const TextAnimation: React.FC = () => {
     }
 
     useEffect(() => {
+        typingProgress.value = 0;
         startTypingEffect();
     },[])
 

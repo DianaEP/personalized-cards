@@ -8,10 +8,10 @@ type ColorsType = {
 }
 
 export const colors: ColorsType = {
-    primary: "#E3183A",
-    line: '#000000',
-    background: "#171616",
-    titleText: "#FFFFFF",
+    primary: "#c47c63",
+    line: '#645a41',
+    background: "#393939",
+    titleText: "#E8ECDEFF",
     bodyText: "#8A8787", 
-    border: "#232323FF",
+    border: "#898055",
 }

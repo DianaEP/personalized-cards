@@ -22,7 +22,7 @@ const Layout: React.FC = () => {
                 tabBarActiveTintColor: colors.titleText,
                 tabBarInactiveTintColor: colors.bodyText,
                 tabBarStyle: {
-                    backgroundColor: colors.border
+                    backgroundColor: colors.background
                 },
                 tabBarLabelStyle: {
                     fontFamily: fonts.body,

@@ -11,9 +11,10 @@ import React from "react";
 
 interface ImageControlProps {
     toggleModal: () => void; 
+    saveFinalImage: () => Promise<void>;
 }
 
-const ImageControl: React.FC<ImageControlProps> = ({toggleModal}) => {
+const ImageControl: React.FC<ImageControlProps> = ({toggleModal, saveFinalImage}) => {
 
 
     
@@ -105,6 +106,8 @@ const ImageControl: React.FC<ImageControlProps> = ({toggleModal}) => {
         dispatch({ type: ACTIONS.TOGGLE_EDITOR_TEXT})
     }
 
+    const colorButton = colors.titleText;
+
     return(
         <View style={styles.imageButtons}>
             <View style={styles.wrapperIcons}>
@@ -113,7 +116,7 @@ const ImageControl: React.FC<ImageControlProps> = ({toggleModal}) => {
                     <IconButton 
                         icon='camera' 
                         size={24} 
-                        color={colors.bodyText} 
+                        color={colorButton} 
                         label='Camera'
                         onPress={() => pickImage(true)}
                     />
@@ -121,14 +124,14 @@ const ImageControl: React.FC<ImageControlProps> = ({toggleModal}) => {
                     <IconButton 
                         icon="image" 
                         size={24} 
-                        color={colors.bodyText} 
+                        color={colorButton} 
                         label='Photos'
                         onPress={() => pickImage(false)}
                     />
                     <IconButton 
                         icon='grid' 
                         size={24} 
-                        color={colors.bodyText}
+                        color={colorButton}
                         label='SVG' 
                         onPress={toggleModal}
                     />
@@ -138,21 +141,21 @@ const ImageControl: React.FC<ImageControlProps> = ({toggleModal}) => {
                     <IconButton 
                         icon='add-outline' 
                         size={24} 
-                        color={colors.bodyText} 
+                        color={colorButton} 
                         label='Add Text'
                         onPress={toggleEditorText}
                     />
                     <IconButton 
                         icon='text' 
                         size={24} 
-                        color={colors.bodyText} 
+                        color={colorButton} 
                         label='Font'
                         onPress={toggleTextFont}
                     />
                     <IconButton 
                         icon='resize' 
                         size={24} 
-                        color={colors.bodyText} 
+                        color={colorButton} 
                         label='Font Size'
                         onPress={toggleFontSizeSlider}
                     />
@@ -163,19 +166,32 @@ const ImageControl: React.FC<ImageControlProps> = ({toggleModal}) => {
                     <IconButton 
                         icon='color-palette' 
                         size={24} 
-                        color={colors.bodyText} 
+                        color={colorButton} 
                         label='Color Picker'
                         onPress={toggleColorPicker}
                     />
                     <IconButton 
                         icon='swap-horizontal' 
                         size={24} 
-                        color={colors.bodyText}
+                        color={colorButton}
                         label='Switch Color' 
                         onPress={setTargetColor}
                     />
                 </View>
             </View>
+            {state.photoTaken &&  state.selectedSvgId && state.textOnImage &&(
+                <View style={styles.wrapperIcons}>
+                    <View style={styles.iconsColors}>
+                    <IconButton
+                            icon='save-alt' 
+                            size={24} 
+                            color={colorButton} 
+                            onPress={saveFinalImage}
+                            save
+                        />
+                    </View>
+                </View>
+            )}
         </View>
     )
 }
@@ -194,7 +210,8 @@ const styles = StyleSheet.create({
   },
   icons: {
     flexDirection: 'row',
-    columnGap: 15
+    justifyContent: 'center',
+    columnGap: 20
   },
   iconsColors: {
     flexDirection: 'column',

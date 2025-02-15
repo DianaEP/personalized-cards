@@ -91,7 +91,7 @@ export const initialState: State = {
     selectedSvgId: null,
     svgPosition: { x: 0, y: 0 },
     svgScale: 1,
-    svgColor: colors.line,
+    svgColor: colors.background,
     svgRotation: 0,
     targetColor: 'text',
     finalImageUri: null

@@ -5,6 +5,7 @@ import Slider from "@react-native-community/slider";
 import { colors } from "../../../../UI/theme";
 import { useState } from "react";
 import Animated, { FadeInDown, FadeOutDown, useDerivedValue, useSharedValue } from "react-native-reanimated";
+import { platformStyle } from "../../../../UI/shadowStyle";
 
 
 const FontSizeSlider: React.FC = () => {
@@ -26,7 +27,7 @@ const FontSizeSlider: React.FC = () => {
                 maximumValue={50}  
                 minimumTrackTintColor={colors.titleText}
                 maximumTrackTintColor={colors.bodyText}
-                thumbTintColor={colors.primary}
+                thumbTintColor={colors.border}
                 value={state.textFontSize}
                 // onValueChange={handleThumbChange}
                 onSlidingComplete={handleFontSizeState}
@@ -38,8 +39,8 @@ const FontSizeSlider: React.FC = () => {
 const styles = StyleSheet.create({
     sliderContainer: {
         backgroundColor: colors.background,
-        borderColor: colors.border,
-        borderWidth: 1,
+        // borderColor: colors.border,
+        // borderWidth: 1,
         borderRadius: 5,
         position: 'absolute',
         top: 200,
@@ -47,6 +48,7 @@ const styles = StyleSheet.create({
         width: '100%',
         height: 'auto', 
         padding: 20,
+        ...platformStyle.shadow,  
     },
     sliderText: {
         color: colors.bodyText,
@@ -56,7 +58,7 @@ const styles = StyleSheet.create({
         marginBottom: 10
     },
     slider: {
-        width: 250,
+        width: '100%',
         height: 40
     }
 })

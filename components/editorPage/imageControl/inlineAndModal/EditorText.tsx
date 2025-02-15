@@ -6,6 +6,7 @@ import Button from "../../../../UI/buttons/Button";
 import { ACTIONS } from "../../../../store/reducerImagePicker";
 import { useImageContext } from "../../../../store/ImageContext";
 import Animated, { FadeInDown, FadeOutDown } from "react-native-reanimated";
+import { platformStyle } from "../../../../UI/shadowStyle";
 
 
 
@@ -33,7 +34,7 @@ const EditorText: React.FC = () => {
                 onChangeText={handleTextChange}
                 placeholder="Enter your text here"
                 placeholderTextColor={colors.bodyText}
-                selectionColor={colors.border}
+                selectionColor={colors.bodyText}
             />
             <Button textOnly onPress={handleAddText}>Add</Button>
             
@@ -49,8 +50,8 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center', 
         backgroundColor: colors.background,
-        borderColor: colors.border,
-        borderWidth: 1,
+        // borderColor: colors.border,
+        // borderWidth: 1,
         borderRadius: 5,
         position: 'absolute',
         top: 220,
@@ -58,13 +59,13 @@ const styles = StyleSheet.create({
         width: '100%',
         height: 'auto', 
         padding: 20,
-       
+       ...platformStyle.shadow,  
     },
     input: {
         fontFamily: fonts.body,
         fontSize: 16,
         width: '60%',
-        borderBottomWidth: 2,
+        borderBottomWidth: 1,
         borderBottomColor: colors.line,
         paddingLeft: 10,
         

@@ -17,29 +17,21 @@ interface IconButtonProps {
 }
 
 const IconButton: React.FC<IconButtonProps> = ({icon, size, color,label, save, onPress}) => {
-    const buttonColor = useSharedValue(0);
     const scale = useSharedValue(1);
 
     const animatedStyle =  useAnimatedStyle(() => {
         return {
             transform: [{scale: scale.value}],
-            borderColor: interpolateColor(
-                buttonColor.value, 
-                [0, 1], 
-                [colors.bodyText, colors.border]
-            ),
-            
+                
         }
     })
 
     const handlePressIn = () => {
-        scale.value = withTiming(0.95, {duration: 130});
-        buttonColor.value = withTiming(1, {duration: 130});
+        scale.value = withTiming(0.9, {duration: 130});
     }
 
     const handlePressOut = () => {
         scale.value = withTiming(1, {duration: 130});
-        buttonColor.value = withTiming(0, {duration: 130});
             
         setTimeout(() => {
             onPress();
@@ -52,7 +44,7 @@ const IconButton: React.FC<IconButtonProps> = ({icon, size, color,label, save, o
             onPressIn={handlePressIn}
             onPressOut={handlePressOut}
         >
-            <Animated.View style={[styles.button, animatedStyle , { backgroundColor: save ? 'transparent' : colors.border}]}>
+            <Animated.View style={[styles.button, animatedStyle , { backgroundColor: save ? colors.border : colors.primary}]}>
                 {!save && (
                     <Ionicons name={icon as keyof typeof Ionicons.glyphMap} size={size} color={color} />
                 )}

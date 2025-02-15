@@ -16,10 +16,13 @@ import Button from "../../UI/buttons/Button";
 import ColorPickerPanel from "./imageControl/inlineAndModal/ColorPickerPanel";
 import FontSizeSlider from "./imageControl/inlineAndModal/FontSizeSlider";
 import IconButton from "../../UI/buttons/IconButton";
+import { platformStyle } from "../../UI/shadowStyle";
+import { useRouter } from "expo-router";
 
 const ImagePicker: React.FC = () => {
     const { state, dispatch } = useImageContext();
     const viewShotRef = useRef<ViewShot | null>(null);
+    const router = useRouter();
 
     const [containerWidth, setContainerWidth] = useState< number | null >(null);
     const [containerHeight, setContainerHeight] = useState< number | null >(null);
@@ -50,6 +53,7 @@ const ImagePicker: React.FC = () => {
             setContainerWidth(null);
             setRotation(0);
             setResetKey(prevKey => prevKey + 1); 
+            router.push('/cards')
         }catch(error){
             console.error("Error capturing image:", error);
             Alert.alert("Error", "Failed to save the image.");
@@ -82,7 +86,7 @@ const ImagePicker: React.FC = () => {
                 />
             )}
             </ViewShot>
-            <ImageControl toggleModal={toggleSvgModal}/>
+            <ImageControl toggleModal={toggleSvgModal} saveFinalImage={saveFinalImage}/>
             {state.showColorPicker && (
                 <ColorPickerPanel />
             )}
@@ -96,19 +100,6 @@ const ImagePicker: React.FC = () => {
                 <SvgPickerModal/>
             )}
 
-            {state.photoTaken &&  state.selectedSvgId && state.textOnImage &&(
-                <View style={styles.floatingButtonContainer}>
-                    <IconButton
-                        icon='save-alt' 
-                        size={24} 
-                        color={colors.primary} 
-                        onPress={saveFinalImage}
-                        save
-                    />
-                </View>
-            )
-            }
-
         </View>
     )
 }
@@ -116,29 +107,25 @@ export default ImagePicker;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: colors.background, 
+    flex: 1, 
     margin: 10,
+    borderRadius: 5,
   },
  
   imageContainer: {
     width: '100%',
     height: 300,
-    borderColor: colors.border,
+    backgroundColor: colors.background, 
+    borderColor: colors.bodyText,
     borderWidth: 1,
     borderRadius: 5,
     justifyContent: 'center',
     alignItems: 'center',
     overflow: 'hidden',
     marginVertical: 10,
+    ...platformStyle.shadow,  
   },
 
-  floatingButtonContainer: {
-    position: 'absolute',
-    top : 10,
-    right: 0,
-    zIndex: 100
-  }
 
 
 });
