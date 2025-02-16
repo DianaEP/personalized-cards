@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Image, StyleSheet, View } from "react-native";
 import Animated, { Easing, interpolateColor, useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
-import { colors } from "../../../UI/theme";
-import { fonts, useCustomFonts } from "../../../UI/fonts";
+import { colors } from "../../UI/theme";
+import { fonts, useCustomFonts } from "../../UI/fonts";
 
 
 

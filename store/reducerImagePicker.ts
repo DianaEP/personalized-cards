@@ -34,7 +34,7 @@ export interface Action {
     payload?: any;
 }
 
-interface ImageItem {
+export interface ImageItem {
     id: string;
     finalImageUri: string;
   }

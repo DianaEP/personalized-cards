@@ -4,14 +4,13 @@ import { colors } from '../UI/theme';
 import Button from '../UI/buttons/Button';
 import { useRouter } from 'expo-router';
 import { fonts, useCustomFonts } from '../UI/fonts';
-import TextAnimation from '../components/editorPage/animations/TextAnimation';
-import PostcardsAnimation from '../components/editorPage/animations/PostcardsAnimations';
+import TextAnimation from '../components/animations/TextAnimation';
+import PostcardsAnimation from '../components/animations/PostcardsAnimations';
 
 const App: React.FC = () => {
   const fontsLoaded = useCustomFonts();
 
   const router = useRouter();
-  
   
   function handleCreateCard(){
     router.push('/editor');

@@ -4,7 +4,7 @@ import { StyleSheet } from "react-native";
 const PostcardsAnimation: React.FC = () =>{
     return(
         <LottieView
-            source={require("../../../assets/animations/postcards.json")}
+            source={require("../../assets/animations/postcards.json")}
             autoPlay
             loop={false}
             style={styles.container}
