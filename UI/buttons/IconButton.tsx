@@ -11,12 +11,13 @@ interface IconButtonProps {
     icon: keyof typeof Ionicons.glyphMap | keyof typeof MaterialIcons.glyphMap;
     size: number;
     color: string;
-    save?: boolean;
+    materialIcon?: boolean;
+    card?:boolean;
     label?: string;
     onPress: () => void;
 }
 
-const IconButton: React.FC<IconButtonProps> = ({icon, size, color,label, save, onPress}) => {
+const IconButton: React.FC<IconButtonProps> = ({icon, size, color,label, materialIcon, card, onPress}) => {
     const scale = useSharedValue(1);
 
     const animatedStyle =  useAnimatedStyle(() => {
@@ -44,18 +45,25 @@ const IconButton: React.FC<IconButtonProps> = ({icon, size, color,label, save, o
             onPressIn={handlePressIn}
             onPressOut={handlePressOut}
         >
-            <Animated.View style={[styles.button, animatedStyle , { backgroundColor: save ? colors.border : colors.primary}]}>
-                {!save && (
+            <Animated.View style={[
+                styles.button, animatedStyle , 
+                { backgroundColor: materialIcon && card ? 'transparent' : materialIcon ? colors.border : colors.primary },
+                !(materialIcon && card) && platformStyle.shadow
+                ]}>
+                {!materialIcon && (
                     <Ionicons name={icon as keyof typeof Ionicons.glyphMap} size={size} color={color} />
                 )}
-                {save && (
+                {materialIcon && (
                     <MaterialIcons name={icon as keyof typeof MaterialIcons.glyphMap} size={size} color={color}/> 
                 )}
 
             </Animated.View>
-            {!save && (
+
+            {!card && (
                 <Text style={styles.labelText}>{label}</Text>
             )}
+            
+            
         </Pressable>
     )
 }
@@ -70,7 +78,7 @@ const styles = StyleSheet.create({
         // borderColor: colors.border,
         // borderWidth: 1,
         // backgroundColor: colors.background,
-        ...platformStyle.shadow   
+        // ...platformStyle.shadow   
     },
     pressable: {
         justifyContent: 'center',

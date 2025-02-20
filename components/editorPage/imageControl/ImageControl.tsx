@@ -186,8 +186,9 @@ const ImageControl: React.FC<ImageControlProps> = ({toggleModal, saveFinalImage}
                             icon='save-alt' 
                             size={24} 
                             color={colorButton} 
+                            label="Save"
                             onPress={saveFinalImage}
-                            save
+                            materialIcon
                         />
                     </View>
                 </View>
