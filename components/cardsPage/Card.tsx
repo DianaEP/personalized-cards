@@ -1,5 +1,5 @@
-import React from "react";
-import { Dimensions, StyleSheet, View } from "react-native";
+import React, { useCallback } from "react";
+import { Dimensions, StyleSheet, Text, View } from "react-native";
 import { ImageItem } from "../../store/reducerImagePicker";
 import { Link } from "expo-router";
 import { Image } from "react-native";
@@ -10,7 +10,7 @@ import { colors } from "../../UI/theme";
 
 const { width, height } = Dimensions.get('screen');
 
-const cardWidth = width * 0.9;
+const cardWidth = width * 0.85;
 export const cardHeight = height > 700 ? height * 0.5 : height * 0.4;
 
 interface CardProps {
@@ -20,7 +20,8 @@ interface CardProps {
 }
 
 
-const Card: React.FC<CardProps> = ({item, index, scrollX}) => {
+const Card: React.FC<CardProps> = React.memo(({item, index, scrollX}) => { //reduces unnecessary re-renders by memoizing components,It only re-renders when props change
+  // console.log('Rendering Card for item:', item); 
   const animatedStyle = useAnimatedStyle(() => {
     return{
       transform: [
@@ -44,31 +45,41 @@ const Card: React.FC<CardProps> = ({item, index, scrollX}) => {
     }
   })
 
-  const handleDeleteCard = () => {
+  const handleDeleteCard = () => { 
     
   }
   const handleDownloadCard = () => {
     
   }
+  // console.log(item.finalImageUri);
   
   
     return(
-      <Animated.View key={item.id} style={[styles.imageContainer, animatedStyle]}>
+      <Animated.View key={item.clientSideId} style={[styles.imageContainer, animatedStyle]}>
               
         <Link href={`cards/${item.id}`}>
           <View style={styles.imageWrapper}>
-            {/* <Image source={{uri: item.finalImageUri }} style={styles.image}/> */}
+          {item.finalImageUri ? (
+            <Image 
+              source={{ uri: item.finalImageUri }} 
+              style={styles.image}
+              onError={(e) => console.error('Error loading image:', e.nativeEvent.error)} // Error handling
+            />
+          ) : (
+            <Text>Image not available</Text>
+          )}
                 
-            <Image source={item.finalImageUri} style={styles.image}/>
+            {/* <Image source={item.finalImageUri} style={styles.image}/> */}
             <View style={styles.cardButton}>
               <IconButton card materialIcon icon='delete-outline' size={20} color={colors.titleText} onPress={handleDeleteCard}/>
               <IconButton card materialIcon icon='download' size={20} color={colors.titleText} onPress={handleDownloadCard}/>
             </View>
           </View>
         </Link>
+        
       </Animated.View>
     )
-}
+})
 
 export default Card;
 

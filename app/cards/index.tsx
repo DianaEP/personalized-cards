@@ -1,7 +1,7 @@
 import {Dimensions, FlatList, StyleSheet, Text, View, ViewToken } from 'react-native';
 import { colors } from '../../UI/theme';
 import { fonts } from '../../UI/fonts';
-import React, { useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useImageContext } from '../../store/ImageContext';
 import Card, { cardHeight } from '../../components/cardsPage/Card';
 import Animated, { useAnimatedScrollHandler, useSharedValue } from 'react-native-reanimated';
@@ -10,46 +10,57 @@ import uuid from 'react-native-uuid';
 
 const { width, height } = Dimensions.get("screen");
 
-const imageData = [
-  {
-    id: '1',
-    finalImageUri : require('../../assets/images/umbrellaCropped.jpg')
-  },
-  {
-    id: '2',
-    finalImageUri : require('../../assets/images/umbrellaCropped.jpg')
-  },
-  {
-    id: '3',
-    finalImageUri : require('../../assets/images/umbrellaCropped.jpg')
-  },
-  {
-    id: '4',
-    finalImageUri : require('../../assets/images/umbrellaCropped.jpg')
-  },
-]
+// const imageHistory = [
+//   {
+//     id: '1',
+//     clientSideId: uuid.v4(),
+//     finalImageUri : require('../../assets/images/umbrellaCropped.jpg')
+//   },
+//   {
+//     id: '2',
+//     clientSideId: uuid.v4(),
+//     finalImageUri : require('../../assets/images/umbrellaCropped.jpg')
+//   },
+//   {
+//     id: '3',
+//     clientSideId: uuid.v4(),
+//     finalImageUri : require('../../assets/images/umbrellaCropped.jpg')
+//   },
+//   {
+//     id: '4',
+//     clientSideId: uuid.v4(),
+//     finalImageUri : require('../../assets/images/umbrellaCropped.jpg')
+//   },
+// ]
 const cardWidth = width * 0.8;
 
 const Cards: React.FC = () => {
-  // const { state } = useImageContext();
-  // const imageHistory = state.imageHistory;
+  const { state } = useImageContext();
+  const imageHistory = state.imageHistory;
   const [paginationIndex, setPaginationIndex] = useState(0);
-  const [data, setData] = useState(imageData);
+  const [data, setData] = useState(imageHistory);
   const scrollX = useSharedValue(0);
+
+  useEffect(() => {
+    setData(imageHistory);
+  }, []);
+
   
+  // console.log('imageHistory:', imageHistory);
   const handleScrollAnimation = useAnimatedScrollHandler({
     onScroll: (event) => {
       scrollX.value =  event.contentOffset.x;
     }
   })
 
-  const onViewableItemsChanged = ({viewableItems}: {viewableItems: ViewToken[]}) => {
+  const onViewableItemsChanged = useCallback(({viewableItems}: {viewableItems: ViewToken[]}) => { //a callback function that will be triggered when items in the list change their viewability status.It receives an object that contains the list of viewableItems
     if(viewableItems[0].index !== undefined && viewableItems[0].index !== null){
-      setPaginationIndex(viewableItems[0].index % imageData.length)
+      console.log("Viewable item index changed:", viewableItems[0].index);
+      setPaginationIndex(viewableItems[0].index % imageHistory.length)
     }
-  }
+  },[])
 
-  const viewabilityConfig = {
+  const viewabilityConfig = { //the percentage of the item that needs to be visible for it to be considered viewable
     itemVisiblePercentThreshold: 50
   }
 
@@ -57,22 +68,26 @@ const Cards: React.FC = () => {
     {viewabilityConfig, onViewableItemsChanged}
   ])
 
-  const handleEndReached = () => {
-    const newData = imageData.map((item, index) => ({
+  const handleEndReached = useCallback(() => {
+    const newData = imageHistory.map((item, index) => ({
       ...item,
-      id: uuid.v4(), // Modify the ID to ensure uniqueness
+      clientSideId: uuid.v4(), 
     }));
-    setData((prevData) => [...prevData, ...newData]); // Add the new data with unique IDs
-  };
+    console.log(`${newData[0].id}--${newData[0].clientSideId}`);
+    
+    setData((prevData) =>  [...prevData, ...newData]);  // Check performance later!!!!
+  },[imageHistory]);
+
   
+
   
   return (
     <View style={styles.container}>
-      {/* <Text style={styles.text}>Your Gallery</Text> */}
+     
       {/* <View style={[styles.stackContainer, { width, height}]}> */}
         <Animated.FlatList 
           data={data}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item) => item.clientSideId}
           renderItem={({item, index}) => <Card item={item} index={index} scrollX={scrollX}/>}
           horizontal
           showsHorizontalScrollIndicator={false}
@@ -80,12 +95,13 @@ const Cards: React.FC = () => {
           onScroll={handleScrollAnimation}
           scrollEventThrottle={16}
           contentContainerStyle={{
-            alignItems: 'center',
+            alignItems: 'flex-end',
           }}
-          viewabilityConfigCallbackPairs={viewabilityConfigCallbackPairs.current}
+          viewabilityConfigCallbackPairs={viewabilityConfigCallbackPairs.current} //track the visibility of items as they scroll in and out of view, expects an array of objects, each containing a viewabilityConfig and a corresponding onViewableItemsChanged callback function
           onEndReached={handleEndReached}
         />
-        <Pagination items={imageData} scrollX={scrollX} paginationIndex={paginationIndex}/>
+        <Pagination items={imageHistory} scrollX={scrollX} paginationIndex={paginationIndex}/>
+         <Text style={styles.text}>*Only the last 10 images are stored. Be sure to download them before they are replaced!* </Text>
       {/* </View> */}
     </View>
   );
@@ -97,12 +113,14 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background, 
     alignItems: 'center',
-    justifyContent: 'center',
+    // justifyContent: 'center',
     paddingVertical: 20
   },
   text: {
+    textAlign: 'center',
     color: colors.bodyText,
-     fontFamily: fonts.body,
+    fontFamily: fonts.body,
+    fontSize: 9,
   },
   // stackContainer: {
   //   flex: 1,

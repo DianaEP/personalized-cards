@@ -14,7 +14,7 @@ const { width} = Dimensions.get('screen');
 
 const Pagination: React.FC<PaginationProps> = ({items, paginationIndex, scrollX}) => {
   
-  
+    console.log("Pagination items:", items.length, "Pagination Index:", paginationIndex);
   
     return(
            <View style={styles.container}>
@@ -49,9 +49,10 @@ export default Pagination;
 
 const styles = StyleSheet.create({
     container: {
-        // flex: 1,
+        flex: 1,
         flexDirection: 'row',
         height: 60,
+        paddingTop: 20,
         // justifyContent: 'center',
         // alignItems: 'center'
     },
