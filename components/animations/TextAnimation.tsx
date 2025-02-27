@@ -3,6 +3,7 @@ import { Image, StyleSheet, View } from "react-native";
 import Animated, { Easing, interpolateColor, useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
 import { colors } from "../../UI/theme";
 import { fonts, useCustomFonts } from "../../UI/fonts";
+import { height } from "../../util/screenDimension";
 
 
 
@@ -72,14 +73,14 @@ export default TextAnimation;
 const styles = StyleSheet.create({
     textWrapper:{
         position: 'absolute',
-        top: 0,
+        top: height > 620 ? 25 : 0,
         left: 20,
         width: '90%',
         height: 100,
         zIndex: 1000
     },
     text:{
-        fontSize: 20,
+        fontSize: height > 620 ? 24 : 20,
         textAlign: 'center',
         fontFamily: fonts.handwriting,
         

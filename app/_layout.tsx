@@ -2,10 +2,11 @@ import { Tabs } from "expo-router";
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { colors } from "../UI/theme";
-import { StyleSheet } from "react-native";
+import { Platform, StyleSheet } from "react-native";
 import { fonts, useCustomFonts } from "../UI/fonts";
 import React from "react";
 import { ImageContextProvider } from "../store/ImageContext";
+import { height } from "../util/screenDimension";
 
 
 const Layout: React.FC = () => {
@@ -22,18 +23,23 @@ const Layout: React.FC = () => {
                 tabBarActiveTintColor: colors.titleText,
                 tabBarInactiveTintColor: colors.bodyText,
                 tabBarStyle: {
-                    backgroundColor: colors.background
+                    backgroundColor: colors.background,
+                    height: height > 620 ? 70 : 55,
+                    paddingTop: height > 620 ? 5 : 0,
                 },
                 tabBarLabelStyle: {
                     fontFamily: fonts.body,
+                    fontSize: height > 620 ? 12 : 11,
                 },
                 headerStyle: {
-                    backgroundColor: colors.background
+                    backgroundColor: colors.background,
+                    
                 },
                 headerTintColor: colors.titleText,
                 headerTitleStyle: {
                     fontFamily: fonts.title,
-                    fontSize: 24,
+                    fontSize: height > 620 ? 26 : 24,
+                    marginTop: Platform.OS === 'android' ? (height > 620 ? 10 : 5 ) : 0,
                 },
                 
             }}>

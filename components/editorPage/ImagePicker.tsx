@@ -18,6 +18,7 @@ import FontSizeSlider from "./imageControl/controllers/FontSizeSlider";
 import IconButton from "../../UI/buttons/IconButton";
 import { platformStyle } from "../../UI/shadowStyle";
 import { useRouter } from "expo-router";
+import { height, width } from "../../util/screenDimension";
 
 const ImagePicker: React.FC = () => {
     const { state, dispatch } = useImageContext();
@@ -108,6 +109,7 @@ export default ImagePicker;
 const styles = StyleSheet.create({
   container: {
     flex: 1, 
+    justifyContent: 'center',
     margin: 10,
     borderRadius: 5,
   },
@@ -122,7 +124,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     overflow: 'hidden',
-    marginVertical: 10,
+    marginVertical: height > 700 ? 40 : 10,
     ...platformStyle.shadow,  
   },
 

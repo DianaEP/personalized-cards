@@ -8,6 +8,7 @@ import { fonts } from "../../../UI/fonts";
 import { useState } from "react";
 import { useSharedValue } from "react-native-reanimated";
 import React from "react";
+import { height, width } from "../../../util/screenDimension";
 
 interface ImageControlProps {
     toggleModal: () => void; 
@@ -106,7 +107,8 @@ const ImageControl: React.FC<ImageControlProps> = ({toggleModal, saveFinalImage}
         dispatch({ type: ACTIONS.TOGGLE_EDITOR_TEXT})
     }
 
-    const colorButton = colors.titleText;
+    const colorButton = colors.border;
+    const sizeButton = width > 400 ? 28 : 24;
 
     return(
         <View style={styles.imageButtons}>
@@ -115,7 +117,7 @@ const ImageControl: React.FC<ImageControlProps> = ({toggleModal, saveFinalImage}
                     
                     <IconButton 
                         icon='camera' 
-                        size={24} 
+                        size={sizeButton} 
                         color={colorButton} 
                         label='Camera'
                         onPress={() => pickImage(true)}
@@ -123,14 +125,14 @@ const ImageControl: React.FC<ImageControlProps> = ({toggleModal, saveFinalImage}
                    
                     <IconButton 
                         icon="image" 
-                        size={24} 
+                        size={sizeButton} 
                         color={colorButton} 
                         label='Photos'
                         onPress={() => pickImage(false)}
                     />
                     <IconButton 
                         icon='grid' 
-                        size={24} 
+                        size={sizeButton} 
                         color={colorButton}
                         label='SVG' 
                         onPress={toggleModal}
@@ -140,21 +142,21 @@ const ImageControl: React.FC<ImageControlProps> = ({toggleModal, saveFinalImage}
 
                     <IconButton 
                         icon='add-outline' 
-                        size={24} 
+                        size={sizeButton} 
                         color={colorButton} 
                         label='Add Text'
                         onPress={toggleEditorText}
                     />
                     <IconButton 
                         icon='text' 
-                        size={24} 
+                        size={sizeButton} 
                         color={colorButton} 
                         label='Font'
                         onPress={toggleTextFont}
                     />
                     <IconButton 
                         icon='resize' 
-                        size={24} 
+                        size={sizeButton} 
                         color={colorButton} 
                         label='Font Size'
                         onPress={toggleFontSizeSlider}
@@ -165,14 +167,14 @@ const ImageControl: React.FC<ImageControlProps> = ({toggleModal, saveFinalImage}
                 <View style={styles.iconsColors}>
                     <IconButton 
                         icon='color-palette' 
-                        size={24} 
+                        size={sizeButton} 
                         color={colorButton} 
                         label='Color Picker'
                         onPress={toggleColorPicker}
                     />
                     <IconButton 
                         icon='swap-horizontal' 
-                        size={24} 
+                        size={sizeButton} 
                         color={colorButton}
                         label='Switch Color' 
                         onPress={setTargetColor}
@@ -184,8 +186,8 @@ const ImageControl: React.FC<ImageControlProps> = ({toggleModal, saveFinalImage}
                     <View style={styles.iconsColors}>
                     <IconButton
                             icon='save-alt' 
-                            size={24} 
-                            color={colorButton} 
+                            size={sizeButton} 
+                            color={colors.primary} 
                             label="Save"
                             onPress={saveFinalImage}
                             materialIcon
@@ -200,22 +202,23 @@ export default ImageControl;
 
 const styles = StyleSheet.create({
   imageButtons: {
+    // flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-evenly',
-    columnGap: 10,
-    marginVertical: 5,   
+    columnGap: width > 400 ? 15 : 10,
+    marginVertical: height > 700 ? 20 : 5,   
   },
   wrapperIcons: {
     flexDirection: 'column',
-    rowGap: 10
+    rowGap: width > 400 ? 15 : 10
   },
   icons: {
     flexDirection: 'row',
     justifyContent: 'center',
-    columnGap: 20
+    columnGap: width > 400 ? 25 : 20
   },
   iconsColors: {
     flexDirection: 'column',
-    rowGap: 10
+    rowGap: width > 400 ? 15 : 10
   },
 });

@@ -8,7 +8,7 @@ export const platformStyle: { shadow: ViewStyle} = { // This type comes from Rea
             elevation: 4,
           },
           ios: {
-            shadowColor: colors.border,
+            shadowColor: colors.titleText,
             shadowOffset: { width: 0, height: 2 },
             shadowOpacity: 0.25,
             shadowRadius: 3.84,

@@ -36,7 +36,7 @@ export interface Action {
 
 export interface ImageItem {
     id: string;
-    clientSideId: string;
+    // clientSideId: string;
     finalImageUri: string;
   }
 
@@ -113,7 +113,7 @@ export const initialState: State = {
     selectedSvgId: null,
     svgPosition: { x: 0, y: 0 },
     svgScale: 1,
-    svgColor: colors.background,
+    svgColor: colors.titleText,
     svgRotation: 0,
 
     chosenColor: colors.titleText,
@@ -131,9 +131,9 @@ export const actionHandlers = {
     [ACTIONS.SET_PHOTO]: (state: State, action: Action) => ({ ...state, photoTaken: action.payload}),
     [ACTIONS.SET_FINAL_IMAGE_URI] : (state: State, action: Action) => {
         const newId = uuid.v4();
-        const clientNewId = uuid.v4();
+        // const clientNewId = uuid.v4();
         const updatedHistory = [
-            {id: newId, clientSideId: clientNewId,finalImageUri: action.payload},
+            {id: newId,  finalImageUri: action.payload},
             ...state.imageHistory.slice(0,9) // Keep only the last 9, then add the new one
         ];
         return {

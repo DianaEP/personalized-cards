@@ -8,6 +8,7 @@ import { ASSETS_SVG, AssetSvg } from '../../../../util/dataSvg';
 import React, { useEffect, useState } from 'react';
 import { ACTIONS } from '../../../../store/reducerImagePicker';
 import { useImageContext } from '../../../../store/ImageContext';
+import { height, width } from '../../../../util/screenDimension';
 
 
 interface SvgItemProps {
@@ -48,7 +49,7 @@ const SvgItem: React.FC<SvgItemProps> = ({item, onSelect}) => {
             onPressOut={() => pressOut(item)} 
         >
             <Animated.View style={[styles.svgContainer, animatedStyle] }>
-                <SvgComponent  width={50} height={50} color={colors.background}/>
+                <SvgComponent  width={50} height={50} color={colors.titleText}/>
             </Animated.View>
 
         </Pressable>
@@ -103,7 +104,7 @@ const styles = StyleSheet.create({
  
     modalContainer: {
         position: 'absolute', 
-        top: 60, 
+        top: height > 700 ? 100 : 60, 
         left: 0, 
         backgroundColor: colors.background,
         // borderColor: colors.border,
@@ -111,7 +112,7 @@ const styles = StyleSheet.create({
         // borderWidth: 1,
         width: '100%',
         height: 'auto', 
-        padding: 20,
+        padding: width > 360 ? 30 : 20,
         ...platformStyle.shadow,    
     },
     modalContent: {
@@ -119,16 +120,17 @@ const styles = StyleSheet.create({
     },
     modalTitle: {
         fontFamily: fonts.body,
-        fontSize: 18,
-        color: colors.titleText,
-        marginBottom: 15
+        fontSize: width > 360 ? 20 : 18,
+        fontWeight: 'bold',
+        color: colors.bodyText,
+        marginBottom: width > 360 ? 20 : 15
     },
     svgContainer: {
         borderRadius: 50,
         backgroundColor: colors.bodyText,
         overflow: 'hidden', 
-        padding: 10,   
-        margin: 5,
+        padding: width > 360 ? 15 : 10,   
+        margin: width > 360 ? 10 : 5,
         
     },
     

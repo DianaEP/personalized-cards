@@ -6,6 +6,7 @@ import { platformStyle } from "../shadowStyle";
 import React, { useState } from "react";
 import { Text } from "react-native";
 import { fonts } from "../fonts";
+import { width } from "../../util/screenDimension";
 
 interface IconButtonProps {
     icon: keyof typeof Ionicons.glyphMap | keyof typeof MaterialIcons.glyphMap;
@@ -71,10 +72,10 @@ export default IconButton;
 
 const styles = StyleSheet.create({
     button: {
-        padding: 8,
+        padding: width > 400 ? 12 : 8,
         justifyContent: 'center',
         alignItems: 'center',
-        borderRadius: 25,
+        borderRadius: width > 400 ? 30 : 25,
         // borderColor: colors.border,
         // borderWidth: 1,
         // backgroundColor: colors.background,
@@ -87,8 +88,8 @@ const styles = StyleSheet.create({
     labelText: {
         fontFamily: fonts.body,
         color: colors.bodyText,
-        fontSize: 10,
-        marginTop: 5,
+        fontSize: width > 400 ? 12 : 10,
+        marginTop: width > 400 ? 7 : 5,
     }
 })
 

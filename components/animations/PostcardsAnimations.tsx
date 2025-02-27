@@ -1,5 +1,6 @@
 import LottieView from "lottie-react-native";
 import { StyleSheet } from "react-native";
+import { height } from "../../util/screenDimension";
 
 const PostcardsAnimation: React.FC = () =>{
     return(
@@ -19,6 +20,6 @@ const styles = StyleSheet.create({
     container:{
         // flex: 1,
         width: '100%',
-        height: 300  
+        height: height > 620 ? 400 :  300,  
     }
 })

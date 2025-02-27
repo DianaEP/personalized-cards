@@ -3,6 +3,7 @@ import { fonts } from "../../../UI/fonts";
 import { colors } from "../../../UI/theme";
 import React from "react";
 import { useImageContext } from "../../../store/ImageContext";
+import { width } from "../../../util/screenDimension";
 
 // interface ImagePreviewProps {
 //   photoTaken: string | null;
@@ -23,9 +24,11 @@ const styles = StyleSheet.create({
   text: {
       color: colors.bodyText,
       fontFamily: fonts.body,
+      fontSize: width > 400 ? 18 : 14,
   },
   image: {
     width: '100%',
     height: '100%',
+    resizeMode: 'cover',
   },
 })

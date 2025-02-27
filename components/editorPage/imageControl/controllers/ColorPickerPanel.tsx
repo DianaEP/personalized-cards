@@ -5,6 +5,7 @@ import { useImageContext } from "../../../../store/ImageContext";
 import { ACTIONS } from "../../../../store/reducerImagePicker";
 import Animated, { Easing, FadeIn, FadeInDown, FadeInUp, FadeOut, FadeOutDown, FadeOutUp} from "react-native-reanimated";
 import { platformStyle } from "../../../../UI/shadowStyle";
+import { height, width } from "../../../../util/screenDimension";
 
 
 const ColorPickerPanel: React.FC = () => {
@@ -46,7 +47,7 @@ const styles = StyleSheet.create({
     // borderWidth: 1,
     borderRadius: 5,
     position: 'absolute',
-    top: 8,
+    top: height > 700 ? 90 : 8,
     left: 0,
     width: '100%',
     height: 'auto', 
@@ -55,10 +56,10 @@ const styles = StyleSheet.create({
 },
 colorPickerText: {
   color: colors.bodyText,
-  fontSize: 18,
+  fontSize: width > 360 ? 20 : 18,
   fontWeight: 'bold',
   textAlign: 'center',
-  marginBottom: 10
+  marginBottom: width > 360 ? 20 : 10
 }
 
 });

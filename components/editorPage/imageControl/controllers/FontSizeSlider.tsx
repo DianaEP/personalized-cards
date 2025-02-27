@@ -6,6 +6,7 @@ import { colors } from "../../../../UI/theme";
 import { useState } from "react";
 import Animated, { FadeInDown, FadeOutDown, useDerivedValue, useSharedValue } from "react-native-reanimated";
 import { platformStyle } from "../../../../UI/shadowStyle";
+import { height, width } from "../../../../util/screenDimension";
 
 
 const FontSizeSlider: React.FC = () => {
@@ -43,19 +44,19 @@ const styles = StyleSheet.create({
         // borderWidth: 1,
         borderRadius: 5,
         position: 'absolute',
-        top: 200,
+        top: height > 700 ? 270 : 200,
         left: 0,
         width: '100%',
         height: 'auto', 
-        padding: 20,
+        padding: width > 360 ? 30 : 20,
         ...platformStyle.shadow,  
     },
     sliderText: {
         color: colors.bodyText,
-        fontSize: 18,
+        fontSize: width > 360 ? 20 : 18,
         fontWeight: 'bold',
         textAlign: 'center',
-        marginBottom: 10
+        marginBottom: width > 360 ? 20 : 10
     },
     slider: {
         width: '100%',

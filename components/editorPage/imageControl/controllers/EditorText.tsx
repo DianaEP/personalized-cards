@@ -7,6 +7,7 @@ import { ACTIONS } from "../../../../store/reducerImagePicker";
 import { useImageContext } from "../../../../store/ImageContext";
 import Animated, { FadeInDown, FadeOutDown } from "react-native-reanimated";
 import { platformStyle } from "../../../../UI/shadowStyle";
+import { height, width } from "../../../../util/screenDimension";
 
 
 
@@ -54,16 +55,16 @@ const styles = StyleSheet.create({
         // borderWidth: 1,
         borderRadius: 5,
         position: 'absolute',
-        top: 220,
+        top: height > 700 ? 290 : 220,
         left: 0,
         width: '100%',
         height: 'auto', 
-        padding: 20,
+        padding: width > 360 ? 30 : 20,
        ...platformStyle.shadow,  
     },
     input: {
         fontFamily: fonts.body,
-        fontSize: 16,
+        fontSize: width > 360 ? 18 : 16,
         width: '60%',
         borderBottomWidth: 1,
         borderBottomColor: colors.line,

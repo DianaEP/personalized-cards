@@ -8,10 +8,11 @@ type ColorsType = {
 }
 
 export const colors: ColorsType = {
-    primary: "#c47c63",
-    line: '#645a41',
-    background: "#393939",
-    titleText: "#E8ECDEFF",
-    bodyText: "#8A8787", 
-    border: "#898055",
+    primary: "#6f3f3a",       // Warm Red-Brown (Rich and rustic)
+    line: "#a89f91",          // Taupe (Soft and balanced)
+    background: "#f4e6d7",    // Soft Almond (Neutral and calming)
+    titleText: "#3a2f28",      // Dark Chocolate (Deep and rich)
+    bodyText: "#7d6c5b",       // Sandy Brown (Earthy and inviting)
+    border: "#e2b49d",         // Soft Copper (Warm and subtle)
+  
 }

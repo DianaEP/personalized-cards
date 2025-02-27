@@ -5,13 +5,13 @@ import { Link } from "expo-router";
 import { Image } from "react-native";
 import { platformStyle } from "../../UI/shadowStyle";
 import Animated, { Extrapolation, interpolate, SharedValue, useAnimatedStyle, useSharedValue } from "react-native-reanimated";
-import IconButton from "../../UI/buttons/IconButton";
 import { colors } from "../../UI/theme";
+import { height, width } from "../../util/screenDimension";
 
-const { width, height } = Dimensions.get('screen');
 
-const cardWidth = width * 0.85;
-export const cardHeight = height > 700 ? height * 0.5 : height * 0.4;
+
+const cardWidth = width * 0.9;
+export const cardHeight = height > 700 ? height * 0.3 : height * 0.4;
 
 interface CardProps {
   item: ImageItem,
@@ -45,37 +45,26 @@ const Card: React.FC<CardProps> = React.memo(({item, index, scrollX}) => { //red
     }
   })
 
-  const handleDeleteCard = () => { 
-    
-  }
-  const handleDownloadCard = () => {
-    
-  }
+  
   // console.log(item.finalImageUri);
   
   
     return(
-      <Animated.View key={item.clientSideId} style={[styles.imageContainer, animatedStyle]}>
-              
+      <Animated.View key={item.id} style={[styles.imageContainer, animatedStyle]}>
+        
         <Link href={`cards/${item.id}`}>
           <View style={styles.imageWrapper}>
-          {item.finalImageUri ? (
+          
             <Image 
               source={{ uri: item.finalImageUri }} 
               style={styles.image}
               onError={(e) => console.error('Error loading image:', e.nativeEvent.error)} // Error handling
-            />
-          ) : (
-            <Text>Image not available</Text>
-          )}
-                
+            />     
             {/* <Image source={item.finalImageUri} style={styles.image}/> */}
-            <View style={styles.cardButton}>
-              <IconButton card materialIcon icon='delete-outline' size={20} color={colors.titleText} onPress={handleDeleteCard}/>
-              <IconButton card materialIcon icon='download' size={20} color={colors.titleText} onPress={handleDownloadCard}/>
-            </View>
+            
           </View>
         </Link>
+        
         
       </Animated.View>
     )
@@ -100,16 +89,11 @@ const styles = StyleSheet.create({
   },
   image: {
     width: '100%',
+    // aspectRatio: 1.2,
     height: '100%',
     resizeMode: 'cover',
     borderRadius: 10,
-  },
-  cardButton: {
-    position: 'absolute',
-    right: 5,
-    top: 5,
-    flexDirection: 'row',
-    gap: 2
   }
+
   
 });
