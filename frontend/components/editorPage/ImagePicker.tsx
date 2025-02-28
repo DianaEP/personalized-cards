@@ -19,6 +19,7 @@ import IconButton from "../../UI/buttons/IconButton";
 import { platformStyle } from "../../UI/shadowStyle";
 import { useRouter } from "expo-router";
 import { height, width } from "../../util/screenDimension";
+import { saveImageUri } from "../../util/http/postcardApi";
 
 const ImagePicker: React.FC = () => {
     const { state, dispatch } = useImageContext();
@@ -48,7 +49,11 @@ const ImagePicker: React.FC = () => {
         try{
             const uri = await viewShotRef.current.capture();
             dispatch({type: ACTIONS.SET_FINAL_IMAGE_URI, payload: uri});
-            Alert.alert("Image Saved!", "Your final image has been saved.");
+
+            const response = await saveImageUri(uri);
+            if( response && response.id){
+                Alert.alert("Image Saved!", "Your final image has been saved.");
+            }
             dispatch({ type: ACTIONS.RESET_STATE })
             setContainerHeight(null)
             setContainerWidth(null);
