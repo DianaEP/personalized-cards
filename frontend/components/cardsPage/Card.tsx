@@ -21,7 +21,7 @@ interface CardProps {
 
 
 const Card: React.FC<CardProps> = React.memo(({item, index, scrollX}) => { //reduces unnecessary re-renders by memoizing components,It only re-renders when props change
-  // console.log('Rendering Card for item:', item); 
+
   const animatedStyle = useAnimatedStyle(() => {
     return{
       transform: [

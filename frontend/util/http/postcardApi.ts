@@ -25,7 +25,7 @@ export const getImages = async () => {
 //Delete an image(DELETE)
 export const deleteImage = async (id: string) => {
     try{
-        const response = await axiosInstance.delete(`/postcard/${id}`);
+        const response = await axiosInstance.delete(`/postcards/${id}`);
         return response.data;
     }catch(error){
         console.error('Error deleting image:', error);

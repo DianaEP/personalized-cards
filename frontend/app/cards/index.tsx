@@ -9,17 +9,36 @@ import Pagination from '../../components/cardsPage/Pagination';
 import IconButton from "../../UI/buttons/IconButton";
 import uuid from 'react-native-uuid';
 import Button from '../../UI/buttons/Button';
+import { getImages } from '../../util/http/postcardApi';
+import { ACTIONS } from '../../store/reducerImagePicker';
+import axios from 'axios';
 
 const { width, height } = Dimensions.get("window");
 const cardWidth = width * 0.8;
 
 const Cards: React.FC = () => {
-  const { state } = useImageContext();
+  const { state , dispatch} = useImageContext();
   const imageHistory = state.imageHistory;
   const [paginationIndex, setPaginationIndex] = useState(0);
   const scrollX = useSharedValue(0);
 
   // const derivedScrollX = useDerivedValue(() => scrollX.value, [scrollX]);
+
+
+  useEffect(() => {
+    const fetchImageHistory = async () => {
+      try{
+        const response = await getImages();
+        if (response.length > 0) {
+          dispatch({ type: ACTIONS.SET_IMAGE_HISTORY, payload: response });
+        }
+      }catch(error){
+        console.error('Error fetching image history:', error);
+      }
+
+    }
+    fetchImageHistory();
+  },[])
   
   const handleScrollAnimation = useAnimatedScrollHandler({
     onScroll: (event) => {
@@ -29,7 +48,6 @@ const Cards: React.FC = () => {
 
   const onViewableItemsChanged = useCallback(({viewableItems}: {viewableItems: ViewToken[]}) => { //a callback function that will be triggered when items in the list change their viewability status.It receives an object that contains the list of viewableItems
     if(viewableItems[0].index !== undefined && viewableItems[0].index !== null){
-      console.log("Viewable item index changed:", viewableItems[0].index);
       setPaginationIndex(viewableItems[0].index)
     }
   },[])
@@ -55,6 +73,7 @@ const Cards: React.FC = () => {
   }
 
   const sizeButton = width > 360 ? 24 : 20; 
+  
   return (
     <View style={styles.container}>
      
@@ -63,7 +82,7 @@ const Cards: React.FC = () => {
         <>
           <Animated.FlatList 
             data={imageHistory}
-            keyExtractor={(item) => item.id}
+            keyExtractor={(item) => item.id.toString()}
             renderItem={({item, index}) => <Card item={item} index={index} scrollX={scrollX}/>}
             horizontal
             showsHorizontalScrollIndicator={false}

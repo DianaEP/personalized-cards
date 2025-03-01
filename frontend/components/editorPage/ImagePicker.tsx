@@ -20,6 +20,32 @@ import { platformStyle } from "../../UI/shadowStyle";
 import { useRouter } from "expo-router";
 import { height, width } from "../../util/screenDimension";
 import { saveImageUri } from "../../util/http/postcardApi";
+import * as FileSystem from 'expo-file-system'; 
+
+// This is needed because the `viewShotRef.current.capture()` method initially saves the image URI as a temporary cache.
+// When the app re-renders, the cached URI might no longer be valid or accessible, causing issues when trying to display or process the image.
+// By moving the image to permanent storage, we ensure that the URI remains valid across re-renders and app restarts.
+const moveImageToPermanentStorage = async(uri: string): Promise<string> => {
+    try{
+         // 1. Check if the document directory (permanent storage) is available.
+        if (!FileSystem.documentDirectory) {
+            throw new Error("Permanent storage directory is not available.");
+        }
+         // 2. Extract the file name from the URI.
+        const fileName = uri.split('/').pop();
+         // 3. Construct the permanent URI by appending the file name to the document directory.
+        const permanentUri = FileSystem.documentDirectory + fileName;
+         // 4.`moveAsync()` actually moves the file from the temporary location to the new permanent path.
+        await FileSystem.moveAsync({
+            from: uri,
+            to: permanentUri,
+        });
+        return permanentUri
+    }catch(error){
+        console.error("Error moving image to permanent storage:", error);
+        throw new Error("Failed to move image to permanent storage");
+    }
+}
 
 const ImagePicker: React.FC = () => {
     const { state, dispatch } = useImageContext();
@@ -48,10 +74,14 @@ const ImagePicker: React.FC = () => {
         if(!viewShotRef.current || !viewShotRef.current.capture) return;
         try{
             const uri = await viewShotRef.current.capture();
-            dispatch({type: ACTIONS.SET_FINAL_IMAGE_URI, payload: uri});
+            const permanentUri = await moveImageToPermanentStorage(uri);
 
-            const response = await saveImageUri(uri);
+            const response = await saveImageUri(permanentUri);
+
             if( response && response.id){
+                const newImage = { id: response.id, finalImageUri: permanentUri};
+                dispatch({ type: ACTIONS.SET_IMAGE_HISTORY, payload: newImage });
+                
                 Alert.alert("Image Saved!", "Your final image has been saved.");
             }
             dispatch({ type: ACTIONS.RESET_STATE })

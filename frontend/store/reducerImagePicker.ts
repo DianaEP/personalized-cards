@@ -6,7 +6,7 @@ import uuid from 'react-native-uuid';
 // Action interface for each possible action
 type ActionsType =  
     'SET_PHOTO'| 
-    'SET_FINAL_IMAGE_URI'|
+    'SET_IMAGE_HISTORY'|
 
     'SET_OVERLAY_TEXT'| 
     'ADD_TEXT_ON_IMAGE'| 
@@ -75,6 +75,7 @@ export const ACTIONS = {
     // image actions
     SET_PHOTO: 'SET_PHOTO',
     SET_FINAL_IMAGE_URI: 'SET_FINAL_IMAGE_URI',
+    SET_IMAGE_HISTORY: 'SET_IMAGE_HISTORY',
 
     // text actions
     SET_OVERLAY_TEXT: 'SET_OVERLAY_TEXT',
@@ -129,13 +130,15 @@ export const initialState: State = {
 
 export const actionHandlers = {
     [ACTIONS.SET_PHOTO]: (state: State, action: Action) => ({ ...state, photoTaken: action.payload}),
-    [ACTIONS.SET_FINAL_IMAGE_URI] : (state: State, action: Action) => {
-        const newId = uuid.v4();
-        // const clientNewId = uuid.v4();
-        const updatedHistory = [
-            {id: newId,  finalImageUri: action.payload},
-            ...state.imageHistory.slice(0,9) // Keep only the last 9, then add the new one
-        ];
+    [ACTIONS.SET_IMAGE_HISTORY] : (state: State, action: Action) => {
+        // Check if action.payload is an array or a single object, and convert it in an array if is an object
+        const newEntries = Array.isArray(action.payload) ? action.payload : [action.payload];
+        //We use `filter()` to check if the new image already exists based on the `id`
+        const uniqueNewEntries = newEntries.filter((newImage) => {
+            return !state.imageHistory.some((existingImage) => existingImage.id === newImage.id)
+        })
+        const updatedHistory = [...uniqueNewEntries, ...state.imageHistory].slice(0, 9);
+
         return {
             ...state,
             imageHistory: updatedHistory
