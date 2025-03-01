@@ -79,7 +79,7 @@ const TextOverlay: React.FC<TextOverlayProps> = ({
 
 
 
-  console.log(state.textFontSize);
+  // console.log(state.textFontSize);
 
   return (
     <>

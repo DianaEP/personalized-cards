@@ -14,7 +14,7 @@ const FontSizeSlider: React.FC = () => {
 
     const handleFontSizeState = (value: number) => {
         dispatch({ type: ACTIONS.SET_TEXT_FONT_SIZE, payload: value})
-        console.log(state.textFontSize);
+        // console.log(state.textFontSize);
     }
 
     

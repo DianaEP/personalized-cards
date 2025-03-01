@@ -1,6 +1,4 @@
 import { Alert, ScrollView, StyleSheet, Text, View } from "react-native";
-
-
 import { colors } from "../../UI/theme";
 import React, {  useRef, useState } from "react";
 import EditorText from "./imageControl/controllers/EditorText";

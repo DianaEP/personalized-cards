@@ -7,6 +7,7 @@ import uuid from 'react-native-uuid';
 type ActionsType =  
     'SET_PHOTO'| 
     'SET_IMAGE_HISTORY'|
+    'REMOVE_IMAGE_HiSTORY'|
 
     'SET_OVERLAY_TEXT'| 
     'ADD_TEXT_ON_IMAGE'| 
@@ -74,8 +75,8 @@ export interface State  {
 export const ACTIONS = {
     // image actions
     SET_PHOTO: 'SET_PHOTO',
-    SET_FINAL_IMAGE_URI: 'SET_FINAL_IMAGE_URI',
     SET_IMAGE_HISTORY: 'SET_IMAGE_HISTORY',
+    REMOVE_IMAGE_HiSTORY: 'REMOVE_IMAGE_HiSTORY',
 
     // text actions
     SET_OVERLAY_TEXT: 'SET_OVERLAY_TEXT',
@@ -140,6 +141,13 @@ export const actionHandlers = {
         const updatedHistory = [...uniqueNewEntries, ...state.imageHistory].slice(0, 9);
 
         return {
+            ...state,
+            imageHistory: updatedHistory
+        }
+    },
+    [ACTIONS.REMOVE_IMAGE_HiSTORY]: (state: State, action: Action) => {
+        const updatedHistory = state.imageHistory.filter((image) => image.id !== action.payload);
+        return{
             ...state,
             imageHistory: updatedHistory
         }

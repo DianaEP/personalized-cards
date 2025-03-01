@@ -9,7 +9,7 @@ import Pagination from '../../components/cardsPage/Pagination';
 import IconButton from "../../UI/buttons/IconButton";
 import uuid from 'react-native-uuid';
 import Button from '../../UI/buttons/Button';
-import { getImages } from '../../util/http/postcardApi';
+import { deleteImage, getImages } from '../../util/http/postcardApi';
 import { ACTIONS } from '../../store/reducerImagePicker';
 import axios from 'axios';
 
@@ -20,6 +20,7 @@ const Cards: React.FC = () => {
   const { state , dispatch} = useImageContext();
   const imageHistory = state.imageHistory;
   const [paginationIndex, setPaginationIndex] = useState(0);
+  const [reloadImages, setReloadImages] = useState(false);
   const scrollX = useSharedValue(0);
 
   // const derivedScrollX = useDerivedValue(() => scrollX.value, [scrollX]);
@@ -29,6 +30,9 @@ const Cards: React.FC = () => {
     const fetchImageHistory = async () => {
       try{
         const response = await getImages();
+        console.log('backend get response');
+        console.log(response);
+        
         if (response.length > 0) {
           dispatch({ type: ACTIONS.SET_IMAGE_HISTORY, payload: response });
         }
@@ -37,7 +41,9 @@ const Cards: React.FC = () => {
       }
 
     }
+    
     fetchImageHistory();
+    
   },[])
   
   const handleScrollAnimation = useAnimatedScrollHandler({
@@ -61,9 +67,20 @@ const Cards: React.FC = () => {
   ])
 
   
-  const handleDeleteCard = () => { 
-      
-    }
+  const handleDeleteCard = async () => { 
+      const currentImage = imageHistory[paginationIndex];
+      if(!currentImage) return;
+      const imageIdToDelete = currentImage.id;
+      await deleteImage(imageIdToDelete);
+      dispatch({ type: ACTIONS.REMOVE_IMAGE_HiSTORY, payload: imageIdToDelete})
+
+      const updatedHistory = await getImages();
+      dispatch({ type: ACTIONS.SET_IMAGE_HISTORY, payload: updatedHistory });
+
+      if (paginationIndex >= updatedHistory.length) {
+        setPaginationIndex(updatedHistory.length - 1); // Ensure we're not out of bounds
+      }
+  }
   const handleDownloadCard = () => {
       
   }
@@ -72,7 +89,11 @@ const Cards: React.FC = () => {
       
   }
 
-  const sizeButton = width > 360 ? 24 : 20; 
+  // console.log(paginationIndex);
+  console.log('ImageHistory');
+  
+  console.log(imageHistory);
+  
   
   return (
     <View style={styles.container}>

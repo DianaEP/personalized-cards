@@ -11,9 +11,7 @@ import { height, width } from '../util/screenDimension';
 
 
 const App: React.FC = () => {
-
-  console.log(width, height);
-  
+ 
   const fontsLoaded = useCustomFonts();
   const router = useRouter();
   

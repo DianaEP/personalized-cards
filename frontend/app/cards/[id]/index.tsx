@@ -9,7 +9,7 @@ import React from 'react';
 const Card: React.FC = () =>  {
   const { id } = useLocalSearchParams();
 
-  console.log(id);
+  // console.log(id);
   
   return (
     <View style={styles.container}>
