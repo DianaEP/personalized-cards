@@ -9,9 +9,11 @@ import Pagination from '../../components/cardsPage/Pagination';
 import IconButton from "../../UI/buttons/IconButton";
 import uuid from 'react-native-uuid';
 import Button from '../../UI/buttons/Button';
-import { deleteImage, getImages } from '../../util/http/postcardApi';
+import { deleteImage, getImage, getImages } from '../../util/http/postcardApi';
 import { ACTIONS } from '../../store/reducerImagePicker';
 import axios from 'axios';
+import { useRouter } from 'expo-router';
+
 
 const { width, height } = Dimensions.get("window");
 const cardWidth = width * 0.8;
@@ -20,8 +22,8 @@ const Cards: React.FC = () => {
   const { state , dispatch} = useImageContext();
   const imageHistory = state.imageHistory;
   const [paginationIndex, setPaginationIndex] = useState(0);
-  const [reloadImages, setReloadImages] = useState(false);
   const scrollX = useSharedValue(0);
+  const router = useRouter();
 
   // const derivedScrollX = useDerivedValue(() => scrollX.value, [scrollX]);
 
@@ -81,13 +83,38 @@ const Cards: React.FC = () => {
         setPaginationIndex(updatedHistory.length - 1); // Ensure we're not out of bounds
       }
   }
+
+ 
+  const handleUpdateCard = async() => {
+      const currentImage =  imageHistory[paginationIndex];
+      if (!currentImage) return;
+      const imageId = currentImage.id;
+      const backendImageData = await getImage(imageId)
+
+      dispatch({type: ACTIONS.SET_PHOTO, payload: backendImageData.originalImageUri});
+
+      // RESTORE TEXT & POSITION
+      dispatch({type: ACTIONS.SET_OVERLAY_TEXT, payload: backendImageData.overlayText});
+      dispatch({type: ACTIONS.SET_TEXT_POSITION, payload: backendImageData.textPosition});
+      dispatch({type: ACTIONS.SET_TEXT_FONT, payload: backendImageData.textFont});
+      dispatch({type: ACTIONS.SET_TEXT_FONT_SIZE, payload: backendImageData.textFontSize});
+
+      // RESTORE SVG & POSITION
+      if (currentImage.svgData) {
+        dispatch({ type: ACTIONS.SELECT_SVG_ID, payload: backendImageData.svgData.id });
+        dispatch({ type: ACTIONS.SET_SVG_POSITION, payload: backendImageData.svgData.position });
+        dispatch({ type: ACTIONS.SET_SVG_SCALE, payload: backendImageData.svgData.scale });
+        dispatch({ type: ACTIONS.SET_SVG_COLOR, payload: backendImageData.svgData.color });
+      }
+
+      router.push('/editor');
+
+  }
+
   const handleDownloadCard = () => {
       
   }
 
-  const handleUpdateCard = () => {
-      
-  }
 
   // console.log(paginationIndex);
   console.log('ImageHistory');

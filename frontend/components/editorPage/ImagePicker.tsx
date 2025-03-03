@@ -7,7 +7,7 @@ import TextOverlay from "./imagePreview/TextOverlay";
 import SvgOverlay from "./imagePreview/SvgOverlay";
 import ImageControl from "./imageControl/ImageControl";
 import SvgPickerModal from "./imageControl/controllers/SvgPickerModal";
-import { ACTIONS} from "../../store/reducerImagePicker";
+import { ACTIONS, ImageItem} from "../../store/reducerImagePicker";
 import { useImageContext } from "../../store/ImageContext";
 import ViewShot from "react-native-view-shot";
 import Button from "../../UI/buttons/Button";
@@ -67,17 +67,50 @@ const ImagePicker: React.FC = () => {
         }
         dispatch({ type: ACTIONS.TOGGLE_SVG_MODAL})
     }
-
+ console.log(state.overlayText);
+ 
     const saveFinalImage = async(): Promise<void> => {
         if(!viewShotRef.current || !viewShotRef.current.capture) return;
         try{
             const uri = await viewShotRef.current.capture();
             const permanentUri = await moveImageToPermanentStorage(uri);
 
-            const response = await saveImageUri(permanentUri);
+            if (!state.photoTaken) {
+                console.error("No image to save!");
+                return;
+            }
+            const permanentOriginalUri = await moveImageToPermanentStorage(state.photoTaken);
+
+            const svgData = {
+                id: state.selectedSvgId,
+                position: state.svgPosition,
+                scale: state.svgScale,
+                color: state.svgColor
+            };
+
+            const imageData: Omit<ImageItem, 'id'>= {
+                finalImageUri: permanentUri, 
+                originalImageUri: permanentOriginalUri,
+                overlayText: state.textOnImage,
+                textPosition: state.textPosition,
+                textFont: state.textFont,
+                textFontSize: state.textFontSize,
+                svgData: svgData 
+            }
+
+            const response = await saveImageUri(imageData);
 
             if( response && response.id){
-                const newImage = { id: response.id, finalImageUri: permanentUri};
+                const newImage: ImageItem = {
+                    id: response.id,  
+                    finalImageUri: permanentUri,
+                    originalImageUri: permanentOriginalUri,  
+                    overlayText: state.textOnImage,    
+                    textPosition: state.textPosition,
+                    textFont: state.textFont,
+                    textFontSize: state.textFontSize,
+                    svgData: svgData                    
+                };;
                 dispatch({ type: ACTIONS.SET_IMAGE_HISTORY, payload: newImage });
                 
                 Alert.alert("Image Saved!", "Your final image has been saved.");

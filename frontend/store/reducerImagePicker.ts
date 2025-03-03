@@ -19,7 +19,7 @@ type ActionsType =
     'SET_SVG_POSITION'|
     'SET_SVG_SCALE'|
     'SET_SVG_COLOR'|
-    'SET_SVG_ROTATION'|
+    // 'SET_SVG_ROTATION'|
 
     'SET_CHOSEN_COLOR'|
     'SET_TARGET_COLOR'|
@@ -37,8 +37,17 @@ export interface Action {
 
 export interface ImageItem {
     id: string;
-    // clientSideId: string;
     finalImageUri: string;
+    originalImageUri: string | null; 
+    overlayText: string | null;
+    textPosition: Position;
+    textFont: string;
+    textFontSize: number;
+    svgData: { 
+        id: string | null; 
+        position: Position; 
+        scale: number; 
+        color: string;};
   }
 
 export interface State  {
@@ -58,7 +67,7 @@ export interface State  {
     svgPosition: Position;
     svgScale: number;
     svgColor: string;
-    svgRotation: number;
+    // svgRotation: number;
 
     // controllers state
     chosenColor: string;
@@ -90,7 +99,7 @@ export const ACTIONS = {
     SET_SVG_POSITION: 'SET_SVG_POSITION',
     SET_SVG_SCALE: 'SET_SVG_SCALE',
     SET_SVG_COLOR: 'SET_SVG_COLOR',
-    SET_SVG_ROTATION: 'SET_SVG_ROTATION',
+    // SET_SVG_ROTATION: 'SET_SVG_ROTATION',
 
     // general controllers actions
     SET_CHOSEN_COLOR: 'SET_CHOSEN_COLOR',
@@ -116,7 +125,7 @@ export const initialState: State = {
     svgPosition: { x: 0, y: 0 },
     svgScale: 1,
     svgColor: colors.titleText,
-    svgRotation: 0,
+    // svgRotation: 0,
 
     chosenColor: colors.titleText,
     targetColor: 'text',
@@ -163,7 +172,7 @@ export const actionHandlers = {
     [ACTIONS.SET_SVG_POSITION]: (state: State, action: Action) => ({ ...state, svgPosition: action.payload }),
     [ACTIONS.SET_SVG_SCALE]: (state: State, action: Action) => ({ ...state, svgScale: action.payload }),
     [ACTIONS.SET_SVG_COLOR]: (state: State, action: Action) => ({ ...state, svgColor: action.payload }),
-    [ACTIONS.SET_SVG_ROTATION]: (state: State, action: Action) => ({ ...state, svgRotation: action.payload }),
+    // [ACTIONS.SET_SVG_ROTATION]: (state: State, action: Action) => ({ ...state, svgRotation: action.payload }),
 
     [ACTIONS.SET_CHOSEN_COLOR]: (state: State, action: Action) => ({ ...state, chosenColor: action.payload }),
     [ACTIONS.SET_TARGET_COLOR]: (state: State, action: Action) => ({ ...state, targetColor: action.payload }),

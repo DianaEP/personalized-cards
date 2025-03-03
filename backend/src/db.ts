@@ -13,6 +13,13 @@ export const initDb = async () => {
     CREATE TABLE IF NOT EXISTS images (
       id TEXT PRIMARY KEY,
       finalImageUri TEXT NOT NULL,
+      originalImageUri TEXT,
+      overlayText TEXT,
+      textPositionX INTEGER,  
+      textPositionY INTEGER,
+      textFont TEXT,
+      textFontSize INTEGER,
+      svgData TEXT, 
       createdAt TEXT DEFAULT CURRENT_TIMESTAMP
     );
   `);
