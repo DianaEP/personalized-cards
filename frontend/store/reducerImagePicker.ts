@@ -7,7 +7,9 @@ import uuid from 'react-native-uuid';
 type ActionsType =  
     'SET_PHOTO'| 
     'SET_IMAGE_HISTORY'|
+    'UPDATE_IMAGE_HISTORY'|
     'REMOVE_IMAGE_HiSTORY'|
+    'SET_SELECTED_IMAGE_HISTORY_ID'|
 
     'SET_OVERLAY_TEXT'| 
     'ADD_TEXT_ON_IMAGE'| 
@@ -54,6 +56,7 @@ export interface State  {
     // image state
     photoTaken: string | null;
     imageHistory: ImageItem[];
+    selectedImageHistoryId: string | null;
 
     // text state
     overlayText: string;
@@ -85,7 +88,9 @@ export const ACTIONS = {
     // image actions
     SET_PHOTO: 'SET_PHOTO',
     SET_IMAGE_HISTORY: 'SET_IMAGE_HISTORY',
+    UPDATE_IMAGE_HISTORY: 'UPDATE_IMAGE_HISTORY',
     REMOVE_IMAGE_HiSTORY: 'REMOVE_IMAGE_HiSTORY',
+    SET_SELECTED_IMAGE_HISTORY_ID: 'SET_SELECTED_IMAGE_HISTORY_ID',
 
     // text actions
     SET_OVERLAY_TEXT: 'SET_OVERLAY_TEXT',
@@ -114,6 +119,7 @@ export const ACTIONS = {
 export const initialState: State = {
     photoTaken: null,
     imageHistory: [],
+    selectedImageHistoryId: null,
 
     overlayText: '',
     textOnImage: null,
@@ -154,6 +160,19 @@ export const actionHandlers = {
             imageHistory: updatedHistory
         }
     },
+    [ACTIONS.UPDATE_IMAGE_HISTORY]: (state: State, action: Action) => {
+        const updatedHistory = state.imageHistory.map((image) => 
+            image.id === action.payload.id 
+                ?
+            { ...image, ...action.payload} 
+                :
+            image);
+        const finalImage = updatedHistory.slice(0, 9);
+        return {
+            ...state,
+            imageHistory: finalImage
+        }
+    },
     [ACTIONS.REMOVE_IMAGE_HiSTORY]: (state: State, action: Action) => {
         const updatedHistory = state.imageHistory.filter((image) => image.id !== action.payload);
         return{
@@ -161,6 +180,12 @@ export const actionHandlers = {
             imageHistory: updatedHistory
         }
     },
+    [ACTIONS.SET_SELECTED_IMAGE_HISTORY_ID]: (state: State, action: Action) => {
+        console.log("Reducer - selectedImageId set to:", action.payload);
+        return {
+            ...state, 
+            selectedImageHistoryId: action.payload
+        }},
 
     [ACTIONS.SET_OVERLAY_TEXT]: (state: State, action: Action) => ({ ...state, overlayText: action.payload}),
     [ACTIONS.ADD_TEXT_ON_IMAGE]: (state: State) => ({ ...state, textOnImage: state.overlayText, overlayText: '' }),

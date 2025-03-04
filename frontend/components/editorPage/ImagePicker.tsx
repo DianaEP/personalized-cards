@@ -1,6 +1,6 @@
 import { Alert, ScrollView, StyleSheet, Text, View } from "react-native";
 import { colors } from "../../UI/theme";
-import React, {  useRef, useState } from "react";
+import React, {  useEffect, useRef, useState } from "react";
 import EditorText from "./imageControl/controllers/EditorText";
 import ImagePreview from "./imagePreview/ImagePreview";
 import TextOverlay from "./imagePreview/TextOverlay";
@@ -17,7 +17,7 @@ import IconButton from "../../UI/buttons/IconButton";
 import { platformStyle } from "../../UI/shadowStyle";
 import { useRouter } from "expo-router";
 import { height, width } from "../../util/screenDimension";
-import { saveImageUri } from "../../util/http/postcardApi";
+import { saveImageUri, updateImage } from "../../util/http/postcardApi";
 import * as FileSystem from 'expo-file-system'; 
 
 // This is needed because the `viewShotRef.current.capture()` method initially saves the image URI as a temporary cache.
@@ -58,7 +58,11 @@ const ImagePicker: React.FC = () => {
 
     const [resetKey, setResetKey] = useState<number>(0);
 
-    
+
+    useEffect(() => {
+        console.log("Editor Page - selectedImageId (useEffect):", state.selectedImageHistoryId);
+      }, [state.selectedImageHistoryId, state.svgPosition,state.textPosition]); 
+
 
     const toggleSvgModal = (): void => {
         if(!state.photoTaken){
@@ -67,7 +71,7 @@ const ImagePicker: React.FC = () => {
         }
         dispatch({ type: ACTIONS.TOGGLE_SVG_MODAL})
     }
- console.log(state.overlayText);
+//  console.log(state.overlayText);
  
     const saveFinalImage = async(): Promise<void> => {
         if(!viewShotRef.current || !viewShotRef.current.capture) return;
@@ -98,22 +102,48 @@ const ImagePicker: React.FC = () => {
                 svgData: svgData 
             }
 
-            const response = await saveImageUri(imageData);
+        
+            const selectedImage = state.imageHistory.find((image) => image.id === state.selectedImageHistoryId);
+            const selectedImageId = state.selectedImageHistoryId;
 
-            if( response && response.id){
-                const newImage: ImageItem = {
-                    id: response.id,  
-                    finalImageUri: permanentUri,
-                    originalImageUri: permanentOriginalUri,  
-                    overlayText: state.textOnImage,    
-                    textPosition: state.textPosition,
-                    textFont: state.textFont,
-                    textFontSize: state.textFontSize,
-                    svgData: svgData                    
-                };;
-                dispatch({ type: ACTIONS.SET_IMAGE_HISTORY, payload: newImage });
-                
-                Alert.alert("Image Saved!", "Your final image has been saved.");
+            
+
+            if(!selectedImage || !selectedImageId){
+                const response = await saveImageUri(imageData);
+    
+                if( response && response.id){
+                    const newImage: ImageItem = {
+                        id: response.id,  
+                        finalImageUri: permanentUri,
+                        originalImageUri: permanentOriginalUri,  
+                        overlayText: state.textOnImage,    
+                        textPosition: state.textPosition,
+                        textFont: state.textFont,
+                        textFontSize: state.textFontSize,
+                        svgData: svgData                    
+                    };
+                    dispatch({ type: ACTIONS.SET_IMAGE_HISTORY, payload: newImage });
+                    
+                    Alert.alert("Image Saved!", "Your final image has been saved.");
+                }
+            }else{
+                if(selectedImageId){
+                    const updatedImage = {
+                        ...selectedImage,
+                        finalImageUri: permanentUri,
+                        originalImageUri: permanentOriginalUri,  
+                        overlayText: state.textOnImage,    
+                        textPosition: state.textPosition,
+                        textFont: state.textFont,
+                        textFontSize: state.textFontSize,
+                        svgData: svgData     
+                    }
+                    const response  = await updateImage(selectedImageId, updatedImage);
+                    console.log('API Response:', response);
+                    dispatch({type: ACTIONS.UPDATE_IMAGE_HISTORY, payload: updatedImage})
+                    Alert.alert("Image Updated!", "Your image has been updated.");
+                    console.log('Updated Image History:', state.imageHistory);
+                }
             }
             dispatch({ type: ACTIONS.RESET_STATE })
             setContainerHeight(null)

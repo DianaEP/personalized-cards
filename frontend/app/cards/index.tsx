@@ -89,12 +89,16 @@ const Cards: React.FC = () => {
       const currentImage =  imageHistory[paginationIndex];
       if (!currentImage) return;
       const imageId = currentImage.id;
-      const backendImageData = await getImage(imageId)
+      dispatch({type: ACTIONS.SET_SELECTED_IMAGE_HISTORY_ID, payload: imageId})
+      const backendImageData = await getImage(imageId);
+      
+      
 
       dispatch({type: ACTIONS.SET_PHOTO, payload: backendImageData.originalImageUri});
 
       // RESTORE TEXT & POSITION
-      dispatch({type: ACTIONS.SET_OVERLAY_TEXT, payload: backendImageData.overlayText});
+      dispatch({ type: ACTIONS.SET_OVERLAY_TEXT, payload: backendImageData.overlayText }); 
+      dispatch({ type: ACTIONS.ADD_TEXT_ON_IMAGE});
       dispatch({type: ACTIONS.SET_TEXT_POSITION, payload: backendImageData.textPosition});
       dispatch({type: ACTIONS.SET_TEXT_FONT, payload: backendImageData.textFont});
       dispatch({type: ACTIONS.SET_TEXT_FONT_SIZE, payload: backendImageData.textFontSize});
@@ -117,9 +121,9 @@ const Cards: React.FC = () => {
 
 
   // console.log(paginationIndex);
-  console.log('ImageHistory');
+  // console.log('ImageHistory');
   
-  console.log(imageHistory);
+  // console.log(imageHistory);
   
   
   return (

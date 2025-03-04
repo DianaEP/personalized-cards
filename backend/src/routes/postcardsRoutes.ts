@@ -126,6 +126,8 @@ postcardRoutes.put('/:id', async (req: Request, res: Response): Promise<any> => 
     if (result.changes === 0) {
       return res.status(404).json({ message: "Image not found" });
     }
+    console.log('Received ID:', id);
+    console.log('Received data:', { finalImageUri, originalImageUri, overlayText, textPosition, textFont, textFontSize, svgData });
 
     res.json({message: 'Image updated successfully', 
       id,

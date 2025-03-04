@@ -1,7 +1,7 @@
 import { Platform, StyleSheet, Text } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, { runOnJS, useAnimatedStyle, useSharedValue, withSpring } from "react-native-reanimated";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Position } from "../../../util/interfaces";
 import { useImageContext } from "../../../store/ImageContext";
 import { ACTIONS } from "../../../store/reducerImagePicker";
@@ -31,6 +31,10 @@ const TextOverlay: React.FC<TextOverlayProps> = ({
   
   const startTranslateX = useSharedValue(state.textPosition.x);
   const startTranslateY = useSharedValue(state.textPosition.y);
+
+  useEffect(() => {
+    console.log("Rendering TextOverlay with:");
+}, [state.overlayText, state.textPosition, state.textFont, state.textFontSize]);
    
   const handleSetTextPosition = (position: Position) => {
     dispatch({ type: ACTIONS.SET_TEXT_POSITION, payload: position})
