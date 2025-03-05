@@ -45,6 +45,7 @@ export interface ImageItem {
     textPosition: Position;
     textFont: string;
     textFontSize: number;
+    chosenColor: string;
     svgData: { 
         id: string | null; 
         position: Position; 
@@ -193,7 +194,7 @@ export const actionHandlers = {
     [ACTIONS.SET_TEXT_FONT]: (state: State, action: Action) => ({ ...state, textFont: action.payload }),
     [ACTIONS.SET_TEXT_FONT_SIZE]: (state: State, action: Action) => ({ ...state, textFontSize: action.payload }),
 
-    [ACTIONS.SELECT_SVG_ID]: (state: State, action: Action) => ({ ...state, selectedSvgId: action.payload, showSvgModal: !state.showSvgModal }),
+    [ACTIONS.SELECT_SVG_ID]: (state: State, action: Action) => ({ ...state, selectedSvgId: action.payload}),
     [ACTIONS.SET_SVG_POSITION]: (state: State, action: Action) => ({ ...state, svgPosition: action.payload }),
     [ACTIONS.SET_SVG_SCALE]: (state: State, action: Action) => ({ ...state, svgScale: action.payload }),
     [ACTIONS.SET_SVG_COLOR]: (state: State, action: Action) => ({ ...state, svgColor: action.payload }),

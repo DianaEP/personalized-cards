@@ -63,7 +63,8 @@ const SvgPickerModal: React.FC = () => {
     const { state, dispatch} = useImageContext();
     
     const handleSvgSelect = (id: string): void => {
-        dispatch({ type: ACTIONS.SELECT_SVG_ID, payload: id})
+        dispatch({ type: ACTIONS.SELECT_SVG_ID, payload: id});
+        dispatch({type: ACTIONS.TOGGLE_SVG_MODAL})
     }
 
     const renderSvg = ({ item }: { item: AssetSvg }) => {

@@ -17,7 +17,7 @@ import IconButton from "../../UI/buttons/IconButton";
 import { platformStyle } from "../../UI/shadowStyle";
 import { useRouter } from "expo-router";
 import { height, width } from "../../util/screenDimension";
-import { saveImageUri, updateImage } from "../../util/http/postcardApi";
+import { getImages, saveImageUri, updateImage } from "../../util/http/postcardApi";
 import * as FileSystem from 'expo-file-system'; 
 
 // This is needed because the `viewShotRef.current.capture()` method initially saves the image URI as a temporary cache.
@@ -54,24 +54,11 @@ const ImagePicker: React.FC = () => {
     const [containerHeight, setContainerHeight] = useState< number | null >(null);
 
     // SET ROTATION LOCALLY AND NOT IN THE REDUCER BECAUSE THE INTERACTION IS SMOOTHER
+     // ROTATION WILL NOT KEEP THE VALUE ON UPDATE , AS IS NO ROTATION VALUE IN THE BACKEND
     const [rotation, setRotation ] = useState<number>(0);
 
     const [resetKey, setResetKey] = useState<number>(0);
 
-
-    useEffect(() => {
-        console.log("Editor Page - selectedImageId (useEffect):", state.selectedImageHistoryId);
-      }, [state.selectedImageHistoryId, state.svgPosition,state.textPosition]); 
-
-
-    const toggleSvgModal = (): void => {
-        if(!state.photoTaken){
-            Alert.alert("Sorry!", "You need to upload a photo first.");
-            return;
-        }
-        dispatch({ type: ACTIONS.TOGGLE_SVG_MODAL})
-    }
-//  console.log(state.overlayText);
  
     const saveFinalImage = async(): Promise<void> => {
         if(!viewShotRef.current || !viewShotRef.current.capture) return;
@@ -83,6 +70,7 @@ const ImagePicker: React.FC = () => {
                 console.error("No image to save!");
                 return;
             }
+           
             const permanentOriginalUri = await moveImageToPermanentStorage(state.photoTaken);
 
             const svgData = {
@@ -99,6 +87,7 @@ const ImagePicker: React.FC = () => {
                 textPosition: state.textPosition,
                 textFont: state.textFont,
                 textFontSize: state.textFontSize,
+                chosenColor: state.chosenColor,
                 svgData: svgData 
             }
 
@@ -109,42 +98,33 @@ const ImagePicker: React.FC = () => {
             
 
             if(!selectedImage || !selectedImageId){
+                // console.log(state.chosenColor)
                 const response = await saveImageUri(imageData);
     
                 if( response && response.id){
                     const newImage: ImageItem = {
                         id: response.id,  
-                        finalImageUri: permanentUri,
-                        originalImageUri: permanentOriginalUri,  
-                        overlayText: state.textOnImage,    
-                        textPosition: state.textPosition,
-                        textFont: state.textFont,
-                        textFontSize: state.textFontSize,
-                        svgData: svgData                    
+                        ...imageData                  
                     };
-                    dispatch({ type: ACTIONS.SET_IMAGE_HISTORY, payload: newImage });
-                    
+                    dispatch({ type: ACTIONS.SET_IMAGE_HISTORY, payload: newImage });            
                     Alert.alert("Image Saved!", "Your final image has been saved.");
                 }
+
             }else{
                 if(selectedImageId){
                     const updatedImage = {
                         ...selectedImage,
-                        finalImageUri: permanentUri,
-                        originalImageUri: permanentOriginalUri,  
-                        overlayText: state.textOnImage,    
-                        textPosition: state.textPosition,
-                        textFont: state.textFont,
-                        textFontSize: state.textFontSize,
-                        svgData: svgData     
+                        ...imageData    
                     }
                     const response  = await updateImage(selectedImageId, updatedImage);
                     console.log('API Response:', response);
-                    dispatch({type: ACTIONS.UPDATE_IMAGE_HISTORY, payload: updatedImage})
+                    dispatch({type: ACTIONS.UPDATE_IMAGE_HISTORY, payload: updatedImage});
+                    
                     Alert.alert("Image Updated!", "Your image has been updated.");
-                    console.log('Updated Image History:', state.imageHistory);
+                    // console.log('Updated Image History:', state.imageHistory);
                 }
             }
+            // await getImages();
             dispatch({ type: ACTIONS.RESET_STATE })
             setContainerHeight(null)
             setContainerWidth(null);
@@ -183,7 +163,7 @@ const ImagePicker: React.FC = () => {
                 />
             )}
             </ViewShot>
-            <ImageControl toggleModal={toggleSvgModal} saveFinalImage={saveFinalImage}/>
+            <ImageControl saveFinalImage={saveFinalImage}/>
             {state.showColorPicker && (
                 <ColorPickerPanel />
             )}

@@ -32,8 +32,8 @@ const Cards: React.FC = () => {
     const fetchImageHistory = async () => {
       try{
         const response = await getImages();
-        console.log('backend get response');
-        console.log(response);
+        // console.log('backend get response');
+        // console.log(response);
         
         if (response.length > 0) {
           dispatch({ type: ACTIONS.SET_IMAGE_HISTORY, payload: response });
@@ -47,6 +47,7 @@ const Cards: React.FC = () => {
     fetchImageHistory();
     
   },[])
+
   
   const handleScrollAnimation = useAnimatedScrollHandler({
     onScroll: (event) => {
@@ -91,8 +92,13 @@ const Cards: React.FC = () => {
       const imageId = currentImage.id;
       dispatch({type: ACTIONS.SET_SELECTED_IMAGE_HISTORY_ID, payload: imageId})
       const backendImageData = await getImage(imageId);
+      console.log('update function in cards');
+      
+      console.log(state.showSvgModal);
       
       
+      
+      // console.log("Text Position from backend:", backendImageData.textPosition);
 
       dispatch({type: ACTIONS.SET_PHOTO, payload: backendImageData.originalImageUri});
 
@@ -101,6 +107,7 @@ const Cards: React.FC = () => {
       dispatch({ type: ACTIONS.ADD_TEXT_ON_IMAGE});
       dispatch({type: ACTIONS.SET_TEXT_POSITION, payload: backendImageData.textPosition});
       dispatch({type: ACTIONS.SET_TEXT_FONT, payload: backendImageData.textFont});
+      dispatch({type: ACTIONS.SET_CHOSEN_COLOR, payload: backendImageData.chosenColor})
       dispatch({type: ACTIONS.SET_TEXT_FONT_SIZE, payload: backendImageData.textFontSize});
 
       // RESTORE SVG & POSITION
@@ -111,7 +118,10 @@ const Cards: React.FC = () => {
         dispatch({ type: ACTIONS.SET_SVG_COLOR, payload: backendImageData.svgData.color });
       }
 
-      router.push('/editor');
+      setTimeout(() => {
+        console.log("Text Position from backend after :", backendImageData.textPosition);
+        router.push('/editor');
+      }, 100);
 
   }
 

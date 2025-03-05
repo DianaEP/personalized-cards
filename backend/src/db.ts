@@ -19,6 +19,7 @@ export const initDb = async () => {
       textPositionY INTEGER,
       textFont TEXT,
       textFontSize INTEGER,
+      chosenColor TEXT,
       svgData TEXT, 
       createdAt TEXT DEFAULT CURRENT_TIMESTAMP
     );

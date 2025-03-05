@@ -2,7 +2,7 @@ import { StyleSheet, View } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { ASSETS_SVG } from "../../../util/dataSvg";
 import Animated, {  runOnJS, useAnimatedProps, useAnimatedStyle, useSharedValue, withSpring, withTiming } from "react-native-reanimated";
-import React from "react";
+import React, { useEffect } from "react";
 import { Position } from "../../../util/interfaces";
 import { ACTIONS } from "../../../store/reducerImagePicker";
 import { useImageContext } from "../../../store/ImageContext";
@@ -30,7 +30,16 @@ const SvgOverlay: React.FC<SvgOverlayProps> = ({
 
   const isPinching = useSharedValue(false);
 
-
+  useEffect(() => {
+      console.log('Updated position:', state.svgPosition);
+      if (state.svgPosition) {
+        translateX.value = state.svgPosition.x;
+        translateY.value = state.svgPosition.y;
+      }
+      if(state.svgScale){
+        scaleValue.value = state.svgScale;
+      }
+    }, [state.svgPosition, state.svgScale]);
   
   const handleSetSvgPosition = (position: Position): void => {
     dispatch({ type: ACTIONS.SET_SVG_POSITION, payload: position})

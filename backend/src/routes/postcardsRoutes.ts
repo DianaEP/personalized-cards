@@ -7,22 +7,22 @@ const postcardRoutes = Router();
 
 // Create a new image
 postcardRoutes.post('/', async (req: Request, res: Response): Promise<any> => {
-    const { finalImageUri, originalImageUri, overlayText, textPosition, textFont, textFontSize, svgData } = req.body;
+    const { finalImageUri, originalImageUri, overlayText, textPosition, textFont, textFontSize, chosenColor, svgData } = req.body;
   
     if (!finalImageUri) {
       return res.status(400).json({ message: 'finalImageUri is required' });
     }
 
-    
-  console.log('textPosition:', textPosition);
-  console.log('svgData after update:', svgData);
+    console.log('Received body:', req.body);
+  // console.log('textPosition:', textPosition);
+  // console.log('svgData after update:', svgData);
   
     const newId = uuidv4();
     try {
       const db = getDb();
       await db.run(
-        `INSERT INTO images (id, finalImageUri, originalImageUri, overlayText, textPositionX, textPositionY, textFont, textFontSize, svgData) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`, 
+        `INSERT INTO images (id, finalImageUri, originalImageUri, overlayText, textPositionX, textPositionY, textFont, textFontSize, chosenColor, svgData) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, 
         [
           newId,
           finalImageUri,
@@ -32,6 +32,7 @@ postcardRoutes.post('/', async (req: Request, res: Response): Promise<any> => {
           textPosition.y,
           textFont,
           textFontSize,
+          chosenColor,
           JSON.stringify(svgData),
         ]);
       res.status(201).json({ 
@@ -43,10 +44,12 @@ postcardRoutes.post('/', async (req: Request, res: Response): Promise<any> => {
         textPosition,
         textFont,
         textFontSize,
+        chosenColor,
         svgData,
 
     });
     } catch (error) {
+      console.error("Error inserting image:", error);
       res.status(500).json({ message: 'Error inserting image', error });
     }
   });
@@ -56,6 +59,7 @@ postcardRoutes.get('/', async (req: Request, res: Response) => {
     try {
       const db = getDb();
       const images = await db.all('SELECT * FROM images');
+      console.log('Received fetch get:', images);
 
       if (!images || images.length === 0) {
         console.warn("⚠️ No images found in the database.");
@@ -101,7 +105,7 @@ postcardRoutes.get('/:id', async (req: Request, res: Response): Promise<any> => 
 // Update image
 postcardRoutes.put('/:id', async (req: Request, res: Response): Promise<any> => {
   const { id } = req.params;
-  const { finalImageUri, originalImageUri, overlayText, textPosition, textFont, textFontSize, svgData } = req.body;
+  const { finalImageUri, originalImageUri, overlayText, textPosition, textFont, textFontSize, chosenColor, svgData } = req.body;
   if (!finalImageUri) {
     return res.status(400).json({ message: 'finalImageUri is required' });
   }
@@ -109,7 +113,7 @@ postcardRoutes.put('/:id', async (req: Request, res: Response): Promise<any> => 
     const db = getDb();
     const statement = await db.prepare(
       `UPDATE images 
-      SET finalImageUri = ?, originalImageUri = ?, overlayText = ?, textPositionX = ?, textPositionY = ?, textFont = ?, textFontSize = ?, svgData = ?
+      SET finalImageUri = ?, originalImageUri = ?, overlayText = ?, textPositionX = ?, textPositionY = ?, textFont = ?, textFontSize = ?, chosenColor = ?, svgData = ?
       WHERE id = ?`);
     const result = await statement.run( 
       finalImageUri,
@@ -119,6 +123,7 @@ postcardRoutes.put('/:id', async (req: Request, res: Response): Promise<any> => 
       textPosition.y,
       textFont,
       textFontSize,
+      chosenColor,
       JSON.stringify(svgData),
       id
     );
@@ -127,7 +132,7 @@ postcardRoutes.put('/:id', async (req: Request, res: Response): Promise<any> => 
       return res.status(404).json({ message: "Image not found" });
     }
     console.log('Received ID:', id);
-    console.log('Received data:', { finalImageUri, originalImageUri, overlayText, textPosition, textFont, textFontSize, svgData });
+    console.log('Received data:', { finalImageUri, originalImageUri, overlayText, textPosition, textFont, textFontSize, chosenColor, svgData });
 
     res.json({message: 'Image updated successfully', 
       id,
@@ -137,6 +142,7 @@ postcardRoutes.put('/:id', async (req: Request, res: Response): Promise<any> => 
       textPosition,
       textFont,
       textFontSize,
+      chosenColor,
       svgData,
     })
   }catch(error){

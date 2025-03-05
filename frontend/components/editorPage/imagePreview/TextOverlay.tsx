@@ -32,9 +32,14 @@ const TextOverlay: React.FC<TextOverlayProps> = ({
   const startTranslateX = useSharedValue(state.textPosition.x);
   const startTranslateY = useSharedValue(state.textPosition.y);
 
+ 
   useEffect(() => {
-    console.log("Rendering TextOverlay with:");
-}, [state.overlayText, state.textPosition, state.textFont, state.textFontSize]);
+    console.log('Updated position:', state.textPosition);
+    if (state.textPosition) {
+      translateX.value = state.textPosition.x;
+      translateY.value = state.textPosition.y;
+    }
+  }, [state.textPosition]);
    
   const handleSetTextPosition = (position: Position) => {
     dispatch({ type: ACTIONS.SET_TEXT_POSITION, payload: position})

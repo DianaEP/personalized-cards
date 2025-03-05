@@ -11,11 +11,10 @@ import React from "react";
 import { height, width } from "../../../util/screenDimension";
 
 interface ImageControlProps {
-    toggleModal: () => void; 
     saveFinalImage: () => Promise<void>;
 }
 
-const ImageControl: React.FC<ImageControlProps> = ({toggleModal, saveFinalImage}) => {
+const ImageControl: React.FC<ImageControlProps> = ({saveFinalImage}) => {
 
 
     
@@ -81,6 +80,11 @@ const ImageControl: React.FC<ImageControlProps> = ({toggleModal, saveFinalImage}
         return true;
     }
 
+    const toggleSvgModal = (): void => {
+        if(!checkPhotoValidation()) return;
+        dispatch({ type: ACTIONS.TOGGLE_SVG_MODAL})
+    }
+
 
     const toggleColorPicker= (): void => {
         if(!checkPhotoValidation()) return;
@@ -135,7 +139,7 @@ const ImageControl: React.FC<ImageControlProps> = ({toggleModal, saveFinalImage}
                         size={sizeButton} 
                         color={colorButton}
                         label='SVG' 
-                        onPress={toggleModal}
+                        onPress={toggleSvgModal}
                     />
                 </View>
                 <View style={styles.icons}>
