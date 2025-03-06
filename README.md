@@ -67,6 +67,7 @@ A **React Native** application that allows users to personalize their photos by 
 
 ```
 
+
 2. **Setup the Backend**
 
 ```bash
@@ -82,11 +83,13 @@ npm start
 - Uses .env for configuration → *(Set PORT=5000 if needed)*.
 
 **API Endpoints**
-**GET**	→ */postcards* → Fetch all saved images
-**POST** →	*/postcards*	→ Save a new image
-**PUT**	→ */postcards/:id*	→ Update an existing image
-**DELETE**	→ */postcards/:id*	→ Delete an image
 
+| **Method** | **Endpoint**        | **Description**                |
+|------------|---------------------|--------------------------------|
+| **GET**    | `/postcards`        | Fetch all saved images         |
+| **POST**   | `/postcards`        | Save a new image               |
+| **PUT**    | `/postcards/:id`    | Update an existing image       |
+| **DELETE** | `/postcards/:id`    | Delete an image                |
 
 
 
@@ -100,7 +103,9 @@ npm start
 
 ```
 
-*Important Notes*
+
+
+## ***Important Notes***
 The app is designed to run on **Android Emulator**.
   - If testing on a **real device**, update the **API base URL** in axiosInstance with your IP Address:
 
