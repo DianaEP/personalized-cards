@@ -8,6 +8,14 @@ export const initDb = async () => {
     filename: './postcardDB.db',  // SQLite file path
     driver: sqlite3.Database,  // Using sqlite3 under the hood
   });
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS users (
+      id TEXT PRIMARY KEY,
+      name TEXT NOT NULL,
+      email TEXT UNIQUE NOT NULL,
+      password TEXT NOT NULL
+    ) 
+    `)
   // await db.exec('DROP TABLE IF EXISTS images');
   await db.exec(`
     CREATE TABLE IF NOT EXISTS images (

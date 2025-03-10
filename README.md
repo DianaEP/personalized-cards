@@ -28,8 +28,11 @@ A **React Native** application that allows users to personalize their photos by 
 - Currently, the app is tied to a single device. If you switch to a new device or restart the emulator, the app may fail to retrieve previously saved images from the backend.
 - This issue will be addressed in future updates.
 
-⚠️ **No Authentication Yet**  
-- Backend authentication is not implemented yet but will be added in future updates. 
+⚠️ **No Login/Registration UI Yet**  
+- The app currently does not include a UI for login or registration.
+- Authentication and validation are implemented on the backend, but the frontend lacks the login and registration screens.
+- The AuthContext is not yet implemented on the frontend to manage authentication state.
+- ✅ The backend authentication functionality has been tested using Postman and is working as expected.
 
 
 

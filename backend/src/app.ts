@@ -2,6 +2,8 @@ import express from 'express';
 import cors from 'cors';
 import { initDb } from './db';
 import postcardRoutes from './routes/postcardsRoutes';
+import authRoutes from './routes/authRoutes';
+import protectedRoutes from './routes/protectedRoutes';
 
 
 const app = express();
@@ -20,6 +22,8 @@ initDb()
   });
 
 // Routes
+app.use('/auth', authRoutes) // Authentication routes
+app.use('/protected', protectedRoutes) //Protected routes
 app.use('/postcards', postcardRoutes);  // Postcard-related API routes
 
 // Start the Express server
