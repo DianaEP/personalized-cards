@@ -1,12 +1,12 @@
 import { StatusBar } from 'expo-status-bar';
 import { Dimensions, StyleSheet, Text, View } from 'react-native';
-import { colors } from '../UI/theme';
-import Button from '../UI/buttons/Button';
+import { colors } from '../../UI/theme';
+import Button from '../../UI/buttons/Button';
 import { useRouter } from 'expo-router';
-import { fonts, useCustomFonts } from '../UI/fonts';
-import TextAnimation from '../components/animations/TextAnimation';
-import PostcardsAnimation from '../components/animations/PostcardsAnimations';
-import { height, width } from '../util/screenDimension';
+import { fonts, useCustomFonts } from '../../UI/fonts';
+import TextAnimation from '../../components/animations/TextAnimation';
+import PostcardsAnimation from '../../components/animations/PostcardsAnimations';
+import { height, width } from '../../util/screenDimension';
 
 
 

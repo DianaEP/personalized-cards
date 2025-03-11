@@ -1,12 +1,8 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axiosInstance from "./axiosInstance";
+import { getProtectedData } from "./protectedApi";
+import { User } from "../interfaces";
 
-interface User{
-    name?: string;
-    email: string;
-    password: string;
-
-}
 
 
 

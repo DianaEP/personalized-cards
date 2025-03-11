@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View } from "react-native";
-import { colors } from "../UI/theme";
-import ImagePicker from "../components/editorPage/ImagePicker";
+import { colors } from "../../UI/theme";
+import ImagePicker from "../../components/editorPage/ImagePicker";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import React from "react";
 

@@ -1,16 +1,16 @@
 import {Dimensions, FlatList, StyleSheet, Text, View, ViewToken } from 'react-native';
-import { colors } from '../../UI/theme';
-import { fonts } from '../../UI/fonts';
+import { colors } from '../../../UI/theme';
+import { fonts } from '../../../UI/fonts';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { useImageContext } from '../../store/ImageContext';
-import Card, { cardHeight } from '../../components/cardsPage/Card';
+import { useImageContext } from '../../../store/ImageContext';
+import Card, { cardHeight } from '../../../components/cardsPage/Card';
 import Animated, { useAnimatedScrollHandler, useDerivedValue, useSharedValue } from 'react-native-reanimated';
-import Pagination from '../../components/cardsPage/Pagination';
-import IconButton from "../../UI/buttons/IconButton";
+import Pagination from '../../../components/cardsPage/Pagination';
+import IconButton from "../../../UI/buttons/IconButton";
 import uuid from 'react-native-uuid';
-import Button from '../../UI/buttons/Button';
-import { deleteImage, getImage, getImages } from '../../util/http/postcardApi';
-import { ACTIONS } from '../../store/reducerImagePicker';
+import Button from '../../../UI/buttons/Button';
+import { deleteImage, getImage, getImages } from '../../../util/http/postcardApi';
+import { ACTIONS } from '../../../store/reducerImagePicker';
 import axios from 'axios';
 import { useRouter } from 'expo-router';
 

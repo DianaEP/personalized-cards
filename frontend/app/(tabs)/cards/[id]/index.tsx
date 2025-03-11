@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View } from 'react-native';
-import { colors } from '../../../UI/theme';
+import { colors } from '../../../../UI/theme';
 import { useLocalSearchParams } from 'expo-router/build/hooks';
-import { fonts } from '../../../UI/fonts';
+import { fonts } from '../../../../UI/fonts';
 import React from 'react';
 
 

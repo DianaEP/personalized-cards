@@ -1,6 +1,6 @@
 import { Stack } from "expo-router";
-import { colors } from "../../UI/theme";
-import { fonts } from "../../UI/fonts";
+import { colors } from "../../../UI/theme";
+import { fonts } from "../../../UI/fonts";
 import React from "react";
 
 const Layout: React.FC = () =>{
