@@ -4,16 +4,20 @@ import Animated, { Easing, interpolateColor, useAnimatedStyle, useSharedValue, w
 import { colors } from "../../UI/theme";
 import { fonts, useCustomFonts } from "../../UI/fonts";
 import { height } from "../../util/screenDimension";
+import { useAuth } from "../../store/AuthContext";
 
 
 
 const TextAnimation: React.FC = () => {
      const fontsLoaded: boolean = useCustomFonts();
+     const { user } = useAuth();
+     console.log(user?.name);
+     
 
     // Text animation state
     const typingProgress = useSharedValue<number>(0);
     const [displayedText, setDisplayedText] = useState<string>('');
-    const text = "From You to Them: A Postcard for the Digital Age!";
+    const text = `Welcome, ${user?.name}!`;
     
     
 
@@ -33,11 +37,12 @@ const TextAnimation: React.FC = () => {
                     clearInterval(typingInterval); 
                 }
             }, 150); 
-        },20000)
+        },1000)
     }
 
     useEffect(() => {
         typingProgress.value = 0;
+        setDisplayedText('')
         startTypingEffect();
     },[])
 
@@ -80,7 +85,7 @@ const styles = StyleSheet.create({
         zIndex: 1000
     },
     text:{
-        fontSize: height > 620 ? 24 : 20,
+        fontSize: height > 620 ? 30 : 28,
         textAlign: 'center',
         fontFamily: fonts.handwriting,
         

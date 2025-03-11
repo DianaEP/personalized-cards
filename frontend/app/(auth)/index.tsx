@@ -2,13 +2,16 @@ import { StyleSheet, Text, TextInput, View } from "react-native";
 import { colors } from "../../UI/theme";
 import { useState } from "react";
 import Button from "../../UI/buttons/Button";
-import { Link } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import AuthFormTemplate from "../../UI/AuthFormTamplate";
 import { User } from "../../util/interfaces";
+import { useAuth } from "../../store/AuthContext";
 
 
 
 const Login: React.FC = () =>  {
+    const router = useRouter();
+    const { loginUser } = useAuth();
     const [user, setUser] = useState<User>({
         email: '',
         password: ''
@@ -21,8 +24,9 @@ const Login: React.FC = () =>  {
         })
     )}
 
-    const handleSubmit = () => {
-        console.log(user);
+    const handleSubmit = async () => {
+        await loginUser(user);
+        router.push('/(tabs)');
         
     }
   

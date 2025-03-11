@@ -3,8 +3,12 @@ import { colors } from "../../UI/theme";
 import { useState } from "react";
 import { User } from "../../util/interfaces";
 import AuthFormTemplate from "../../UI/AuthFormTamplate";
+import { useAuth } from "../../store/AuthContext";
+import { useRouter } from "expo-router";
 
 const Register: React.FC = () =>  {
+    const { registerUser } = useAuth();
+    const router = useRouter();
     const [user, setUser] = useState<User>({
         email: '',
         password: '',
@@ -17,9 +21,9 @@ const Register: React.FC = () =>  {
         })
     )}
 
-    const handleSubmit = () => {
-        console.log(user);
-        
+    const handleSubmit = async () => {
+        await registerUser(user);
+        router.push('/(tabs)');
     };
   
   return (

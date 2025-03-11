@@ -3,6 +3,7 @@ import { createContext, ReactNode, useContext, useEffect, useState } from "react
 import { getProtectedData } from "../util/http/protectedApi";
 import { login, register } from "../util/http/authApi";
 import { User } from "../util/interfaces";
+import LoadingScreen from "../components/LoadingScreen";
 
 
 
@@ -18,9 +19,11 @@ export const AuthContext =  createContext<UserContextType | undefined>(undefined
 export  const AuthContextProvider: React.FC<{children: ReactNode}> = ({children}) => {
     const [user, setUser] = useState<Omit<User, 'password'> | null>(null);
     const [token, setToken] = useState<string | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         const fetchAuthData = async () => {
+            setIsLoading(true);
             const storedToken = await AsyncStorage.getItem('token');
             if(storedToken){
                 setToken(storedToken);
@@ -31,6 +34,7 @@ export  const AuthContextProvider: React.FC<{children: ReactNode}> = ({children}
                     console.log('Error fetching protected data:', error);
                 }
             }
+            setIsLoading(false);
         }
         fetchAuthData();
     },[])
@@ -65,6 +69,10 @@ export  const AuthContextProvider: React.FC<{children: ReactNode}> = ({children}
         await AsyncStorage.removeItem('token');
         setUser(null); 
         setToken(null);
+    }
+
+    if (isLoading) {
+        return <LoadingScreen />; // ✅ Display a loading screen while checking auth state
     }
     return(
         <AuthContext.Provider value={{user, token, registerUser, loginUser, logout}}>{children}</AuthContext.Provider>
