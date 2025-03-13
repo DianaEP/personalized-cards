@@ -4,6 +4,8 @@ import { getProtectedData } from "../util/http/protectedApi";
 import { login, register } from "../util/http/authApi";
 import { User } from "../util/interfaces";
 import LoadingScreen from "../components/LoadingScreen";
+import jwt from 'expo-jwt';
+import { AxiosError } from "axios";
 
 
 
@@ -13,7 +15,9 @@ interface UserContextType{
     registerUser: (user: User) => Promise<void>;
     loginUser: (user: User) => Promise<void>;
     logout: () => Promise<void>;
+    isLoading: boolean;
 }
+
 
 export const AuthContext =  createContext<UserContextType | undefined>(undefined);
 export  const AuthContextProvider: React.FC<{children: ReactNode}> = ({children}) => {
@@ -25,19 +29,30 @@ export  const AuthContextProvider: React.FC<{children: ReactNode}> = ({children}
         const fetchAuthData = async () => {
             setIsLoading(true);
             const storedToken = await AsyncStorage.getItem('token');
-            if(storedToken){
+            console.log('Token fetched from AsyncStorage:', storedToken);
+            
+            if(storedToken){ 
                 setToken(storedToken);
                 try{
                     const data = await getProtectedData();
+
                     setUser(data.user)
-                }catch(error){
-                    console.log('Error fetching protected data:', error);
+                }catch(error: unknown){
+                    if(error instanceof AxiosError && error.response && error.response.status === 401){
+                        console.log('Token expired');
+                        await AsyncStorage.removeItem('token');
+                        setToken(null);
+                    }else{
+                        console.log('Error fetching protected data:', error);
+                    }
                 }
             }
             setIsLoading(false);
         }
         fetchAuthData();
     },[])
+
+   
 
     const registerUser = async (user: User) => {
         try{
@@ -75,7 +90,7 @@ export  const AuthContextProvider: React.FC<{children: ReactNode}> = ({children}
         return <LoadingScreen />; // ✅ Display a loading screen while checking auth state
     }
     return(
-        <AuthContext.Provider value={{user, token, registerUser, loginUser, logout}}>{children}</AuthContext.Provider>
+        <AuthContext.Provider value={{user, token, registerUser, loginUser, logout, isLoading}}>{children}</AuthContext.Provider>
     )
 }
 

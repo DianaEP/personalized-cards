@@ -1,28 +1,33 @@
 import { Request, Response, Router } from 'express';
 import { getDb } from '../db';
 import { v4 as uuidv4 } from 'uuid';
+import authenticatedUser, { AuthRequest } from '../middleware/authenticateUser';
 
 
 const postcardRoutes = Router();
 
 // Create a new image
-postcardRoutes.post('/', async (req: Request, res: Response): Promise<any> => {
+postcardRoutes.post('/', authenticatedUser, async (req: AuthRequest, res: Response): Promise<any> => {
     const { finalImageUri, originalImageUri, overlayText, textPosition, textFont, textFontSize, chosenColor, svgData } = req.body;
   
     if (!finalImageUri) {
       return res.status(400).json({ message: 'finalImageUri is required' });
     }
 
+    const userId = req.user?.id;
+    
+    if (!userId) {
+      return res.status(401).json({ message: "Unauthorized: User ID is required" });
+    }
+    
     console.log('Received body:', req.body);
-  // console.log('textPosition:', textPosition);
-  // console.log('svgData after update:', svgData);
   
     const newId = uuidv4();
     try {
       const db = getDb();
       await db.run(
-        `INSERT INTO images (id, finalImageUri, originalImageUri, overlayText, textPositionX, textPositionY, textFont, textFontSize, chosenColor, svgData) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, 
+        `INSERT INTO images (id, finalImageUri, originalImageUri, overlayText, textPositionX, textPositionY, textFont, textFontSize, chosenColor, svgData, userId) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)`, 
         [
           newId,
           finalImageUri,
@@ -34,6 +39,7 @@ postcardRoutes.post('/', async (req: Request, res: Response): Promise<any> => {
           textFontSize,
           chosenColor,
           JSON.stringify(svgData),
+          userId
         ]);
       res.status(201).json({ 
         message: 'Image added successfully', 
@@ -46,7 +52,7 @@ postcardRoutes.post('/', async (req: Request, res: Response): Promise<any> => {
         textFontSize,
         chosenColor,
         svgData,
-
+        userId
     });
     } catch (error) {
       console.error("Error inserting image:", error);
@@ -55,10 +61,16 @@ postcardRoutes.post('/', async (req: Request, res: Response): Promise<any> => {
   });
 
 // Get all images
-postcardRoutes.get('/', async (req: Request, res: Response) => {
+postcardRoutes.get('/', authenticatedUser, async (req: AuthRequest, res: Response): Promise<any> => {
+    const userId = req.user?.id;
+
+    if (!userId) {
+      return res.status(401).json({ message: "Unauthorized: User ID is required" });
+    }
+
     try {
       const db = getDb();
-      const images = await db.all('SELECT * FROM images');
+      const images = await db.all('SELECT * FROM images WHERE userId=?',[userId]);
       console.log('Received fetch get:', images);
 
       if (!images || images.length === 0) {
@@ -82,11 +94,16 @@ postcardRoutes.get('/', async (req: Request, res: Response) => {
   });
 
 // Get image
-postcardRoutes.get('/:id', async (req: Request, res: Response): Promise<any> => {
+postcardRoutes.get('/:id', authenticatedUser, async (req: AuthRequest, res: Response): Promise<any> => {
   const { id } = req.params;
+  const userId = req.user?.id;
+  if(!userId){
+    return res.status(401).json({message: 'Unauthorized: User ID is required'})
+  }
+
   try {
     const db = getDb();
-    const image = await db.get('SELECT * FROM images WHERE id = ?', [id]);
+    const image = await db.get('SELECT * FROM images WHERE id = ? and userId=?', [id, userId]);
     
     if (!image) {
       return res.status(404).json({ message: 'Image not found' });
@@ -103,18 +120,25 @@ postcardRoutes.get('/:id', async (req: Request, res: Response): Promise<any> => 
 
 
 // Update image
-postcardRoutes.put('/:id', async (req: Request, res: Response): Promise<any> => {
+postcardRoutes.put('/:id', authenticatedUser, async (req: AuthRequest, res: Response): Promise<any> => {
   const { id } = req.params;
+  const userId = req.user?.id;
+  if(!userId){
+    return res.status(401).json({message: 'Unauthorized: User ID is required'})
+  }
+
   const { finalImageUri, originalImageUri, overlayText, textPosition, textFont, textFontSize, chosenColor, svgData } = req.body;
+  
   if (!finalImageUri) {
     return res.status(400).json({ message: 'finalImageUri is required' });
   }
+
   try{
     const db = getDb();
     const statement = await db.prepare(
       `UPDATE images 
       SET finalImageUri = ?, originalImageUri = ?, overlayText = ?, textPositionX = ?, textPositionY = ?, textFont = ?, textFontSize = ?, chosenColor = ?, svgData = ?
-      WHERE id = ?`);
+      WHERE id = ? AND userId=?`);
     const result = await statement.run( 
       finalImageUri,
       originalImageUri,
@@ -125,7 +149,8 @@ postcardRoutes.put('/:id', async (req: Request, res: Response): Promise<any> => 
       textFontSize,
       chosenColor,
       JSON.stringify(svgData),
-      id
+      id,
+      userId
     );
 
     if (result.changes === 0) {
@@ -154,12 +179,16 @@ postcardRoutes.put('/:id', async (req: Request, res: Response): Promise<any> => 
 
 
 
-postcardRoutes.delete('/:id', async (req: Request, res: Response): Promise<any> => {
+postcardRoutes.delete('/:id', authenticatedUser, async (req: AuthRequest, res: Response): Promise<any> => {
     const { id } = req.params;
-    
+    const userId = req.user?.id;
+    if(!userId){
+      return res.status(401).json({message: 'Unauthorized: User ID is required'})
+    }
+
     try {
       const db = getDb();
-      const result = await db.run('DELETE FROM images WHERE id = ?', [id]);
+      const result = await db.run('DELETE FROM images WHERE id = ? AND userId=?', [id, userId]);
       
       if (result.changes === 0) {
         return res.status(404).json({ message: 'Image not found' });

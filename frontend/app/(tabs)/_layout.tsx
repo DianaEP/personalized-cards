@@ -1,25 +1,35 @@
-import { Tabs } from "expo-router";
+import { Tabs, useRouter } from "expo-router";
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { colors } from "../../UI/theme";
 import { Platform, StyleSheet } from "react-native";
 import { fonts, useCustomFonts } from "../../UI/fonts";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { ImageContextProvider } from "../../store/ImageContext";
 import { height } from "../../util/screenDimension";
 import { useAuth } from "../../store/AuthContext";
 import AuthLayout from "../(auth)/_layout";
+import LoadingScreen from "../../components/LoadingScreen";
 
 
 const TabsLayout: React.FC = () => {
 
     const fontsLoaded = useCustomFonts();
+    const router = useRouter();
 
-    const { token } = useAuth(); // Get the user from Auth Context
+    const { token, isLoading } = useAuth(); // Get the user from Auth Context
     
-    if (!token) {
-        return <AuthLayout />;
+    if(isLoading){
+        return <LoadingScreen/>
     }
+    
+    useEffect(()=>{
+        if (!token) {
+            console.log('Redirecting to Auth: No token found');
+            router.push('/(auth)');
+        }
+    },[token, router, isLoading])
+
 
     if (!fontsLoaded) {
         return null; 

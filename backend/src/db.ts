@@ -29,7 +29,9 @@ export const initDb = async () => {
       textFontSize INTEGER,
       chosenColor TEXT,
       svgData TEXT, 
-      createdAt TEXT DEFAULT CURRENT_TIMESTAMP
+      createdAt TEXT DEFAULT CURRENT_TIMESTAMP,
+      userId TEXT,
+      FOREIGN KEY (userId) REFERENCES users(id)
     );
   `);
 
