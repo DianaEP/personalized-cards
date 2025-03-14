@@ -16,19 +16,32 @@ const TabsLayout: React.FC = () => {
 
     const fontsLoaded = useCustomFonts();
     const router = useRouter();
+    const [isMounted, setIsMounted] = useState(false);
 
+
+    
     const { token, isLoading } = useAuth(); // Get the user from Auth Context
     
-    if(isLoading){
-        return <LoadingScreen/>
-    }
+    useEffect(() => {
+        console.log('TabsLayout mounted');
+        setIsMounted(true);
+    }, []);
+
     
     useEffect(()=>{
-        if (!token) {
+        console.log('isMounted:', isMounted);
+        console.log('token:', token);
+        console.log('isLoading:', isLoading);
+        if (isMounted && !token && !isLoading) {
             console.log('Redirecting to Auth: No token found');
             router.push('/(auth)');
         }
-    },[token, router, isLoading])
+    },[token, isLoading, isMounted])
+
+    if(isLoading){
+        console.log('Loading screen displayed in TabsLayout');
+        return <LoadingScreen/>
+    }
 
 
     if (!fontsLoaded) {

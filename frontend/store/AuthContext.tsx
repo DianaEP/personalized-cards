@@ -4,7 +4,6 @@ import { getProtectedData } from "../util/http/protectedApi";
 import { login, register } from "../util/http/authApi";
 import { User } from "../util/interfaces";
 import LoadingScreen from "../components/LoadingScreen";
-import jwt from 'expo-jwt';
 import { AxiosError } from "axios";
 
 
@@ -24,8 +23,9 @@ export  const AuthContextProvider: React.FC<{children: ReactNode}> = ({children}
     const [user, setUser] = useState<Omit<User, 'password'> | null>(null);
     const [token, setToken] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(true);
-
+    
     useEffect(() => {
+        
         const fetchAuthData = async () => {
             setIsLoading(true);
             const storedToken = await AsyncStorage.getItem('token');
@@ -87,8 +87,10 @@ export  const AuthContextProvider: React.FC<{children: ReactNode}> = ({children}
     }
 
     if (isLoading) {
+        console.log('Loading screen displayed');
         return <LoadingScreen />; // ✅ Display a loading screen while checking auth state
     }
+    console.log('AuthContextProvider rendered with user:', user, 'token:', token);
     return(
         <AuthContext.Provider value={{user, token, registerUser, loginUser, logout, isLoading}}>{children}</AuthContext.Provider>
     )

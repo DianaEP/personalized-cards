@@ -56,8 +56,8 @@ const styles = StyleSheet.create({
         backgroundColor: colors.primary,
         borderRadius: width > 360 ? 30 : 25,
         padding: width > 360 ? 15 : 10,
-        width: '93%',
-        margin: width > 360 ? 25: 15,
+        width: '100%',
+        // margin: width > 360 ? 25: 15,
         ...platformStyle.shadow,  
        
     },

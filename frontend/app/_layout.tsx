@@ -3,6 +3,7 @@ import { AuthContextProvider, useAuth } from "../store/AuthContext";
 import TabsLayout from "./(tabs)/_layout";
 
 const Layout = () => {
+    console.log('been here');
     return (
         <AuthContextProvider>
             <Stack screenOptions={{
