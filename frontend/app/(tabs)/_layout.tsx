@@ -40,7 +40,7 @@ const TabsLayout: React.FC = () => {
 
     if(isLoading){
         console.log('Loading screen displayed in TabsLayout');
-        return <LoadingScreen/>
+        return <LoadingScreen message="Please wait..."/>
     }
 
 

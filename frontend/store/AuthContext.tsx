@@ -88,7 +88,7 @@ export  const AuthContextProvider: React.FC<{children: ReactNode}> = ({children}
 
     if (isLoading) {
         console.log('Loading screen displayed');
-        return <LoadingScreen />; // ✅ Display a loading screen while checking auth state
+        return <LoadingScreen message="Fetching user data..." />; // ✅ Display a loading screen while checking auth state
     }
     console.log('AuthContextProvider rendered with user:', user, 'token:', token);
     return(

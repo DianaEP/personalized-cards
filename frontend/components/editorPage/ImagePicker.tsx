@@ -19,6 +19,7 @@ import { useRouter } from "expo-router";
 import { height, width } from "../../util/screenDimension";
 import { getImages, saveImageUri, updateImage } from "../../util/http/postcardApi";
 import * as FileSystem from 'expo-file-system'; 
+import LoadingScreen from "../loadingError/LoadingScreen";
 
 // This is needed because the `viewShotRef.current.capture()` method initially saves the image URI as a temporary cache.
 // When the app re-renders, the cached URI might no longer be valid or accessible, causing issues when trying to display or process the image.
@@ -46,7 +47,7 @@ const moveImageToPermanentStorage = async(uri: string): Promise<string> => {
 }
 
 const ImagePicker: React.FC = () => {
-    const { state, dispatch } = useImageContext();
+    const { state, dispatch, isImageLoading, setIsImageLoading } = useImageContext();
     const viewShotRef = useRef<ViewShot | null>(null);
     const router = useRouter();
 
@@ -62,12 +63,16 @@ const ImagePicker: React.FC = () => {
  
     const saveFinalImage = async(): Promise<void> => {
         if(!viewShotRef.current || !viewShotRef.current.capture) return;
+
+        setIsImageLoading(true);
+
         try{
             const uri = await viewShotRef.current.capture();
             const permanentUri = await moveImageToPermanentStorage(uri);
 
             if (!state.photoTaken) {
                 console.error("No image to save!");
+                setIsImageLoading(false);
                 return;
             }
            
@@ -134,7 +139,13 @@ const ImagePicker: React.FC = () => {
         }catch(error){
             console.error("Error capturing image:", error);
             Alert.alert("Error", "Failed to save the image.");
+        }finally{
+            setIsImageLoading(false);
         }
+    }
+
+    if(isImageLoading){
+        return <LoadingScreen message="Save image..."/>
     }
 
            

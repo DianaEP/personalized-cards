@@ -19,7 +19,7 @@ const { width, height } = Dimensions.get("window");
 const cardWidth = width * 0.8;
 
 const Cards: React.FC = () => {
-  const { state , dispatch} = useImageContext();
+  const { state , dispatch, isImageLoading, setIsImageLoading} = useImageContext();
   const imageHistory = state.imageHistory;
   const [paginationIndex, setPaginationIndex] = useState(0);
   const scrollX = useSharedValue(0);
@@ -30,6 +30,7 @@ const Cards: React.FC = () => {
 
   useEffect(() => {
     const fetchImageHistory = async () => {
+      setIsImageLoading(true);
       try{
         const response = await getImages();
         // console.log('backend get response');
@@ -40,6 +41,8 @@ const Cards: React.FC = () => {
         }
       }catch(error){
         console.error('Error fetching image history:', error);
+      }finally{
+        setIsImageLoading(false);
       }
 
     }
@@ -73,53 +76,70 @@ const Cards: React.FC = () => {
   const handleDeleteCard = async () => { 
       const currentImage = imageHistory[paginationIndex];
       if(!currentImage) return;
+
+      setIsImageLoading(true);
       const imageIdToDelete = currentImage.id;
-      await deleteImage(imageIdToDelete);
-      dispatch({ type: ACTIONS.REMOVE_IMAGE_HiSTORY, payload: imageIdToDelete})
-
-      const updatedHistory = await getImages();
-      dispatch({ type: ACTIONS.SET_IMAGE_HISTORY, payload: updatedHistory });
-
-      if (paginationIndex >= updatedHistory.length) {
-        setPaginationIndex(updatedHistory.length - 1); // Ensure we're not out of bounds
+      try{
+        await deleteImage(imageIdToDelete);
+        dispatch({ type: ACTIONS.REMOVE_IMAGE_HiSTORY, payload: imageIdToDelete})
+  
+        const updatedHistory = await getImages();
+        dispatch({ type: ACTIONS.SET_IMAGE_HISTORY, payload: updatedHistory });
+  
+        if (paginationIndex >= updatedHistory.length) {
+          setPaginationIndex(updatedHistory.length - 1); // Ensure we're not out of bounds
+        }
+      }catch(error){
+        console.error('Error deleting card:', error);
+      }finally{
+        setIsImageLoading(false);
       }
+
   }
 
  
   const handleUpdateCard = async() => {
       const currentImage =  imageHistory[paginationIndex];
       if (!currentImage) return;
+
+      setIsImageLoading(true);
+
       const imageId = currentImage.id;
       dispatch({type: ACTIONS.SET_SELECTED_IMAGE_HISTORY_ID, payload: imageId})
-      const backendImageData = await getImage(imageId);
-      console.log('update function in cards');
-      
-      console.log(state.showSvgModal);
-      
-      
-      
-      // console.log("Text Position from backend:", backendImageData.textPosition);
 
-      dispatch({type: ACTIONS.SET_PHOTO, payload: backendImageData.originalImageUri});
+      try{
+        const backendImageData = await getImage(imageId);
+        console.log('update function in cards');
+        
+        console.log(state.showSvgModal);
+      
+        // console.log("Text Position from backend:", backendImageData.textPosition);
+  
+        dispatch({type: ACTIONS.SET_PHOTO, payload: backendImageData.originalImageUri});
+  
+        // RESTORE TEXT & POSITION
+        dispatch({ type: ACTIONS.SET_OVERLAY_TEXT, payload: backendImageData.overlayText }); 
+        dispatch({ type: ACTIONS.ADD_TEXT_ON_IMAGE});
+        dispatch({type: ACTIONS.SET_TEXT_POSITION, payload: backendImageData.textPosition});
+        dispatch({type: ACTIONS.SET_TEXT_FONT, payload: backendImageData.textFont});
+        dispatch({type: ACTIONS.SET_CHOSEN_COLOR, payload: backendImageData.chosenColor})
+        dispatch({type: ACTIONS.SET_TEXT_FONT_SIZE, payload: backendImageData.textFontSize});
+  
+        // RESTORE SVG & POSITION
+        if (currentImage.svgData) {
+          dispatch({ type: ACTIONS.SELECT_SVG_ID, payload: backendImageData.svgData.id });
+          dispatch({ type: ACTIONS.SET_SVG_POSITION, payload: backendImageData.svgData.position });
+          dispatch({ type: ACTIONS.SET_SVG_SCALE, payload: backendImageData.svgData.scale });
+          dispatch({ type: ACTIONS.SET_SVG_COLOR, payload: backendImageData.svgData.color });
+        }
+      }catch(error){
+        console.error('Error updating card data:', error);
+      }finally{
+        setIsImageLoading(false);
 
-      // RESTORE TEXT & POSITION
-      dispatch({ type: ACTIONS.SET_OVERLAY_TEXT, payload: backendImageData.overlayText }); 
-      dispatch({ type: ACTIONS.ADD_TEXT_ON_IMAGE});
-      dispatch({type: ACTIONS.SET_TEXT_POSITION, payload: backendImageData.textPosition});
-      dispatch({type: ACTIONS.SET_TEXT_FONT, payload: backendImageData.textFont});
-      dispatch({type: ACTIONS.SET_CHOSEN_COLOR, payload: backendImageData.chosenColor})
-      dispatch({type: ACTIONS.SET_TEXT_FONT_SIZE, payload: backendImageData.textFontSize});
-
-      // RESTORE SVG & POSITION
-      if (currentImage.svgData) {
-        dispatch({ type: ACTIONS.SELECT_SVG_ID, payload: backendImageData.svgData.id });
-        dispatch({ type: ACTIONS.SET_SVG_POSITION, payload: backendImageData.svgData.position });
-        dispatch({ type: ACTIONS.SET_SVG_SCALE, payload: backendImageData.svgData.scale });
-        dispatch({ type: ACTIONS.SET_SVG_COLOR, payload: backendImageData.svgData.color });
       }
 
       setTimeout(() => {
-        console.log("Text Position from backend after :", backendImageData.textPosition);
         router.push('/editor');
       }, 100);
 
