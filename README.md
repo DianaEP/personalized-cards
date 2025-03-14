@@ -29,8 +29,8 @@ A **React Native** application that allows users to personalize their photos by 
 - This issue will be addressed in future updates.
 
 ⚠️ **User & Postcard Connection Not Yet Implemented**  
-- Form validation on the frontend is still missing.
-- Login and Register styling is missing.
+- ✅Form validation on the frontend is still missing.
+- ✅Login and Register styling is missing.
 - Download functionality for postcards is not yet implemented.
 - User Profile is not yet implemented so the user is not able to delete his account yet or logout.
 - On first reload it navigates to login even if the token is active.

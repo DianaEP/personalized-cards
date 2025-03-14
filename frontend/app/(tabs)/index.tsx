@@ -33,7 +33,10 @@ const App: React.FC = () => {
       <TextAnimation/>
       <PostcardsAnimation/>
       <Text style={styles.text}>{description}</Text>
-      <Button onPress={handleCreateCard}>Get Started</Button>
+      <View style={styles.buttonContainer}>
+        <Button onPress={handleCreateCard}>Get Started</Button>
+
+      </View>
     </View>
   );
 }
@@ -53,5 +56,9 @@ const styles = StyleSheet.create({
     fontSize: width > 360 ? 18 : 14, 
     lineHeight: height > 630 ? 24 : 18,
     marginHorizontal: height > 630 ? 25 : 15,
+  },
+  buttonContainer: {
+    width: '90%',
+    margin: width > 360 ? 22: 15,
   }
 });

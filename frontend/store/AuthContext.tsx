@@ -3,7 +3,7 @@ import { createContext, ReactNode, useContext, useEffect, useState } from "react
 import { getProtectedData } from "../util/http/protectedApi";
 import { login, register } from "../util/http/authApi";
 import { User } from "../util/interfaces";
-import LoadingScreen from "../components/LoadingScreen";
+import LoadingScreen from "../components/loadingError/LoadingScreen";
 import { AxiosError } from "axios";
 
 

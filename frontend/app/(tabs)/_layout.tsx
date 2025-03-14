@@ -9,7 +9,7 @@ import { ImageContextProvider } from "../../store/ImageContext";
 import { height } from "../../util/screenDimension";
 import { useAuth } from "../../store/AuthContext";
 import AuthLayout from "../(auth)/_layout";
-import LoadingScreen from "../../components/LoadingScreen";
+import LoadingScreen from "../../components/loadingError/LoadingScreen";
 
 
 const TabsLayout: React.FC = () => {

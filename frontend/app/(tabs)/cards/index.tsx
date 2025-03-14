@@ -159,9 +159,17 @@ const Cards: React.FC = () => {
           />
           <Pagination items={imageHistory} scrollX={scrollX} paginationIndex={paginationIndex}/>
           <View style={styles.cardButton}>
-            <Button onPress={handleDownloadCard} card>Download</Button>
-            <Button onPress={handleUpdateCard} card>Update</Button>
-            <Button onPress={handleDeleteCard} card>Delete</Button>
+            <View style={styles.buttonContainer}>
+              <Button onPress={handleDownloadCard} card>Download</Button>
+            </View>
+
+            <View style={styles.buttonContainer}>
+              <Button onPress={handleUpdateCard} card>Update</Button>
+            </View>
+
+            <View style={styles.buttonContainer}>
+              <Button onPress={handleDeleteCard} card>Delete</Button>
+            </View>
           </View>
           <Text style={styles.text}>*Only the last 10 images are stored. Be sure to download them before they are replaced!* </Text> 
           
@@ -208,6 +216,11 @@ const styles = StyleSheet.create({
     width: width,
     marginBottom: width > 360 ? 30 : 10,
   },
+  buttonContainer: {
+      width: '90%',
+      marginRight: width > 360 ? 12: 10,
+      marginLeft: width > 360 ? 12: 10,
+    }
   // stackContainer: {
   //   flex: 1,
   //   // flexDirection: 'column',

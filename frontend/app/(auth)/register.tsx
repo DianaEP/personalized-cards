@@ -5,6 +5,7 @@ import { User } from "../../util/interfaces";
 import AuthFormTemplate from "../../UI/AuthFormTamplate";
 import { useAuth } from "../../store/AuthContext";
 import { useRouter } from "expo-router";
+import useFormValidation from "../../util/validation/validationHook";
 
 const Register: React.FC = () =>  {
     const { registerUser } = useAuth();
@@ -12,17 +13,33 @@ const Register: React.FC = () =>  {
     const [user, setUser] = useState<User>({
         email: '',
         password: '',
+        confirmPassword: '',
         name: ''
     })
+
+    const { errors, setErrors, validateOnSubmit} = useFormValidation(user, 'register');
+
     const handleInputChange = (field: keyof User, value: string) => { // keyof User to ensure that the field passed to the handler (field: keyof User) is one of the keys in the User interface
-        setUser((prevData) => ({
+     
+      setUser((prevData) => ({
             ...prevData,
             [field]: value
-        })
-    )}
+      }))
+
+      if(errors){
+        setErrors((prevError) => ({
+          ...prevError,
+          [field]: ''
+      }))
+      }
+    }
 
     const handleSubmit = async () => {
-        await registerUser(user);
+        const {confirmPassword, ...userData} =  user;
+        console.log(userData);
+        
+        if(!validateOnSubmit()) return;
+        await registerUser(userData);
         router.push('/(tabs)');
     };
   
@@ -35,6 +52,7 @@ const Register: React.FC = () =>  {
         linkText="Already have an account?"
         linkUrl="/"
         showNameField={true}
+        errors={errors}
     />
   );
 }
