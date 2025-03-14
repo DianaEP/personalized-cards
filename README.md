@@ -5,6 +5,9 @@ A **React Native** application that allows users to personalize their photos by 
 ## Features
 
 - 🧭 **Smooth Navigation** – Built with `Expo Router` for seamless screen transitions.
+- 🔐 **User Authentication** – Secure login, registration, and user session management with JWT authentication.
+- 🛡️ **Form Validation** – Ensures user input integrity using validation rules for registration and login.
+- 👤 **User Profile** – Users can visualize their data, delete the account or simply logout.
 
 - 🤳 **Image Upload & Capture** – Users can choose an image from their gallery or capture a new one using the camera.
 - ✂️ **Image Cropping** – Cropping is available via `Expo Image Picker`.
@@ -28,12 +31,13 @@ A **React Native** application that allows users to personalize their photos by 
 - Currently, the app is tied to a single device. If you switch to a new device or restart the emulator, the app may fail to retrieve previously saved images from the backend.
 - This issue will be addressed in future updates.
 
-⚠️ **User & Postcard Connection Not Yet Implemented**  
-- ✅Form validation on the frontend is still missing.
-- ✅Login and Register styling is missing.
+⚠️ **Download functionality**  
 - Download functionality for postcards is not yet implemented.
-- User Profile is not yet implemented so the user is not able to delete his account yet or logout.
-- ✅The user and their created postcards are now linked.
+- Customized alert component to display success, error, and warning messages throughout the app is not yet implemented(React Native Alert is used for now).
+
+- 🐞 **Bug with Deleting Last Image:**
+  There's a bug where if you delete the last image in the cards section, the app stops showing the rest of the images. However, if you delete images from the beginning or middle of the list, everything works fine.
+
 
 
 
@@ -60,7 +64,8 @@ A **React Native** application that allows users to personalize their photos by 
 
 - **Database:** *SQLite* (Lightweight and efficient storage)
 - **API:** *RESTful API* built with Express.js
-- **Data Persistence:** Stores postcards in a database with metadata (text, colors, SVGs, etc.)
+- **Data Persistence:** User profiles and postcards are saved persistently in SQLite. The relationship between users and postcards is maintained through a `userId` foreign key.
+- **Middleware:** Middleware to verify JWT tokens, ensuring that only authenticated users can access protected routes such as /postcards and /auth/delete.
 
 ## Getting Started
 
@@ -89,14 +94,15 @@ npm start
 
 **API Endpoints**
 
-| **Method** | **Endpoint**        | **Description**                |
-|------------|---------------------|--------------------------------|
-| **GET**    | `/postcards`        | Fetch all saved images         |
-| **POST**   | `/postcards`        | Save a new image               |
-| **PUT**    | `/postcards/:id`    | Update an existing image       |
-| **DELETE** | `/postcards/:id`    | Delete an image                |
-
-
+| **Method** | **Endpoint**        | **Description**                                      |
+|------------|---------------------|------------------------------------------------------|
+| **POST**   | `/auth/register`    | Register a new user                                  |
+| **POST**   | `/auth/login`       | Authenticate user                                    |
+| **DELETE** | `/auth/delete`      | Delete the authenticated user and related postcards  |
+| **GET**    | `/postcards`        | Fetch all saved images                               |
+| **POST**   | `/postcards`        | Save a new image                                     |
+| **PUT**    | `/postcards/:id`    | Update an existing image                             |
+| **DELETE** | `/postcards/:id`    | Delete an image                                      |
 
 3. **Setup the Frontend**
 
