@@ -6,6 +6,7 @@ import AuthFormTemplate from "../../UI/AuthFormTamplate";
 import { useAuth } from "../../store/AuthContext";
 import { useRouter } from "expo-router";
 import useFormValidation from "../../util/validation/validationHook";
+import { Alert } from "react-native";
 
 const Register: React.FC = () =>  {
     const { registerUser } = useAuth();
@@ -40,6 +41,8 @@ const Register: React.FC = () =>  {
         
         if(!validateOnSubmit()) return;
         await registerUser(userData);
+        // Alert.alert("Success", "User created successfully.");
+
         router.push('/(tabs)');
     };
   

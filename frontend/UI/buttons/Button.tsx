@@ -69,8 +69,9 @@ const styles = StyleSheet.create({
         fontSize: width > 360 ? 20 : 16,
         borderWidth: 0, 
         marginBottom: 0,
-        margin: width > 380 ? 10 : 15,
+        // margin: width > 380 ? 10 : 15,
         elevation: 0,
+       
     },
     cardButton: {
         margin: width > 360 ? 10: 5,
@@ -83,7 +84,7 @@ const styles = StyleSheet.create({
         textAlign: 'center'
     },
     textOnly: {
-        fontSize: width > 360 ? 20 : 16,
-        textAlign: 'left'
+        fontSize: width > 360 ? 18 : 16,
+        textAlign: 'center'
     }
 })

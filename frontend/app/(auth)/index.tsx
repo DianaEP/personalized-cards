@@ -12,15 +12,15 @@ import useFormValidation from "../../util/validation/validationHook";
 
 const Login: React.FC = () =>  {
     const router = useRouter();
-    const { loginUser } = useAuth();
-    const [user, setUser] = useState<User>({
+    const { user, loginUser } = useAuth();
+    const [userData, setUserData] = useState<User>({
         email: '',
         password: ''
     })
-    const { errors, setErrors, validateOnSubmit} = useFormValidation(user, 'login');
+    const { errors, setErrors, validateOnSubmit} = useFormValidation(userData, 'login');
 
     const handleInputChange = (field: keyof User, value: string) => { // keyof User to ensure that the field passed to the handler (field: keyof User) is one of the keys in the User interface
-        setUser((prevData) => ({
+        setUserData((prevData) => ({
             ...prevData,
             [field]: value
         }))
@@ -35,14 +35,15 @@ const Login: React.FC = () =>  {
 
     const handleSubmit = async () => {
         if(!validateOnSubmit()) return;
-        await loginUser(user);
+        await loginUser(userData);
+        // if(!user) return; 
         router.push('/(tabs)');
         
     }
   
   return (
     <AuthFormTemplate
-        user={user}
+        user={userData}
         onInputChange={handleInputChange}
         onSubmit={handleSubmit}
         buttonText="Login"

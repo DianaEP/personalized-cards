@@ -5,6 +5,8 @@ import { login, register } from "../util/http/authApi";
 import { User } from "../util/interfaces";
 import LoadingScreen from "../components/loadingError/LoadingScreen";
 import { AxiosError } from "axios";
+import { Alert } from "react-native";
+import { useRouter } from "expo-router";
 
 
 
@@ -23,9 +25,14 @@ export  const AuthContextProvider: React.FC<{children: ReactNode}> = ({children}
     const [user, setUser] = useState<Omit<User, 'password'> | null>(null);
     const [token, setToken] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(true);
-    
-    useEffect(() => {
-        
+
+    const clearUserData = async () => {
+        await AsyncStorage.removeItem('token');
+        setToken(null);
+        setUser(null);
+    }
+
+    useEffect(() => {    
         const fetchAuthData = async () => {
             setIsLoading(true);
             const storedToken = await AsyncStorage.getItem('token');
@@ -40,8 +47,7 @@ export  const AuthContextProvider: React.FC<{children: ReactNode}> = ({children}
                 }catch(error: unknown){
                     if(error instanceof AxiosError && error.response && error.response.status === 401){
                         console.log('Token expired');
-                        await AsyncStorage.removeItem('token');
-                        setToken(null);
+                        await clearUserData();
                     }else{
                         console.log('Error fetching protected data:', error);
                     }
@@ -51,6 +57,8 @@ export  const AuthContextProvider: React.FC<{children: ReactNode}> = ({children}
         }
         fetchAuthData();
     },[])
+
+   
 
    
 
@@ -75,8 +83,18 @@ export  const AuthContextProvider: React.FC<{children: ReactNode}> = ({children}
 
             const data = await getProtectedData();
             setUser(data.user);
-        }catch(error){
+        }catch(error: any){
             console.error('Error logging in', error);
+
+            await clearUserData();
+
+            if (error.response && error.response.status === 401) {
+                Alert.alert("Login Failed", "Invalid credentials. Please check your email and password.");
+            } else {
+                Alert.alert("Error", "An unexpected error occurred. Please try again.");
+            }
+
+           
         }
     }
 

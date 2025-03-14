@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 import { getDb } from "../db";
 import jwt from "jsonwebtoken";
 import { v4 as uuidv4 } from 'uuid';
+import authenticatedUser, { AuthRequest } from "../middleware/authenticateUser";
 
 const authRoutes = Router();
 const SECRET_KEY = process.env.JWT_SECRET || 'super_secret_key'; // → Bad practice use only the .env file
@@ -73,6 +74,32 @@ authRoutes.post("/login", async ( req: Request, res: Response): Promise<any> => 
 
     
 
+})
+
+// DELETE route
+authRoutes.delete("/delete", authenticatedUser, async (req: AuthRequest, res: Response): Promise<any> => {
+    console.log("Delete route hit");
+    const userId = req.user?.id;
+    console.log("User ID:", userId);
+    if(!userId){
+        return res.status(401).json({error: "Unauthorized"})
+    }
+
+    const db = getDb();
+    try{
+        const user = db.get("SELECT * FROM users WHERE id=?", [userId]);
+        if(!user){
+            return res.status(404).json({message: "User Not Found"})
+        }
+
+        await db.run('DELETE FROM images WHERE userId=?', [userId]);
+        await db.run("DELETE FROM users WHERE id=?", [userId]);
+
+        res.json({ message: "User and related postcards deleted successfully." });
+    }catch(error){
+        console.error("Delete user error:", error);
+        res.status(500).json({ message: "Server error", error });
+    }
 })
 
 export default authRoutes;

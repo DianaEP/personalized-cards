@@ -10,6 +10,7 @@ import { height } from "../../util/screenDimension";
 import { useAuth } from "../../store/AuthContext";
 import AuthLayout from "../(auth)/_layout";
 import LoadingScreen from "../../components/loadingError/LoadingScreen";
+import { Ionicons } from "@expo/vector-icons";
 
 
 const TabsLayout: React.FC = () => {
@@ -87,6 +88,10 @@ const TabsLayout: React.FC = () => {
                     title: 'Your Cards',
                     headerShown: false,
                     tabBarIcon: ({color, size}) => <MaterialCommunityIcons name="cards-outline" size={size} color={color} />
+                }}/>
+                <Tabs.Screen name='profile' options={{
+                    title: 'Profile',
+                    tabBarIcon: ({color, size}) => <Ionicons name="person-outline" size={size} color={color} />
                 }}/>
             </Tabs>
         </ImageContextProvider>

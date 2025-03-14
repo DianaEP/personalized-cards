@@ -36,3 +36,14 @@ export const login = async( user: User) => {
         throw error;
     }
 }
+
+export const deleteProfile = async() => {
+    try{
+        
+        const response = await axiosInstance.delete('/auth/delete');
+        return response.data;
+    }catch(error){
+        console.error("Error deleting user profile", error);
+        throw error;
+    }
+}
